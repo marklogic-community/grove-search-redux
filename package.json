@@ -1,0 +1,28 @@
+{
+  "name": "ml-search-redux",
+  "version": "0.1.0",
+  "description": "Redux module to power MarkLogic search Web apps",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "jest --watch"
+  },
+  "keywords": [
+    "Redux",
+    "MarkLogic",
+    "Search"
+  ],
+  "author": "Patrick McElwee <patrick.mcelwee@marklogic.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-stage-3": "^6.24.1",
+    "jest": "^20.0.4",
+    "webpack": "^3.5.5"
+  },
+  "dependencies": {
+    "ml-query-builder.js": "^1.0.0",
+    "ml-rest.js": "^1.0.0-2"
+  }
+}
