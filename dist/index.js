@@ -1272,15 +1272,25 @@ module.exports = g;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__actionTypes__ = __webpack_require__(3);
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.searchSelectors = undefined;
+
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _actionTypes = __webpack_require__(3);
 
+var types = _interopRequireWildcard(_actionTypes);
 
-const initialState = {
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var initialState = {
   suggestPending: false,
   optionsPending: false,
   // TODO? Separate out queryReducer?
@@ -1304,18 +1314,20 @@ const initialState = {
   suggestions: []
 };
 
-const emptyResponse = {
+var emptyResponse = {
   results: [],
   facets: {}
 };
 
-/* harmony default export */ __webpack_exports__["a"] = ((state = initialState, action) => {
+exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
   switch (action.type) {
-    // case types.QTEXT:
-    //   return {
-    //     ...state,
-    //     qtext: action.payload
-    //   };
+    case types.SET_QTEXT:
+      return _extends({}, state, {
+        qtext: action.payload.qtext
+      });
 
     // case types.PAGINATE:
     //   return {
@@ -1379,7 +1391,7 @@ const emptyResponse = {
     //     suggestions: []
     //   };
 
-    case __WEBPACK_IMPORTED_MODULE_0__actionTypes__["b" /* SEARCH_REQUESTED */]:
+    case types.SEARCH_REQUESTED:
       return _extends({}, state, {
         executedSearch: _extends({}, state.executedSearch, {
           pending: true,
@@ -1391,9 +1403,9 @@ const emptyResponse = {
         })
       });
 
-    case __WEBPACK_IMPORTED_MODULE_0__actionTypes__["c" /* SEARCH_SUCCESS */]:
+    case types.SEARCH_SUCCESS:
       {
-        const response = action.payload || emptyResponse;
+        var response = action.payload || emptyResponse;
         return _extends({}, state, {
           executedSearch: _extends({}, state.executedSearch, {
             pending: false,
@@ -1404,7 +1416,7 @@ const emptyResponse = {
         });
       }
 
-    case __WEBPACK_IMPORTED_MODULE_0__actionTypes__["a" /* SEARCH_FAILURE */]:
+    case types.SEARCH_FAILURE:
       return _extends({}, state, {
         executedSearch: _extends({}, state.executedSearch, emptyResponse, {
           pending: false,
@@ -1442,70 +1454,58 @@ const emptyResponse = {
     default:
       return state;
   }
-});
-
-const searchSelectors = {
-  getSearchResults: state => state.search.executedSearch.results,
-  getConstraints: state => state.search.executedSearch.query.constraints,
-  getPage: state => state.search.executedSearch.query.page,
-  getPageLength: state => state.search.executedSearch.query.pageLength,
-  getExecutedSearchQtext: state => state.search.executedSearch.query.qtext
 };
-/* harmony export (immutable) */ __webpack_exports__["b"] = searchSelectors;
 
+var searchSelectors = exports.searchSelectors = {
+  getSearchResults: function getSearchResults(state) {
+    return state.search.executedSearch.results;
+  },
+  getConstraints: function getConstraints(state) {
+    return state.search.executedSearch.query.constraints;
+  },
+  getPage: function getPage(state) {
+    return state.search.executedSearch.query.page;
+  },
+  getPageLength: function getPageLength(state) {
+    return state.search.executedSearch.query.pageLength;
+  },
+  getExecutedSearchQtext: function getExecutedSearchQtext(state) {
+    return state.search.executedSearch.query.qtext;
+  },
+  getVisibleQtext: function getVisibleQtext(state) {
+    return state.search.qtext;
+  }
+};
 
 /***/ }),
 /* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-const QTEXT = 'search/QTEXT';
-/* unused harmony export QTEXT */
 
 
-const PAGINATE = 'search/PAGINATE';
-/* unused harmony export PAGINATE */
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var SET_QTEXT = exports.SET_QTEXT = 'search/SET_QTEXT';
 
-const PAGE_LENGTH = 'search/PAGE_LENGTH';
-/* unused harmony export PAGE_LENGTH */
+var PAGINATE = exports.PAGINATE = 'search/PAGINATE';
+var PAGE_LENGTH = exports.PAGE_LENGTH = 'search/PAGE_LENGTH';
 
+var CONSTRAINT_ADD = exports.CONSTRAINT_ADD = 'search/CONSTRAINT_ADD';
+var CONSTRAINT_REMOVE = exports.CONSTRAINT_REMOVE = 'search/CONSTRAINT_REMOVE';
 
-const CONSTRAINT_ADD = 'search/CONSTRAINT_ADD';
-/* unused harmony export CONSTRAINT_ADD */
+var SUGGEST_REQUESTED = exports.SUGGEST_REQUESTED = 'search/SUGGEST_REQUESTED';
+var SUGGEST_SUCCESS = exports.SUGGEST_SUCCESS = 'search/SUGGEST_SUCCESS';
+var SUGGEST_FAILURE = exports.SUGGEST_FAILURE = 'search/SUGGEST_FAILURE';
 
-const CONSTRAINT_REMOVE = 'search/CONSTRAINT_REMOVE';
-/* unused harmony export CONSTRAINT_REMOVE */
+var SEARCH_REQUESTED = exports.SEARCH_REQUESTED = 'search/SEARCH_REQUESTED';
+var SEARCH_SUCCESS = exports.SEARCH_SUCCESS = 'search/SEARCH_SUCCESS';
+var SEARCH_FAILURE = exports.SEARCH_FAILURE = 'search/SEARCH_FAILURE';
 
-
-const SUGGEST_REQUESTED = 'search/SUGGEST_REQUESTED';
-/* unused harmony export SUGGEST_REQUESTED */
-
-const SUGGEST_SUCCESS = 'search/SUGGEST_SUCCESS';
-/* unused harmony export SUGGEST_SUCCESS */
-
-const SUGGEST_FAILURE = 'search/SUGGEST_FAILURE';
-/* unused harmony export SUGGEST_FAILURE */
-
-
-const SEARCH_REQUESTED = 'search/SEARCH_REQUESTED';
-/* harmony export (immutable) */ __webpack_exports__["b"] = SEARCH_REQUESTED;
-
-const SEARCH_SUCCESS = 'search/SEARCH_SUCCESS';
-/* harmony export (immutable) */ __webpack_exports__["c"] = SEARCH_SUCCESS;
-
-const SEARCH_FAILURE = 'search/SEARCH_FAILURE';
-/* harmony export (immutable) */ __webpack_exports__["a"] = SEARCH_FAILURE;
-
-
-const OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED';
-/* unused harmony export OPTIONS_REQUESTED */
-
-const OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS';
-/* unused harmony export OPTIONS_SUCCESS */
-
-const OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
-/* unused harmony export OPTIONS_FAILURE */
-
+var OPTIONS_REQUESTED = exports.OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED';
+var OPTIONS_SUCCESS = exports.OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS';
+var OPTIONS_FAILURE = exports.OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
 
 /***/ }),
 /* 4 */
@@ -2069,19 +2069,94 @@ module.exports.asArray = asArray
 
 /***/ }),
 /* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__reducers__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__actions__ = __webpack_require__(7);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "searchSelectors", function() { return __WEBPACK_IMPORTED_MODULE_0__reducers__["b"]; });
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "searchActions", function() { return __WEBPACK_IMPORTED_MODULE_1__actions__; });
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.searchActions = exports.searchSelectors = undefined;
+
+var _reducers = __webpack_require__(2);
+
+var _reducers2 = _interopRequireDefault(_reducers);
+
+var _actions = __webpack_require__(7);
+
+var searchActions = _interopRequireWildcard(_actions);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 // Public API for the search module
+exports.default = _reducers2.default;
+exports.searchSelectors = _reducers.searchSelectors;
+exports.searchActions = searchActions;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
-/* harmony default export */ __webpack_exports__["default"] = (__WEBPACK_IMPORTED_MODULE_0__reducers__["a" /* default */]);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.setQtext = exports.runSearch = undefined;
 
+var _actionTypes = __webpack_require__(3);
+
+var types = _interopRequireWildcard(_actionTypes);
+
+var _reducers = __webpack_require__(2);
+
+var _search = __webpack_require__(8);
+
+var _search2 = _interopRequireDefault(_search);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+var runSearch = exports.runSearch = function runSearch(submittedQtext) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: types.SEARCH_REQUESTED,
+      payload: { qtext: submittedQtext }
+    });
+
+    var state = getState();
+    var qtext = _reducers.searchSelectors.getExecutedSearchQtext(state);
+    var constraints = _reducers.searchSelectors.getConstraints(state);
+    var page = _reducers.searchSelectors.getPage(state);
+    var pageLength = _reducers.searchSelectors.getPageLength(state);
+    var searchProfileName = 'treehouse-options'; // TODO: put in store
+
+    return _search2.default.search({
+      qtext: qtext,
+      constraints: constraints,
+      page: page,
+      pageLength: pageLength,
+      searchProfileName: searchProfileName
+    }).then(function (resp) {
+      if (!resp.ok) throw new Error(resp.statusText);
+      return resp.json();
+    }).then(function (resp) {
+      return dispatch({ type: types.SEARCH_SUCCESS, payload: resp });
+    }, function (error) {
+      return dispatch({
+        type: types.SEARCH_FAILURE,
+        payload: {
+          error: 'Search error: ' + error.message
+        }
+      });
+    });
+  };
+};
 
 // export const suggest = (qtext) => {
 //   return (dispatch, getState) => {
@@ -2120,13 +2195,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //   };
 // };
 
-// export const qtext = (t) => {
-//   return dispatch => {
-//     dispatch({ type: types.QTEXT, payload: t });
-//     // TODO
-//     // return suggest()
-//   };
-// };
+var setQtext = exports.setQtext = function setQtext(qtext) {
+  return {
+    type: types.SET_QTEXT,
+    payload: { qtext: qtext } };
+};
 
 // export const paginate = (n) => {
 //   return dispatch => {
@@ -2157,54 +2230,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // }
 
 /***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__actionTypes__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__reducers__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_search__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__api_search___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__api_search__);
-
-
-
-
-const runSearch = submittedQtext => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: __WEBPACK_IMPORTED_MODULE_0__actionTypes__["b" /* SEARCH_REQUESTED */],
-      payload: { qtext: submittedQtext }
-    });
-
-    let state = getState();
-    let qtext = __WEBPACK_IMPORTED_MODULE_1__reducers__["b" /* searchSelectors */].getExecutedSearchQtext(state);
-    let constraints = __WEBPACK_IMPORTED_MODULE_1__reducers__["b" /* searchSelectors */].getConstraints(state);
-    let page = __WEBPACK_IMPORTED_MODULE_1__reducers__["b" /* searchSelectors */].getPage(state);
-    let pageLength = __WEBPACK_IMPORTED_MODULE_1__reducers__["b" /* searchSelectors */].getPageLength(state);
-    let searchProfileName = 'treehouse-options'; // TODO: put in store
-
-    return __WEBPACK_IMPORTED_MODULE_2__api_search___default.a.search({
-      qtext,
-      constraints,
-      page,
-      pageLength,
-      searchProfileName
-    }).then(resp => {
-      if (!resp.ok) throw new Error(resp.statusText);
-      return resp.json();
-    }).then(resp => dispatch({ type: __WEBPACK_IMPORTED_MODULE_0__actionTypes__["c" /* SEARCH_SUCCESS */], payload: resp }), error => dispatch({
-      type: __WEBPACK_IMPORTED_MODULE_0__actionTypes__["a" /* SEARCH_FAILURE */],
-      payload: {
-        error: 'Search error: ' + error.message
-      }
-    }));
-  };
-};
-/* harmony export (immutable) */ __webpack_exports__["runSearch"] = runSearch;
-
-
-/***/ }),
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2215,9 +2240,9 @@ const runSearch = submittedQtext => {
 var MLRest = __webpack_require__(9);
 var qb = __webpack_require__(25);
 
-const client = MLRest.create();
+var client = MLRest.create({ baseURI: 'http://localhost' });
 
-let names = ['value', 'word', 'custom', 'collection', 'range'];
+var names = ['value', 'word', 'custom', 'collection', 'range'];
 
 function asArray() {
   var args = Array.prototype.slice.call(arguments);
@@ -2260,7 +2285,9 @@ function builder(name, type) {
 
 // TODO: extract into search api module
 function constraintType(c) {
-  let name = !c ? null : Object.keys(c).filter(x => x !== 'name' && x !== '_value')[0];
+  var name = !c ? null : Object.keys(c).filter(function (x) {
+    return x !== 'name' && x !== '_value';
+  })[0];
 
   if (!name) throw new TypeError('bad arg: not a constraint');
 
@@ -2278,7 +2305,11 @@ function constraintType(c) {
 }
 
 function constraintQuery(constraints) {
-  return qb.and(Object.keys(constraints).map(name => constraints[name]).filter(constraint => constraint.values && constraint.values.length).map(constraint => {
+  return qb.and(Object.keys(constraints).map(function (name) {
+    return constraints[name];
+  }).filter(function (constraint) {
+    return constraint.values && constraint.values.length;
+  }).map(function (constraint) {
     return builder(constraint.name, constraintType(constraint))(constraint.values);
   }));
 }
