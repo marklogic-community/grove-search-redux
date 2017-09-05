@@ -140,7 +140,22 @@ describe('search reducer', () => {
 
   });
 
-  describe('getSearchResults', () => {
+  describe('SET_QTEXT', () => {
+    it('works', () => {
+      const expectedState = {
+        ...initialState,
+        qtext: 'qtext'
+      };
+      expect(
+        reducer(initialState, {
+          type: types.SET_QTEXT,
+          payload: {qtext: 'qtext'}
+        })
+      ).toEqual(expectedState);
+    });
+  });
+
+ describe('getSearchResults', () => {
     it('works', () => {
       const results = [{
         uri: '1.json',

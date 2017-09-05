@@ -1,4 +1,4 @@
-export const QTEXT = 'search/QTEXT';
+export const SET_QTEXT = 'search/SET_QTEXT';
 
 export const PAGINATE = 'search/PAGINATE';
 export const PAGE_LENGTH = 'search/PAGE_LENGTH';

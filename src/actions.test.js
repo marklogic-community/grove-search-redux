@@ -11,6 +11,21 @@ const mockStore = configureMockStore(middlewares);
 
 describe('search actions', () => {
 
+  describe('setQtext', () => {
+
+    it('creates a setQtext action', () => {
+      const qtext = 'qtext';
+      const expectedAction = {
+        type: types.SET_QTEXT,
+        payload: {
+          qtext: qtext
+        }
+      };
+      expect(actions.setQtext(qtext)).toEqual(expectedAction);
+    });
+
+  });
+
   describe('async actions', () => {
     afterEach(() => {
       nock.cleanAll();

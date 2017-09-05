@@ -31,11 +31,11 @@ const emptyResponse = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-  // case types.QTEXT:
-  //   return {
-  //     ...state,
-  //     qtext: action.payload
-  //   };
+  case types.SET_QTEXT:
+    return {
+      ...state,
+      qtext: action.payload.qtext
+    };
 
   // case types.PAGINATE:
   //   return {
