@@ -197,7 +197,7 @@ describe('search reducer', () => {
 
   describe('getExecutedSearchQtext', () => {
     const mockState = {
-      search : {
+      search: {
         ...initialState,
         executedSearch: {
           ...initialState.executedSearch,
@@ -212,5 +212,18 @@ describe('search reducer', () => {
       expect(selectors.getExecutedSearchQtext(mockState)).toEqual('executed qtext');
     });
   });
+
+  describe('getVisibleQtext', () => {
+    const mockState = {
+      search: {
+        ...initialState,
+        qtext: 'visible qtext'
+      }
+    };
+    it('works', () => {
+      expect(selectors.getVisibleQtext(mockState)).toEqual('visible qtext');
+    });
+  });
+
 
 });

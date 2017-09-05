@@ -179,4 +179,5 @@ export const searchSelectors = {
   getPage: state => state.search.executedSearch.query.page,
   getPageLength: state => state.search.executedSearch.query.pageLength,
   getExecutedSearchQtext: state => state.search.executedSearch.query.qtext,
+  getVisibleQtext: state => state.search.qtext
 };
