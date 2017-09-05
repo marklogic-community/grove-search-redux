@@ -13,4 +13,4 @@ Specifically, the actionCreators and selectors are the primary external UI. Stat
 
 ## Testing
 
-TODO
+    npm test
