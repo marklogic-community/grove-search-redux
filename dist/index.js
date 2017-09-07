@@ -2240,7 +2240,7 @@ var setQtext = exports.setQtext = function setQtext(qtext) {
 var MLRest = __webpack_require__(9);
 var qb = __webpack_require__(25);
 
-var client = MLRest.create({ baseURI: 'http://localhost' });
+var client = MLRest.create();
 
 var names = ['value', 'word', 'custom', 'collection', 'range'];
 

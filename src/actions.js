@@ -77,7 +77,8 @@ export const runSearch = (submittedQtext) => {
 export const setQtext = (qtext) => {
   return {
     type: types.SET_QTEXT,
-    payload: {qtext} }
+    payload: {qtext}
+  }
 };
 
 // export const paginate = (n) => {

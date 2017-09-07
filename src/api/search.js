@@ -4,7 +4,7 @@
 var MLRest = require('ml-rest.js');
 var qb = require('ml-query-builder.js');
 
-const client = MLRest.create({baseURI: 'http://localhost'});
+const client = MLRest.create();
 
 let names = ['value', 'word', 'custom', 'collection', 'range'];
 
