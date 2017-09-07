@@ -31,7 +31,7 @@
     "ml-rest.js": "^1.0.0-2"
   },
   "peerDependencies": {
-    "redux": "~3.0",
-    "redux-thunk": "~2.0"
+    "redux": "~3",
+    "redux-thunk": "~2"
   }
 }
