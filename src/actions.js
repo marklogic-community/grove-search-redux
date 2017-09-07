@@ -14,7 +14,7 @@ export const runSearch = (submittedQtext) => {
     let constraints = selectors.getConstraints(state);
     let page = selectors.getPage(state);
     let pageLength = selectors.getPageLength(state);
-    let searchProfileName = 'treehouse-options'; // TODO: put in store
+    let searchProfileName = 'all'; // TODO: put in store
 
     return searchAPI.search({
       qtext,
