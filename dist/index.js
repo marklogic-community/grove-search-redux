@@ -2134,7 +2134,7 @@ var runSearch = exports.runSearch = function runSearch(submittedQtext) {
     var constraints = _reducers.searchSelectors.getConstraints(state);
     var page = _reducers.searchSelectors.getPage(state);
     var pageLength = _reducers.searchSelectors.getPageLength(state);
-    var searchProfileName = 'treehouse-options'; // TODO: put in store
+    var searchProfileName = 'all'; // TODO: put in store
 
     return _search2.default.search({
       qtext: qtext,
