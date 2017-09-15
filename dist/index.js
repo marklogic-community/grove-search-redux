@@ -1280,11 +1280,41 @@ module.exports = g;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+var SET_QTEXT = exports.SET_QTEXT = 'search/SET_QTEXT';
+
+var PAGINATE = exports.PAGINATE = 'search/PAGINATE';
+var PAGE_LENGTH = exports.PAGE_LENGTH = 'search/PAGE_LENGTH';
+
+var CONSTRAINT_ADD = exports.CONSTRAINT_ADD = 'search/CONSTRAINT_ADD';
+var CONSTRAINT_REMOVE = exports.CONSTRAINT_REMOVE = 'search/CONSTRAINT_REMOVE';
+
+var SUGGEST_REQUESTED = exports.SUGGEST_REQUESTED = 'search/SUGGEST_REQUESTED';
+var SUGGEST_SUCCESS = exports.SUGGEST_SUCCESS = 'search/SUGGEST_SUCCESS';
+var SUGGEST_FAILURE = exports.SUGGEST_FAILURE = 'search/SUGGEST_FAILURE';
+
+var SEARCH_REQUESTED = exports.SEARCH_REQUESTED = 'search/SEARCH_REQUESTED';
+var SEARCH_SUCCESS = exports.SEARCH_SUCCESS = 'search/SEARCH_SUCCESS';
+var SEARCH_FAILURE = exports.SEARCH_FAILURE = 'search/SEARCH_FAILURE';
+
+var OPTIONS_REQUESTED = exports.OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED';
+var OPTIONS_SUCCESS = exports.OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS';
+var OPTIONS_FAILURE = exports.OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.searchSelectors = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _actionTypes = __webpack_require__(3);
+var _actionTypes = __webpack_require__(2);
 
 var types = _interopRequireWildcard(_actionTypes);
 
@@ -1476,36 +1506,6 @@ var searchSelectors = exports.searchSelectors = {
     return state.search.qtext;
   }
 };
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var SET_QTEXT = exports.SET_QTEXT = 'search/SET_QTEXT';
-
-var PAGINATE = exports.PAGINATE = 'search/PAGINATE';
-var PAGE_LENGTH = exports.PAGE_LENGTH = 'search/PAGE_LENGTH';
-
-var CONSTRAINT_ADD = exports.CONSTRAINT_ADD = 'search/CONSTRAINT_ADD';
-var CONSTRAINT_REMOVE = exports.CONSTRAINT_REMOVE = 'search/CONSTRAINT_REMOVE';
-
-var SUGGEST_REQUESTED = exports.SUGGEST_REQUESTED = 'search/SUGGEST_REQUESTED';
-var SUGGEST_SUCCESS = exports.SUGGEST_SUCCESS = 'search/SUGGEST_SUCCESS';
-var SUGGEST_FAILURE = exports.SUGGEST_FAILURE = 'search/SUGGEST_FAILURE';
-
-var SEARCH_REQUESTED = exports.SEARCH_REQUESTED = 'search/SEARCH_REQUESTED';
-var SEARCH_SUCCESS = exports.SEARCH_SUCCESS = 'search/SEARCH_SUCCESS';
-var SEARCH_FAILURE = exports.SEARCH_FAILURE = 'search/SEARCH_FAILURE';
-
-var OPTIONS_REQUESTED = exports.OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED';
-var OPTIONS_SUCCESS = exports.OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS';
-var OPTIONS_FAILURE = exports.OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
 
 /***/ }),
 /* 4 */
@@ -2077,9 +2077,9 @@ module.exports.asArray = asArray
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.searchActions = exports.searchSelectors = undefined;
+exports.searchActionTypes = exports.searchActions = exports.searchSelectors = undefined;
 
-var _reducers = __webpack_require__(2);
+var _reducers = __webpack_require__(3);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -2087,14 +2087,19 @@ var _actions = __webpack_require__(7);
 
 var searchActions = _interopRequireWildcard(_actions);
 
+var _actionTypes = __webpack_require__(2);
+
+var searchActionTypes = _interopRequireWildcard(_actionTypes);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// Public API for the search module
-exports.default = _reducers2.default;
+exports.default = _reducers2.default; // Public API for the search module
+
 exports.searchSelectors = _reducers.searchSelectors;
 exports.searchActions = searchActions;
+exports.searchActionTypes = searchActionTypes;
 
 /***/ }),
 /* 7 */
@@ -2108,11 +2113,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.setQtext = exports.runSearch = undefined;
 
-var _actionTypes = __webpack_require__(3);
+var _actionTypes = __webpack_require__(2);
 
 var types = _interopRequireWildcard(_actionTypes);
 
-var _reducers = __webpack_require__(2);
+var _reducers = __webpack_require__(3);
 
 var _search = __webpack_require__(8);
 
@@ -2198,7 +2203,8 @@ var runSearch = exports.runSearch = function runSearch(submittedQtext) {
 var setQtext = exports.setQtext = function setQtext(qtext) {
   return {
     type: types.SET_QTEXT,
-    payload: { qtext: qtext } };
+    payload: { qtext: qtext }
+  };
 };
 
 // export const paginate = (n) => {
