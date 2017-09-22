@@ -8,7 +8,7 @@ const initialState = {
   suggestQtext: '',
   executedSearch: {
     pending: false,
-    id: null, // TODO: Eliminate race conditions
+    id: null, // TODO: Eliminate race conditions if earlier in sequence
     //  TODO: getSearchStatus
     results: [],
     facets: {},
@@ -106,6 +106,7 @@ export default (state = initialState, action) => {
         // TODO: re-initialize results and facets each time
         ...state.executedSearch,
         pending: true,
+        results: [],
         id: Math.random().toString().substr(2, 10),
         query: {
           ...state.executedSearch.query,
@@ -173,11 +174,17 @@ export default (state = initialState, action) => {
   }
 };
 
+const getExecutedSearch = state => state.search.executedSearch;
+const getExecutedSearchQuery = state => getExecutedSearch(state).query;
+
 export const searchSelectors = {
-  getSearchResults: state => state.search.executedSearch.results,
-  getConstraints: state => state.search.executedSearch.query.constraints,
-  getPage: state => state.search.executedSearch.query.page,
-  getPageLength: state => state.search.executedSearch.query.pageLength,
-  getExecutedSearchQtext: state => state.search.executedSearch.query.qtext,
-  getVisibleQtext: state => state.search.qtext
+  getVisibleQtext: state => state.search.qtext,
+
+  getExecutedSearch: getExecutedSearch,
+  getExecutedSearchQuery: getExecutedSearchQuery,
+  getSearchResults: state => getExecutedSearch(state).results,
+  getConstraints: state => getExecutedSearchQuery(state).constraints,
+  getPage: state => getExecutedSearchQuery(state).page,
+  getPageLength: state => getExecutedSearchQuery(state).pageLength,
+  getExecutedSearchQtext: state => getExecutedSearchQuery(state).qtext,
 };

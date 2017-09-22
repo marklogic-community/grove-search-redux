@@ -1,6 +1,7 @@
 import * as types from './actionTypes';
 import { searchSelectors as selectors } from './reducers';
 import searchAPI from './api/search';
+require('isomorphic-fetch');
 
 export const runSearch = (submittedQtext) => {
   return (dispatch, getState) => {
@@ -10,18 +11,20 @@ export const runSearch = (submittedQtext) => {
     });
 
     let state = getState();
-    let qtext = selectors.getExecutedSearchQtext(state);
-    let constraints = selectors.getConstraints(state);
-    let page = selectors.getPage(state);
-    let pageLength = selectors.getPageLength(state);
-    let searchProfileName = 'all'; // TODO: put in store
+    // let qtext = selectors.getExecutedSearchQtext(state);
+    // let constraints = selectors.getConstraints(state);
+    // let page = selectors.getPage(state);
+    // let pageLength = selectors.getPageLength(state);
+    // let searchProfileName = 'all'; // TODO: put in store
 
-    return searchAPI.search({
-      qtext,
-      constraints,
-      page,
-      pageLength,
-      searchProfileName
+    // TODO: send a request directly to middle-tier
+    // with query options, qtext, combined query object as object
+    return fetch(new URL('/api/search', document.baseURI).toString(), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(selectors.getExecutedSearchQuery(state))
     }).then(resp => {
       if (!resp.ok) throw new Error(resp.statusText);
       return resp.json();

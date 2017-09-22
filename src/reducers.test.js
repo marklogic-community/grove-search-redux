@@ -59,6 +59,22 @@ describe('search reducer', () => {
       ).toEqual(expectedStateWithQtext);
     });
 
+    it('clears results', () => {
+      const initialStateWithResults = {
+        ...initialState,
+        executedSearch: {
+          ...initialState.executedSearch,
+          results: [1, 2, 3]
+        }
+      };
+      expect(
+        reducer(initialStateWithResults, {
+          type: types.SEARCH_REQUESTED,
+          payload: {qtext: ''}
+        })
+      ).toEqual(pendingState);
+    });
+
     it('resets executedSearch', () => {
       const newInitialState = {
         ...initialState,
@@ -210,21 +226,42 @@ describe('search reducer', () => {
     });
   });
 
-  describe('getExecutedSearchQtext', () => {
-    const mockState = {
-      search: {
-        ...initialState,
-        executedSearch: {
-          ...initialState.executedSearch,
-          query: {
-            ...initialState.executedSearch.query,
-            qtext: 'executed qtext'
-          }
-        }
-      }
-    };
+  const mockExecutedSearch = {
+    ...initialState.executedSearch,
+    query: {
+      ...initialState.executedSearch.query,
+      qtext: 'executed qtext'
+    }
+  };
+
+  const executedSearchState = {
+    search: {
+      ...initialState,
+      executedSearch: mockExecutedSearch
+    }
+  };
+
+  describe('getExecutedSearch', () => {
     it('works', () => {
-      expect(selectors.getExecutedSearchQtext(mockState)).toEqual('executed qtext');
+      expect(
+        selectors.getExecutedSearch(executedSearchState)
+      ).toEqual(mockExecutedSearch);
+    })
+  });
+
+  describe('getExecutedSearchQuery', () => {
+    it('works', () => {
+      expect(
+        selectors.getExecutedSearchQuery(executedSearchState)
+      ).toEqual(mockExecutedSearch.query);
+    });
+  });
+
+ describe('getExecutedSearchQtext', () => {
+    it('works', () => {
+      expect(
+        selectors.getExecutedSearchQtext(executedSearchState)
+      ).toEqual('executed qtext');
     });
   });
 
