@@ -1,20 +1,22 @@
-import * as types from './actionTypes';
-import { searchSelectors as selectors } from './reducers';
-import searchAPI from './api/search';
-require('isomorphic-fetch');
+/* global fetch, URL */
+import * as types from './actionTypes'
+import { searchSelectors as selectors } from './reducers'
+// TODO: remove /api/search?
+// import searchAPI from './api/search'
+require('isomorphic-fetch')
 
 export const runSearch = (submittedQtext) => {
   return (dispatch, getState) => {
     dispatch({
       type: types.SEARCH_REQUESTED,
       payload: {qtext: submittedQtext}
-    });
+    })
 
-    let state = getState();
-    // let qtext = selectors.getExecutedSearchQtext(state);
-    // let constraints = selectors.getConstraints(state);
-    // let page = selectors.getPage(state);
-    // let pageLength = selectors.getPageLength(state);
+    let state = getState()
+    // let qtext = selectors.getExecutedSearchQtext(state)
+    // let constraints = selectors.getConstraints(state)
+    // let page = selectors.getPage(state)
+    // let pageLength = selectors.getPageLength(state)
     // let searchProfileName = 'all'; // TODO: put in store
 
     // TODO: send a request directly to middle-tier
@@ -26,8 +28,8 @@ export const runSearch = (submittedQtext) => {
       },
       body: JSON.stringify(selectors.getExecutedSearchQuery(state))
     }).then(resp => {
-      if (!resp.ok) throw new Error(resp.statusText);
-      return resp.json();
+      if (!resp.ok) throw new Error(resp.statusText)
+      return resp.json()
     }).then(
       resp => dispatch({ type: types.SEARCH_SUCCESS, payload: resp }),
       error => dispatch({
@@ -36,67 +38,67 @@ export const runSearch = (submittedQtext) => {
           error: 'Search error: ' + error.message
         }
       })
-    );
-  };
-};
+    )
+  }
+}
 
 // export const suggest = (qtext) => {
 //   return (dispatch, getState) => {
-//     dispatch({ type: types.SUGGEST_REQUESTED, payload: qtext });
+//     dispatch({ type: types.SUGGEST_REQUESTED, payload: qtext })
 
-//     let state = getState().search;
-//     let query = qb.ext.combined(constraintQuery(state.constraints), state.qtext);
+//     let state = getState().search
+//     let query = qb.ext.combined(constraintQuery(state.constraints), state.qtext)
 
 //     return client.suggest(state.suggestQtext, query, { options: 'all' })
 //       .then(resp => {
-//         if (!resp.ok) throw new Error('bad search');
-//         return resp.json();
+//         if (!resp.ok) throw new Error('bad search')
+//         return resp.json()
 //       })
 //       .then(
 //         resp => dispatch({ type: types.SUGGEST_SUCCESS, payload: resp }),
 //         resp => dispatch({ type: types.SUGGEST_FAILURE, payload: resp }),
-//       );
-//   };
-// };
+//       )
+//   }
+// }
 
 // export const options = () => {
 //   return dispatch => {
-//     dispatch({ type: types.OPTIONS_REQUESTED });
+//     dispatch({ type: types.OPTIONS_REQUESTED })
 
 //     return client.options('all')
 //     // !resp.ok?
 //       .then(resp => resp.json())
 //       .then(resp => {
-//         if (!(resp && resp.options)) throw new TypeError('invalid options');
-//         return resp;
+//         if (!(resp && resp.options)) throw new TypeError('invalid options')
+//         return resp
 //       })
 //       .then(
 //         resp => dispatch({ type: types.OPTIONS_SUCCESS, payload: resp }),
 //         resp => dispatch({ type: types.OPTIONS_FAILURE, payload: resp })
-//       );
-//   };
-// };
+//       )
+//   }
+// }
 
 export const setQtext = (qtext) => {
   return {
     type: types.SET_QTEXT,
     payload: {qtext}
   }
-};
+}
 
 // export const paginate = (n) => {
 //   return dispatch => {
-//     dispatch({ type: types.PAGINATE, payload: n });
-//     return dispatch(runSearch());
-//   };
-// };
+//     dispatch({ type: types.PAGINATE, payload: n })
+//     return dispatch(runSearch())
+//   }
+// }
 
 // export const pageLength = (l) => {
 //   return dispatch => {
-//     dispatch({ type: types.PAGE_LENGTH, payload: l });
-//     return dispatch(runSearch());
-//   };
-// };
+//     dispatch({ type: types.PAGE_LENGTH, payload: l })
+//     return dispatch(runSearch())
+//   }
+// }
 
 // export const addConstraint = (c) => {
 //   return dispatch => {

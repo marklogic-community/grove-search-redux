@@ -1,58 +1,58 @@
 /* global module */
-'use strict';
+'use strict'
 
-var MLRest = require('ml-rest.js');
-var qb = require('ml-query-builder.js');
+var MLRest = require('ml-rest.js')
+var qb = require('ml-query-builder.js')
 
-const client = MLRest.create();
+const client = MLRest.create()
 
-let names = ['value', 'word', 'custom', 'collection', 'range'];
+let names = ['value', 'word', 'custom', 'collection', 'range']
 
 function asArray () {
-  var args = Array.prototype.slice.call(arguments);
+  var args = Array.prototype.slice.call(arguments)
 
   if (args.length === 1) {
-    if (args[0] == null) return [];
-    if (Array.isArray(args[0])) return args[0];
+    if (args[0] == null) return []
+    if (Array.isArray(args[0])) return args[0]
   }
 
-  return args;
+  return args
 }
 
 function builder (name, type) {
-  var builder;
+  var builder
 
   switch (type) {
-  case 'range':
-    builder = qb.ext.rangeConstraint;
-    break;
-  case 'value':
-    builder = qb.ext.valueConstraint;
-    break;
-  case 'word':
-    builder = qb.ext.wordConstraint;
-    break;
-  case 'collection':
-    builder = qb.ext.collectionConstraint;
-    break;
-  case 'custom':
-    builder = qb.ext.customConstraint;
-    break;
-  default:
-    throw new TypeError('unknown constraint type: ' + type);
+    case 'range':
+      builder = qb.ext.rangeConstraint
+      break
+    case 'value':
+      builder = qb.ext.valueConstraint
+      break
+    case 'word':
+      builder = qb.ext.wordConstraint
+      break
+    case 'collection':
+      builder = qb.ext.collectionConstraint
+      break
+    case 'custom':
+      builder = qb.ext.customConstraint
+      break
+    default:
+      throw new TypeError('unknown constraint type: ' + type)
   }
 
   return function (values) {
-    return builder(name, asArray(values));
-  };
+    return builder(name, asArray(values))
+  }
 }
 
 // TODO: extract into search api module
 function constraintType (c) {
   let name = !c ? null : Object.keys(c)
-    .filter(x =>  x !== 'name' && x !== '_value')[0];
+    .filter(x => x !== 'name' && x !== '_value')[0]
 
-  if (!name) throw new TypeError('bad arg: not a constraint');
+  if (!name) throw new TypeError('bad arg: not a constraint')
 
   // if (name === 'custom' && c.annotation && c.annotation.length) {
   //   // TODO: filter annotations?
@@ -61,10 +61,10 @@ function constraintType (c) {
   //   }
   // }
 
-  if (names.indexOf(name) > -1) return name;
+  if (names.indexOf(name) > -1) return name
   // if (geospatialNames.indexOf(name) > -1) return 'geospatial'
 
-  throw new TypeError('unknown constraint type: ' + name);
+  throw new TypeError('unknown constraint type: ' + name)
 }
 
 function constraintQuery (constraints) {
@@ -74,26 +74,26 @@ function constraintQuery (constraints) {
     constraint => constraint.values && constraint.values.length
   ).map(
     constraint => {
-      return builder(constraint.name, constraintType(constraint))(constraint.values);
+      return builder(constraint.name, constraintType(constraint))(constraint.values)
     }
-  ));
+  ))
 }
 
-function search(queryObject) {
+function search (queryObject) {
   // TODO: validate queryObject
   var params = {
     start: 1 + (queryObject.page - 1) * queryObject.pageLength,
     pageLength: queryObject.pageLength,
     options: queryObject.searchProfileName
     // TODO: transform
-  };
+  }
   var query = qb.ext.combined(
     constraintQuery(queryObject.constraints),
     queryObject.qtext
-  );
-  return client.search(query, params);
+  )
+  return client.search(query, params)
 }
 
 module.exports = {
   search: search
-};
+}

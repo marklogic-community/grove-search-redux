@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   entry: './src/index.js',
@@ -10,8 +10,8 @@ module.exports = {
     umdNamedDefine: true
   },
   module: {
-		rules: [
-			{
+    rules: [
+      {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
@@ -19,6 +19,6 @@ module.exports = {
           presets: ['stage-3']
         }
       }
-		]
-	}
-};
+    ]
+  }
+}

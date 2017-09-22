@@ -1,4 +1,4 @@
-import deepFreeze from 'deep-freeze';
+import deepFreeze from 'deep-freeze'
 
 // TODO: should there be a separate dirtySearch with separate constraints?
 // TODO: should the search options name be part of the Redux store?
@@ -19,10 +19,10 @@ export const initialState = {
       qtext: '',
       page: 1,
       pageLength: 10,
-      constraints: {},  // (activeFacets)
+      constraints: {} // (activeFacets)
     }
   },
   options: {},
   suggestions: []
-};
-deepFreeze(initialState);
+}
+deepFreeze(initialState)

@@ -1,4 +1,4 @@
-import * as types from './actionTypes';
+import * as types from './actionTypes'
 
 const initialState = {
   suggestPending: false,
@@ -17,165 +17,165 @@ const initialState = {
       qtext: '',
       page: 1,
       pageLength: 10,
-      constraints: {},  // (activeFacets)
+      constraints: {} // (activeFacets)
     }
   },
   options: {},
   suggestions: []
-};
+}
 
 const emptyResponse = {
   results: [],
-  facets: {},
-};
+  facets: {}
+}
 
 export default (state = initialState, action) => {
   switch (action.type) {
-  case types.SET_QTEXT:
-    return {
-      ...state,
-      qtext: action.payload.qtext
-    };
-
-  // case types.PAGINATE:
-  //   return {
-  //     ...state,
-  //     page: action.payload
-  //   };
-
-  // case types.PAGE_LENGTH:
-  //   return {
-  //     ...state,
-  //     pageLength: action.payload
-  //   };
-
-  // case types.CONSTRAINT_ADD: {
-  //   let c = action.payload;
-  //   let constraints = {...state.constraints};
-  //   let constraint = constraints[c.name] =  {...constraints[c.name]};
-  //   constraint.values = [...(constraint.values || []), c.value];
-
-  //   return {
-  //     ...state,
-  //     constraints
-  //   };
-  // }
-
-  // case types.CONSTRAINT_REMOVE: {
-  //   let c = action.payload;
-  //   let constraints = {...state.constraints};
-  //   let constraint = constraints[c.name] = {...constraints[c.name]};
-  //   if (constraint && constraint.values) {
-  //     constraint.values = constraint.values.filter(x => x !== c.value);
-  //   }
-
-  //   return {
-  //     ...state,
-  //     constraints
-  //   };
-  // }
-
-  // case types.SUGGEST_REQUESTED:
-  //   return {
-  //     ...state,
-  //     suggestPending: true,
-  //     suggestQtext: action.payload || ''
-  //   };
-
-  // case types.SUGGEST_SUCCESS:
-  //   return {
-  //     ...state,
-  //     suggestPending: false,
-  //     // suggestQtext: '',
-  //     suggestions: action.payload.suggestions || []
-  //   };
-
-  // case types.SUGGEST_FAILURE:
-  //   return {
-  //     ...state,
-  //     // TODO: put error somewhere
-  //     suggestPending: false,
-  //     // suggestQtext: '',
-  //     suggestions: []
-  //   };
-
-  case types.SEARCH_REQUESTED:
-    return {
-      ...state,
-      executedSearch: {
-        // TODO: re-initialize results and facets each time
-        ...state.executedSearch,
-        pending: true,
-        results: [],
-        id: Math.random().toString().substr(2, 10),
-        query: {
-          ...state.executedSearch.query,
-          // TODO: nest qtext within payload object, so it is extensible
-          qtext: action.payload && action.payload.qtext || ''
-        }
-      },
-    };
-
-  case types.SEARCH_SUCCESS: {
-    const response = action.payload || emptyResponse;
-    return {
-      ...state,
-      executedSearch: {
-        ...state.executedSearch,
-        pending: false,
-        results: response.results,
-        facets: response.facets
-      },
-      // suggestQtext: '',
-    };
-  }
-
-  case types.SEARCH_FAILURE:
-    return {
-      ...state,
-      executedSearch: {
-        ...state.executedSearch,
-        ...emptyResponse,
-        pending: false,
-        error: action.payload && action.payload.error
+    case types.SET_QTEXT:
+      return {
+        ...state,
+        qtext: action.payload.qtext
       }
-      // suggestQtext: '',
-    };
 
-  // case types.OPTIONS_REQUESTED:
-  //   return {
-  //     ...state,
-  //     optionsPending: true
-  //   };
+    // case types.PAGINATE:
+    //   return {
+    //     ...state,
+    //     page: action.payload
+    //   }
 
-  // case types.OPTIONS_SUCCESS: {
-  //   let opts = action.payload.options;
-  //   let constraints = {};
-  //   opts.constraint.forEach(c => constraints[c.name] = c);
-  //   return {
-  //     ...state,
-  //     optionsPending: false,
-  //     // TODO: merge values?
-  //     constraints: constraints,
-  //     options: opts
-  //   };
-  // }
+    // case types.PAGE_LENGTH:
+    //   return {
+    //     ...state,
+    //     pageLength: action.payload
+    //   }
 
-  // case types.OPTIONS_FAILURE:
-  //   return {
-  //     ...state,
-  //     // TODO: put error somewhere
-  //     optionsPending: false,
-  //     options: {}
-  //   };
+    // case types.CONSTRAINT_ADD: {
+    //   let c = action.payload
+    //   let constraints = {...state.constraints}
+    //   let constraint = constraints[c.name] =  {...constraints[c.name]}
+    //   constraint.values = [...(constraint.values || []), c.value]
 
-  default:
-    return state;
+    //   return {
+    //     ...state,
+    //     constraints
+    //   }
+    // }
+
+    // case types.CONSTRAINT_REMOVE: {
+    //   let c = action.payload
+    //   let constraints = {...state.constraints}
+    //   let constraint = constraints[c.name] = {...constraints[c.name]}
+    //   if (constraint && constraint.values) {
+    //     constraint.values = constraint.values.filter(x => x !== c.value)
+    //   }
+
+    //   return {
+    //     ...state,
+    //     constraints
+    //   }
+    // }
+
+    // case types.SUGGEST_REQUESTED:
+    //   return {
+    //     ...state,
+    //     suggestPending: true,
+    //     suggestQtext: action.payload || ''
+    //   }
+
+    // case types.SUGGEST_SUCCESS:
+    //   return {
+    //     ...state,
+    //     suggestPending: false,
+    //     // suggestQtext: '',
+    //     suggestions: action.payload.suggestions || []
+    //   }
+
+    // case types.SUGGEST_FAILURE:
+    //   return {
+    //     ...state,
+    //     // TODO: put error somewhere
+    //     suggestPending: false,
+    //     // suggestQtext: '',
+    //     suggestions: []
+    //   }
+
+    case types.SEARCH_REQUESTED:
+      return {
+        ...state,
+        executedSearch: {
+          // TODO: re-initialize results and facets each time
+          ...state.executedSearch,
+          pending: true,
+          results: [],
+          id: Math.random().toString().substr(2, 10),
+          query: {
+            ...state.executedSearch.query,
+            // TODO: nest qtext within payload object, so it is extensible
+            qtext: (action.payload && action.payload.qtext) || ''
+          }
+        }
+      }
+
+    case types.SEARCH_SUCCESS: {
+      const response = action.payload || emptyResponse
+      return {
+        ...state,
+        executedSearch: {
+          ...state.executedSearch,
+          pending: false,
+          results: response.results,
+          facets: response.facets
+        }
+        // suggestQtext: '',
+      }
+    }
+
+    case types.SEARCH_FAILURE:
+      return {
+        ...state,
+        executedSearch: {
+          ...state.executedSearch,
+          ...emptyResponse,
+          pending: false,
+          error: action.payload && action.payload.error
+        }
+        // suggestQtext: '',
+      }
+
+    // case types.OPTIONS_REQUESTED:
+    //   return {
+    //     ...state,
+    //     optionsPending: true
+    //   }
+
+    // case types.OPTIONS_SUCCESS: {
+    //   let opts = action.payload.options
+    //   let constraints = {}
+    //   opts.constraint.forEach(c => constraints[c.name] = c)
+    //   return {
+    //     ...state,
+    //     optionsPending: false,
+    //     // TODO: merge values?
+    //     constraints: constraints,
+    //     options: opts
+    //   }
+    // }
+
+    // case types.OPTIONS_FAILURE:
+    //   return {
+    //     ...state,
+    //     // TODO: put error somewhere
+    //     optionsPending: false,
+    //     options: {}
+    //   }
+
+    default:
+      return state
   }
-};
+}
 
-const getExecutedSearch = state => state.search.executedSearch;
-const getExecutedSearchQuery = state => getExecutedSearch(state).query;
+const getExecutedSearch = state => state.search.executedSearch
+const getExecutedSearchQuery = state => getExecutedSearch(state).query
 
 export const searchSelectors = {
   getVisibleQtext: state => state.search.qtext,
@@ -186,5 +186,5 @@ export const searchSelectors = {
   getConstraints: state => getExecutedSearchQuery(state).constraints,
   getPage: state => getExecutedSearchQuery(state).page,
   getPageLength: state => getExecutedSearchQuery(state).pageLength,
-  getExecutedSearchQtext: state => getExecutedSearchQuery(state).qtext,
-};
+  getExecutedSearchQtext: state => getExecutedSearchQuery(state).qtext
+}
