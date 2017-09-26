@@ -1,8 +1,9 @@
 {
   "name": "ml-search-redux",
   "version": "0.2.0",
-  "description": "Redux module to power MarkLogic search Web apps",
+  "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
+  "repository": "ssh://git@project.marklogic.com:7999/nacw/ml-search-redux.git",
   "scripts": {
     "build": "webpack",
     "test": "eslint src && jest",
