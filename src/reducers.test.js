@@ -1,132 +1,95 @@
 /* eslint-env jest */
-
 import reducer, { searchSelectors as selectors } from './reducers'
 import * as types from './actionTypes'
 
-import { initialState } from './test-helpers'
-import deepFreeze from 'deep-freeze'
+import {
+  initialState,
+  userCreatedSearchState,
+  pendingExecutedState,
+  finishedExecutedState
+} from './test-helpers'
 
 describe('search reducer', () => {
-  const initialPendingState = {
-    ...initialState,
-    executedSearch: {
-      ...initialState.executedSearch,
-      id: 'pendingID',
-      pending: true
-    }
-  }
-  deepFreeze(initialPendingState)
-
   it('returns the initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState)
   })
 
   describe('SEARCH_REQUESTED', () => {
-    const pendingState = {
-      ...initialState,
-      executedSearch: {
-        ...initialState.executedSearch,
-        pending: true,
-        id: expect.anything()
-      }
-    }
-    deepFreeze(pendingState)
-
-    it('gives executedSearch an id and pending state', () => {
+    it('hydrates the search based on preExecutedSearch', () => {
       expect(
-        reducer(initialState, {
+        reducer(userCreatedSearchState, {
           type: types.SEARCH_REQUESTED
         })
-      ).toEqual(pendingState)
-    })
-
-    const expectedStateWithQtext = {
-      ...pendingState,
-      executedSearch: {
-        ...pendingState.executedSearch,
-        query: {
-          ...pendingState.executedSearch.query,
-          qtext: 'qtext'
-        }
-      }
-    }
-
-    it('sets qtext', () => {
-      expect(
-        reducer(initialState, {
-          type: types.SEARCH_REQUESTED,
-          payload: {qtext: 'qtext'}
-        })
-      ).toEqual(expectedStateWithQtext)
-    })
-
-    it('clears results', () => {
-      const initialStateWithResults = {
-        ...initialState,
+      ).toEqual({
+        ...pendingExecutedState,
         executedSearch: {
-          ...initialState.executedSearch,
-          results: [1, 2, 3]
+          ...pendingExecutedState.executedSearch,
+          id: expect.anything()
         }
-      }
-      expect(
-        reducer(initialStateWithResults, {
-          type: types.SEARCH_REQUESTED,
-          payload: {qtext: ''}
-        })
-      ).toEqual(pendingState)
+      })
     })
 
-    it('resets executedSearch', () => {
+    // This might become useful eventually, so leaving this idea here
+    // it('allows the search query to be set explicitly with payload')
+
+    it('clears the previous search', () => {
       const newInitialState = {
-        ...initialState,
+        ...finishedExecutedState,
         executedSearch: {
-          ...initialState.executedSearch,
+          ...finishedExecutedState,
           id: 'earlierSearchId',
+          results: [1, 2, 3],
           query: {
-            ...initialState.executedSearch.query,
+            ...finishedExecutedState,
             qtext: 'earlier search qtext'
           }
         }
       }
-
+      const resultingState = reducer(newInitialState, {
+        type: types.SEARCH_REQUESTED,
+        payload: {qtext: 'qtext'}
+      })
+      expect(resultingState).toEqual(pendingExecutedState)
+      // Ensure that ids are different, because pendingExecutedState
+      // uses expect.anything() for id
       expect(
-        reducer(newInitialState, {
-          type: types.SEARCH_REQUESTED,
-          payload: {qtext: 'qtext'}
-        })
-      ).toEqual(expectedStateWithQtext)
+        selectors.getExecutedSearchId({search: resultingState})
+      ).not.toEqual(
+        selectors.getExecutedSearchId({search: newInitialState})
+      )
     })
   })
 
+  const mockResponse = {
+    results: [{
+      uri: '1.json',
+      label: 'Label',
+      matches: []
+    }]
+    // facets: {
+    //   Category: {type: 'xs:string', facetValues: []}
+    // }
+  }
+  const executedState = {
+    ...pendingExecutedState,
+    executedSearch: {
+      ...pendingExecutedState.executedSearch,
+      pending: false,
+      ...mockResponse
+    }
+  }
+
   describe('SEARCH_SUCCESS', () => {
     it('updates executedSearch with results, facets, and turns off pending', () => {
-      const mockResponse = {
-        results: [{
-          uri: '1.json',
-          label: 'Label',
-          matches: []
-        }],
-        facets: {
-          Category: {type: 'xs:string', facetValues: []}
-        }
-      }
-      const expectedState = {
-        ...initialPendingState,
-        executedSearch: {
-          ...initialPendingState.executedSearch,
-          pending: false,
-          ...mockResponse
-        }
-      }
       expect(
-        reducer(initialPendingState, {
+        reducer(pendingExecutedState, {
           type: types.SEARCH_SUCCESS,
           payload: {
             ...mockResponse,
             id: 'pendingID'
           }
         })
-      ).toEqual(expectedState)
+      ).toEqual(executedState)
     })
 
     it('eliminates race conditions')
@@ -135,15 +98,15 @@ describe('search reducer', () => {
   describe('SEARCH_FAILURE', () => {
     it('adds error and removes pending state', () => {
       const expectedState = {
-        ...initialPendingState,
+        ...pendingExecutedState,
         executedSearch: {
-          ...initialPendingState.executedSearch,
+          ...pendingExecutedState.executedSearch,
           pending: false,
           error: 'An error'
         }
       }
       expect(
-        reducer(initialPendingState, {
+        reducer(pendingExecutedState, {
           type: types.SEARCH_FAILURE,
           payload: { error: 'An error' }
         })
@@ -157,12 +120,15 @@ describe('search reducer', () => {
     it('works', () => {
       const expectedState = {
         ...initialState,
-        qtext: 'qtext'
+        preExecutedSearch: {
+          ...initialState.preExecutedSearch,
+          qtext: 'new qtext'
+        }
       }
       expect(
         reducer(initialState, {
           type: types.SET_QTEXT,
-          payload: {qtext: 'qtext'}
+          payload: {qtext: 'new qtext'}
         })
       ).toEqual(expectedState)
     })
@@ -197,11 +163,11 @@ describe('search reducer', () => {
       ]
       const mockState = {
         search: {
-          ...initialState,
+          ...executedState,
           executedSearch: {
-            ...initialState.executedSearch,
+            ...executedState.executedSearch,
             query: {
-              ...initialState.executedSearch.query,
+              ...executedState.executedSearch.query,
               constraints: constraints
             }
           }
@@ -213,36 +179,30 @@ describe('search reducer', () => {
 
   describe('getPage', () => {
     it('works', () => {
-      expect(selectors.getPage({search: initialState})).toEqual(1)
+      expect(selectors.getPage({search: executedState})).toEqual(1)
     })
   })
 
   describe('getPageLength', () => {
     it('works', () => {
-      expect(selectors.getPageLength({search: initialState})).toEqual(10)
+      expect(selectors.getPageLength({search: executedState})).toEqual(10)
     })
   })
 
-  const mockExecutedSearch = {
-    ...initialState.executedSearch,
-    query: {
-      ...initialState.executedSearch.query,
-      qtext: 'executed qtext'
-    }
+  const executedSearchState = {
+    search: finishedExecutedState
   }
 
-  const executedSearchState = {
-    search: {
-      ...initialState,
-      executedSearch: mockExecutedSearch
-    }
-  }
+  // TODO: make these work by sending in actions instead of asserting on state
+  // shape. It might be even better to test actions and selectors together,
+  // using the one to assert on the other, leaving state shape as an untested
+  // implementation detail.
 
   describe('getExecutedSearch', () => {
     it('works', () => {
       expect(
         selectors.getExecutedSearch(executedSearchState)
-      ).toEqual(mockExecutedSearch)
+      ).toEqual(finishedExecutedState.executedSearch)
     })
   })
 
@@ -250,7 +210,7 @@ describe('search reducer', () => {
     it('works', () => {
       expect(
         selectors.getExecutedSearchQuery(executedSearchState)
-      ).toEqual(mockExecutedSearch.query)
+      ).toEqual(finishedExecutedState.executedSearch.query)
     })
   })
 
@@ -258,7 +218,7 @@ describe('search reducer', () => {
     it('works', () => {
       expect(
         selectors.getExecutedSearchQtext(executedSearchState)
-      ).toEqual('executed qtext')
+      ).toEqual(finishedExecutedState.executedSearch.query.qtext)
     })
   })
 

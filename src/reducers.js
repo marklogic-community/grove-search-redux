@@ -1,32 +1,22 @@
 import * as types from './actionTypes'
 
 const initialState = {
-  suggestPending: false,
-  optionsPending: false,
-  // TODO? Separate out queryReducer?
-  qtext: '',
-  suggestQtext: '',
-  executedSearch: {
-    pending: false,
-    id: null, // TODO: Eliminate race conditions if earlier in sequence
-    //  TODO: getSearchStatus
-    results: [],
-    facets: {},
-    error: undefined,
-    query: {
-      qtext: '',
-      page: 1,
-      pageLength: 10,
-      constraints: {} // (activeFacets)
-    }
+  // suggestPending: false,
+  // optionsPending: false,
+  preExecutedSearch: {
+    qtext: '',
+    page: 1,
+    pageLength: 10
   },
-  options: {},
-  suggestions: []
+  // suggestQtext: '',
+  executedSearch: undefined
+  // options: {},
+  // suggestions: []
 }
 
 const emptyResponse = {
-  results: [],
-  facets: {}
+  results: []
+  // facets: {}
 }
 
 export default (state = initialState, action) => {
@@ -34,7 +24,10 @@ export default (state = initialState, action) => {
     case types.SET_QTEXT:
       return {
         ...state,
-        qtext: action.payload.qtext
+        preExecutedSearch: {
+          ...state.preExecutedSearch,
+          qtext: action.payload.qtext
+        }
       }
 
     // case types.PAGINATE:
@@ -104,15 +97,15 @@ export default (state = initialState, action) => {
         ...state,
         executedSearch: {
           // TODO: re-initialize results and facets each time
-          ...state.executedSearch,
           pending: true,
           results: [],
+          // facets: {},
+          error: undefined,
           id: Math.random().toString().substr(2, 10),
-          query: {
-            ...state.executedSearch.query,
-            // TODO: nest qtext within payload object, so it is extensible
-            qtext: (action.payload && action.payload.qtext) || ''
-          }
+          // TODO: Now we are accessing preExecutedSearch to do this
+          // This prevents us from breaking up this reducer.
+          // Should we instead require that the search be part of the payload?
+          query: {...state.preExecutedSearch}
         }
       }
 
@@ -123,8 +116,8 @@ export default (state = initialState, action) => {
         executedSearch: {
           ...state.executedSearch,
           pending: false,
-          results: response.results,
-          facets: response.facets
+          results: response.results
+          // facets: response.facets
         }
         // suggestQtext: '',
       }
@@ -175,16 +168,26 @@ export default (state = initialState, action) => {
 }
 
 const getExecutedSearch = state => state.search.executedSearch
-const getExecutedSearchQuery = state => getExecutedSearch(state).query
+const getExecutedSearchQuery = state => {
+  const search = getExecutedSearch(state)
+  return search && search.query
+}
+
+const getFromExecutedSearchQuery = (state, propertyName) => {
+  const query = getExecutedSearchQuery(state)
+  return query && query[propertyName]
+}
 
 export const searchSelectors = {
   getVisibleQtext: state => state.search.qtext,
 
   getExecutedSearch: getExecutedSearch,
-  getExecutedSearchQuery: getExecutedSearchQuery,
   getSearchResults: state => getExecutedSearch(state).results,
+  getExecutedSearchId: state => getExecutedSearch(state).id,
+
+  getExecutedSearchQuery: getExecutedSearchQuery,
   getConstraints: state => getExecutedSearchQuery(state).constraints,
-  getPage: state => getExecutedSearchQuery(state).page,
-  getPageLength: state => getExecutedSearchQuery(state).pageLength,
-  getExecutedSearchQtext: state => getExecutedSearchQuery(state).qtext
+  getPage: state => getFromExecutedSearchQuery(state, 'page'),
+  getPageLength: state => getFromExecutedSearchQuery(state, 'pageLength'),
+  getExecutedSearchQtext: state => getFromExecutedSearchQuery(state, 'qtext')
 }

@@ -1,28 +1,50 @@
 import deepFreeze from 'deep-freeze'
 
-// TODO: should there be a separate dirtySearch with separate constraints?
 // TODO: should the search options name be part of the Redux store?
 export const initialState = {
-  suggestPending: false,
-  optionsPending: false,
+  // suggestPending: false,
+  // optionsPending: false,
   // TODO? Separate out queryReducer?
-  qtext: '',
-  suggestQtext: '',
-  executedSearch: {
-    id: null, // TODO: Eliminate race conditions
-    //  TODO: getSearchStatus
-    pending: false,
-    results: [],
-    facets: {},
-    error: undefined,
-    query: {
-      qtext: '',
-      page: 1,
-      pageLength: 10,
-      constraints: {} // (activeFacets)
-    }
+  preExecutedSearch: {
+    qtext: '',
+    page: 1,
+    pageLength: 10
   },
-  options: {},
-  suggestions: []
+  // suggestQtext: '',
+  executedSearch: undefined
+  // options: {},
+  // suggestions: []
 }
 deepFreeze(initialState)
+
+export const userCreatedSearchState = {
+  ...initialState,
+  preExecutedSearch: {
+    ...initialState.preExecutedSearch,
+    qtext: 'qtext'
+  }
+}
+deepFreeze(userCreatedSearchState)
+
+export const pendingExecutedState = {
+  ...userCreatedSearchState,
+  executedSearch: {
+    id: expect.anything(), // TODO: Eliminate race conditions
+    //  TODO: getSearchStatus
+    pending: true,
+    results: [],
+    // facets: {},
+    error: undefined,
+    query: {...userCreatedSearchState.preExecutedSearch}
+  }
+}
+deepFreeze(pendingExecutedState)
+
+export const finishedExecutedState = {
+  ...pendingExecutedState,
+  executedSearch: {
+    ...pendingExecutedState.executedSearch,
+    pending: false
+  }
+}
+deepFreeze(finishedExecutedState)
