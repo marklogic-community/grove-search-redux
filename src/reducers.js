@@ -116,7 +116,9 @@ export default (state = initialState, action) => {
         executedSearch: {
           ...state.executedSearch,
           pending: false,
-          results: response.results
+          results: response.results,
+          total: response.total,
+          executionTime: response.executionTime
           // facets: response.facets
         }
         // suggestQtext: '',

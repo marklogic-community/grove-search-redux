@@ -6,6 +6,7 @@ import {
   initialState,
   userCreatedSearchState,
   pendingExecutedState,
+  mockSearchResponse,
   finishedExecutedState
 } from './test-helpers'
 
@@ -60,22 +61,12 @@ describe('search reducer', () => {
     })
   })
 
-  const mockResponse = {
-    results: [{
-      uri: '1.json',
-      label: 'Label',
-      matches: []
-    }]
-    // facets: {
-    //   Category: {type: 'xs:string', facetValues: []}
-    // }
-  }
   const executedState = {
     ...pendingExecutedState,
     executedSearch: {
       ...pendingExecutedState.executedSearch,
       pending: false,
-      ...mockResponse
+      ...mockSearchResponse
     }
   }
 
@@ -85,7 +76,7 @@ describe('search reducer', () => {
         reducer(pendingExecutedState, {
           type: types.SEARCH_SUCCESS,
           payload: {
-            ...mockResponse,
+            ...mockSearchResponse,
             id: 'pendingID'
           }
         })

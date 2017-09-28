@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import deepFreeze from 'deep-freeze'
 
 // TODO: should the search options name be part of the Redux store?
@@ -32,6 +33,8 @@ export const pendingExecutedState = {
     id: expect.anything(), // TODO: Eliminate race conditions
     //  TODO: getSearchStatus
     pending: true,
+    executionTime: undefined,
+    total: undefined,
     results: [],
     // facets: {},
     error: undefined,
@@ -40,11 +43,26 @@ export const pendingExecutedState = {
 }
 deepFreeze(pendingExecutedState)
 
+export const mockSearchResponse = {
+  executionTime: 0.00198,
+  total: 1,
+  results: [{
+    uri: '1.json',
+    label: 'Label',
+    matches: []
+  }]
+  // facets: {
+  //   Category: {type: 'xs:string', facetValues: []}
+  // }
+}
+
 export const finishedExecutedState = {
   ...pendingExecutedState,
   executedSearch: {
     ...pendingExecutedState.executedSearch,
-    pending: false
+    pending: false,
+    executionTime: 0.00198,
+    total: 1
   }
 }
 deepFreeze(finishedExecutedState)
