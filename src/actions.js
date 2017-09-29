@@ -1,23 +1,15 @@
 /* global fetch, URL */
 import * as types from './actionTypes'
-import { searchSelectors as selectors } from './reducers'
 // TODO: remove /api/search?
 // import searchAPI from './api/search'
 require('isomorphic-fetch')
 
-export const runSearch = (submittedQtext) => {
+export const runSearch = (searchQuery) => {
   return (dispatch, getState) => {
     dispatch({
       type: types.SEARCH_REQUESTED,
-      payload: {qtext: submittedQtext}
+      payload: {query: searchQuery}
     })
-
-    let state = getState()
-    // let qtext = selectors.getExecutedSearchQtext(state)
-    // let constraints = selectors.getConstraints(state)
-    // let page = selectors.getPage(state)
-    // let pageLength = selectors.getPageLength(state)
-    // let searchProfileName = 'all'; // TODO: put in store
 
     // TODO: send a request directly to middle-tier
     // with query options, qtext, combined query object as object
@@ -26,7 +18,7 @@ export const runSearch = (submittedQtext) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(selectors.getExecutedSearchQuery(state))
+      body: JSON.stringify(searchQuery)
     }).then(resp => {
       if (!resp.ok) throw new Error(resp.statusText)
       return resp.json()

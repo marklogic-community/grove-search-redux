@@ -37,8 +37,9 @@ describe('search actions', () => {
           results: [],
           facets: {}
         })
+      const mockQuery = {}
       const expectedActions = [
-        { type: types.SEARCH_REQUESTED, payload: {qtext: 'qtext'} },
+        { type: types.SEARCH_REQUESTED, payload: {query: mockQuery} },
         {
           type: types.SEARCH_SUCCESS,
           payload: {
@@ -48,10 +49,8 @@ describe('search actions', () => {
           }
         }
       ]
-      const store = mockStore({
-        search: initialState
-      })
-      return store.dispatch(actions.runSearch('qtext')).then(() => {
+      const store = mockStore({ search: initialState })
+      return store.dispatch(actions.runSearch(mockQuery)).then(() => {
         expect(store.getActions()).toEqual(expectedActions)
       })
     })
@@ -67,8 +66,9 @@ describe('search actions', () => {
             messageCode: 'REST-INVALIDTYPE'
           }
         })
+      const mockQuery = {}
       const expectedActions = [
-        { type: types.SEARCH_REQUESTED, payload: {qtext: 'qtext'} },
+        { type: types.SEARCH_REQUESTED, payload: {query: mockQuery} },
         {
           type: types.SEARCH_FAILURE,
           payload: {
@@ -79,7 +79,7 @@ describe('search actions', () => {
       const store = mockStore({
         search: initialState
       })
-      return store.dispatch(actions.runSearch('qtext')).then(() => {
+      return store.dispatch(actions.runSearch(mockQuery)).then(() => {
         expect(store.getActions()).toEqual(expectedActions)
       })
     })
