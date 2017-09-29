@@ -9,6 +9,32 @@ such Redux modules can be made to work with React, Vue.js, and Angular 2+. This 
 
 TODO: more about how to integrate into Redux app
 
+## Use
+
+The provided selectors only know about their slice of state, so your consuming code needs to wrap them to provide their particular slice of state. For example:
+
+```javascript
+import { searchActions, searchSelectors } from 'ml-search-redux';
+
+const wrappedSearchSelectors = Object.keys(searchSelectors).reduce(
+  (newSelectors, name) => {
+    newSelectors[name] = state => searchSelectors[name](state.search)
+    return newSelectors;
+  },
+  {}
+);
+```
+
+Also, you will need to provide a searchQuery to the `runSearch` action. This is done for you already if you are using the default ML-Treehouse React components. In other cases, this can be done with something like:
+
+```javascript
+import { searchActions } from 'ml-search-redux';
+
+// Using `wrappedSearchSelectors` from the code above
+// `state` imported most likely using the React-Redux Provider
+searchActions.runSearch(wrappedSearchSelectors.getPreExecutedQuery(state));
+```
+
 ## 'Ducks' architecture
 
 This roughly follows [the architecture laid out in the re-ducks proposal]( https://github.com/alexnm/re-ducks/blob/f28ecc59d43542b8353948ede0cd3a059ca177dd/README.md):

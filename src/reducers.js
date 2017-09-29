@@ -1,5 +1,36 @@
 import * as types from './actionTypes'
 
+/**
+ * Search reducer state shape
+ * Using TypeScript format, though not currently evaluated
+ *
+ * interface ISearchQuery {
+ *   qtext:string
+ *   page: number,
+ *   pageLength: number
+ * }
+ *
+ * interface ISearchResult {
+ *   TODO
+ * }
+ *
+ * interface ISearchState {
+ *   preExecutedSearch: ISearchQuery,
+ *   executedSearch: {
+ *     id: string,
+ *     pending: boolean,
+ *     response: {
+ *       total: number,
+ *       executionTime: number,
+ *       results: Array<ISearchResult>,
+ *       error: string
+ *     },
+ *     query: ISearchQuery
+ *   }
+ * }
+ *
+ */
+
 const initialState = {
   // suggestPending: false,
   // optionsPending: false,
@@ -12,11 +43,6 @@ const initialState = {
   executedSearch: undefined
   // options: {},
   // suggestions: []
-}
-
-const emptyResponse = {
-  results: []
-  // facets: {}
 }
 
 export default (state = initialState, action) => {
@@ -96,12 +122,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         executedSearch: {
-          // TODO: re-initialize results and facets each time
-          pending: true,
-          results: [],
-          // facets: {},
-          error: undefined,
           id: Math.random().toString().substr(2, 10),
+          pending: true,
+          response: {
+            results: [],
+            // facets: {},
+            error: undefined
+          },
           // TODO: Now we are accessing preExecutedSearch to do this
           // This prevents us from breaking up this reducer.
           // Should we instead require that the search be part of the payload?
@@ -110,16 +137,18 @@ export default (state = initialState, action) => {
       }
 
     case types.SEARCH_SUCCESS: {
-      const response = action.payload || emptyResponse
+      const response = action.payload
       return {
         ...state,
         executedSearch: {
           ...state.executedSearch,
           pending: false,
-          results: response.results,
-          total: response.total,
-          executionTime: response.executionTime
-          // facets: response.facets
+          response: {
+            results: response.results,
+            total: response.total,
+            // facets: response.facets,
+            executionTime: response.executionTime
+          }
         }
         // suggestQtext: '',
       }
@@ -130,9 +159,11 @@ export default (state = initialState, action) => {
         ...state,
         executedSearch: {
           ...state.executedSearch,
-          ...emptyResponse,
           pending: false,
-          error: action.payload && action.payload.error
+          response: {
+            ...state.executedSearch.response,
+            error: action.payload && action.payload.error
+          }
         }
         // suggestQtext: '',
       }
@@ -169,27 +200,65 @@ export default (state = initialState, action) => {
   }
 }
 
-const getExecutedSearch = state => state.search.executedSearch
+const getPreExecutedQuery = state => state.preExecutedSearch
+
+const getExecutedSearch = state => state.executedSearch
 const getExecutedSearchQuery = state => {
   const search = getExecutedSearch(state)
   return search && search.query
 }
+const getSearchResponse = state => {
+  const search = getExecutedSearch(state)
+  return search && search.response
+}
 
+const getFromExecutedSearch = (state, propertyName) => {
+  const search = getExecutedSearch(state)
+  return search && search[propertyName]
+}
 const getFromExecutedSearchQuery = (state, propertyName) => {
   const query = getExecutedSearchQuery(state)
   return query && query[propertyName]
 }
+const getFromSearchResponse = (state, propertyName) => {
+  const response = getSearchResponse(state)
+  return response && response[propertyName]
+}
+
+const getSearchTotal = state => getFromSearchResponse(state, 'total')
+
+const getPageLength = state =>
+  getFromExecutedSearchQuery(state, 'pageLength')
+const isSearchPending = state => getFromExecutedSearch(state, 'pending')
 
 export const searchSelectors = {
-  getVisibleQtext: state => state.search.preExecutedSearch.qtext,
+  // From preExecutedSearch
+  getPreExecutedQuery: getPreExecutedQuery,
+  getVisibleQtext: state => getPreExecutedQuery(state).qtext,
 
+  // Executed search bookkeeping
   getExecutedSearch: getExecutedSearch,
-  getSearchResults: state => getExecutedSearch(state).results,
   getExecutedSearchId: state => getExecutedSearch(state).id,
+  isSearchPending: isSearchPending,
 
+  // From executed search query
   getExecutedSearchQuery: getExecutedSearchQuery,
-  getConstraints: state => getExecutedSearchQuery(state).constraints,
+  // getConstraints: state => getExecutedSearchQuery(state).constraints,
   getPage: state => getFromExecutedSearchQuery(state, 'page'),
-  getPageLength: state => getFromExecutedSearchQuery(state, 'pageLength'),
-  getExecutedSearchQtext: state => getFromExecutedSearchQuery(state, 'qtext')
+  getPageLength: getPageLength,
+  getExecutedSearchQtext: state => getFromExecutedSearchQuery(state, 'qtext'),
+
+  // From search response
+  // getSearchResponse: getSearchResponse,
+  getSearchResults: state => getFromSearchResponse(state, 'results'),
+  getSearchTotal: getSearchTotal,
+  getSearchExecutionTime: state => getFromSearchResponse(state, 'executionTime'),
+
+  // Calculated
+  getSearchTotalPages: state => Math.ceil(
+    getSearchTotal(state) / getPageLength(state)
+  ),
+  // TODO: test
+  isSearchComplete: state => getExecutedSearch(state) && !isSearchPending(state)
+
 }

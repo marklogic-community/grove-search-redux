@@ -1,11 +1,14 @@
 /* eslint-env jest */
 import reducer, { searchSelectors as selectors } from './reducers'
+import deepFreeze from 'deep-freeze'
 import * as types from './actionTypes'
 
+// Various states described in test-helpers
 import {
   initialState,
   userCreatedSearchState,
   pendingExecutedState,
+  mockResults,
   mockSearchResponse,
   finishedExecutedState
 } from './test-helpers'
@@ -25,7 +28,7 @@ describe('search reducer', () => {
         ...pendingExecutedState,
         executedSearch: {
           ...pendingExecutedState.executedSearch,
-          id: expect.anything()
+          id: expect.any(String)
         }
       })
     })
@@ -52,23 +55,14 @@ describe('search reducer', () => {
       })
       expect(resultingState).toEqual(pendingExecutedState)
       // Ensure that ids are different, because pendingExecutedState
-      // uses expect.anything() for id
+      // uses expect.any(String) for id
       expect(
-        selectors.getExecutedSearchId({search: resultingState})
+        selectors.getExecutedSearchId(resultingState)
       ).not.toEqual(
-        selectors.getExecutedSearchId({search: newInitialState})
+        selectors.getExecutedSearchId(newInitialState)
       )
     })
   })
-
-  const executedState = {
-    ...pendingExecutedState,
-    executedSearch: {
-      ...pendingExecutedState.executedSearch,
-      pending: false,
-      ...mockSearchResponse
-    }
-  }
 
   describe('SEARCH_SUCCESS', () => {
     it('updates executedSearch with results, facets, and turns off pending', () => {
@@ -80,7 +74,7 @@ describe('search reducer', () => {
             id: 'pendingID'
           }
         })
-      ).toEqual(executedState)
+      ).toEqual(finishedExecutedState)
     })
 
     it('eliminates race conditions')
@@ -88,20 +82,24 @@ describe('search reducer', () => {
 
   describe('SEARCH_FAILURE', () => {
     it('adds error and removes pending state', () => {
-      const expectedState = {
+      const failedState = {
         ...pendingExecutedState,
         executedSearch: {
           ...pendingExecutedState.executedSearch,
           pending: false,
-          error: 'An error'
+          response: {
+            ...pendingExecutedState.executedSearch.response,
+            error: 'An error'
+          }
         }
       }
+      deepFreeze(failedState)
       expect(
         reducer(pendingExecutedState, {
           type: types.SEARCH_FAILURE,
           payload: { error: 'An error' }
         })
-      ).toEqual(expectedState)
+      ).toEqual(failedState)
     })
 
     it('eliminates race conditions')
@@ -127,62 +125,62 @@ describe('search reducer', () => {
 
   describe('getSearchResults', () => {
     it('works', () => {
-      const results = [{
-        uri: '1.json',
-        label: 'Label',
-        matches: []
-      }]
-      const mockState = {
-        search: {
-          ...initialState,
-          executedSearch: {
-            ...initialState.executedSearch,
-            results: results
-          }
-        }
-      }
-      expect(selectors.getSearchResults(mockState)).toEqual(results)
+      expect(selectors.getSearchResults(finishedExecutedState)).toEqual(mockResults)
     })
   })
 
-  describe('getConstraints', () => {
+  describe('getSearchTotal', () => {
     it('works', () => {
-      const constraints = [
-        {
-          Products: 'Hammer'
-        }
-      ]
-      const mockState = {
-        search: {
-          ...executedState,
-          executedSearch: {
-            ...executedState.executedSearch,
-            query: {
-              ...executedState.executedSearch.query,
-              constraints: constraints
-            }
-          }
-        }
-      }
-      expect(selectors.getConstraints(mockState)).toEqual(constraints)
+      expect(selectors.getSearchTotal(finishedExecutedState)).toEqual(1)
     })
   })
+
+  describe('getSearchExecutionTime', () => {
+    it('works', () => {
+      expect(selectors.getSearchExecutionTime(finishedExecutedState)).toEqual(0.00198)
+    })
+  })
+
+  describe('getSearchTotalPages', () => {
+    it('works', () => {
+      expect(selectors.getSearchTotalPages(finishedExecutedState)).toEqual(1)
+    })
+  })
+
+  // describe('getConstraints', () => {
+  //   it('works', () => {
+  //     const constraints = [
+  //       {
+  //         Products: 'Hammer'
+  //       }
+  //     ]
+  //     const mockState = {
+  //       search: {
+  //         ...finishedExecutedState,
+  //         executedSearch: {
+  //           ...finishedExecutedState.executedSearch,
+  //           query: {
+  //             ...finishedExecutedState.executedSearch.query,
+  //             constraints: constraints
+  //           }
+  //         }
+  //       }
+  //     }
+  //     expect(selectors.getConstraints(mockState)).toEqual(constraints)
+  //   })
+  // })
 
   describe('getPage', () => {
     it('works', () => {
-      expect(selectors.getPage({search: executedState})).toEqual(1)
+      expect(selectors.getPage(finishedExecutedState)).toEqual(1)
     })
   })
 
   describe('getPageLength', () => {
     it('works', () => {
-      expect(selectors.getPageLength({search: executedState})).toEqual(10)
+      expect(selectors.getPageLength(finishedExecutedState)).toEqual(10)
     })
   })
-
-  const executedSearchState = {
-    search: finishedExecutedState
-  }
 
   // TODO: make these work by sending in actions instead of asserting on state
   // shape. It might be even better to test actions and selectors together,
@@ -192,7 +190,7 @@ describe('search reducer', () => {
   describe('getExecutedSearch', () => {
     it('works', () => {
       expect(
-        selectors.getExecutedSearch(executedSearchState)
+        selectors.getExecutedSearch(finishedExecutedState)
       ).toEqual(finishedExecutedState.executedSearch)
     })
   })
@@ -200,7 +198,7 @@ describe('search reducer', () => {
   describe('getExecutedSearchQuery', () => {
     it('works', () => {
       expect(
-        selectors.getExecutedSearchQuery(executedSearchState)
+        selectors.getExecutedSearchQuery(finishedExecutedState)
       ).toEqual(finishedExecutedState.executedSearch.query)
     })
   })
@@ -208,17 +206,34 @@ describe('search reducer', () => {
   describe('getExecutedSearchQtext', () => {
     it('works', () => {
       expect(
-        selectors.getExecutedSearchQtext(executedSearchState)
+        selectors.getExecutedSearchQtext(finishedExecutedState)
       ).toEqual(finishedExecutedState.executedSearch.query.qtext)
     })
   })
 
-  describe('getVisibleQtext', () => {
-    const mockState = {
-      search: userCreatedSearchState
-    }
+  describe('isSearchPending', () => {
+    it('works when pending', () => {
+      expect(selectors.isSearchPending(pendingExecutedState)).toEqual(true)
+    })
+
+    it('works when finished', () => {
+      expect(selectors.isSearchPending(finishedExecutedState)).toEqual(false)
+    })
+  })
+
+  describe('getPreExecutedQuery', () => {
     it('works', () => {
-      expect(selectors.getVisibleQtext(mockState)).toEqual('qtext')
+      expect(selectors.getPreExecutedQuery(userCreatedSearchState)).toEqual({
+        qtext: 'qtext',
+        page: 1,
+        pageLength: 10
+      })
+    })
+  })
+
+  describe('getVisibleQtext', () => {
+    it('works', () => {
+      expect(selectors.getVisibleQtext(userCreatedSearchState)).toEqual('qtext')
     })
   })
 })
