@@ -215,13 +215,10 @@ describe('search reducer', () => {
 
   describe('getVisibleQtext', () => {
     const mockState = {
-      search: {
-        ...initialState,
-        qtext: 'visible qtext'
-      }
+      search: userCreatedSearchState
     }
     it('works', () => {
-      expect(selectors.getVisibleQtext(mockState)).toEqual('visible qtext')
+      expect(selectors.getVisibleQtext(mockState)).toEqual('qtext')
     })
   })
 })

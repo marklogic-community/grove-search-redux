@@ -181,7 +181,7 @@ const getFromExecutedSearchQuery = (state, propertyName) => {
 }
 
 export const searchSelectors = {
-  getVisibleQtext: state => state.search.qtext,
+  getVisibleQtext: state => state.search.preExecutedSearch.qtext,
 
   getExecutedSearch: getExecutedSearch,
   getSearchResults: state => getExecutedSearch(state).results,
