@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -113,6 +113,40 @@ var OPTIONS_FAILURE = exports.OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.searchActionTypes = exports.searchActions = exports.searchSelectors = undefined;
+
+var _reducers = __webpack_require__(2);
+
+var _reducers2 = _interopRequireDefault(_reducers);
+
+var _actions = __webpack_require__(3);
+
+var searchActions = _interopRequireWildcard(_actions);
+
+var _actionTypes = __webpack_require__(0);
+
+var searchActionTypes = _interopRequireWildcard(_actionTypes);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = _reducers2.default; // Public API for the search module
+
+exports.searchSelectors = _reducers.searchSelectors;
+exports.searchActions = searchActions;
+exports.searchActionTypes = searchActionTypes;
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.searchSelectors = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -122,6 +156,37 @@ var _actionTypes = __webpack_require__(0);
 var types = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+/**
+ * Search reducer state shape
+ * Using TypeScript format, though not currently evaluated
+ *
+ * interface ISearchQuery {
+ *   qtext:string
+ *   page: number,
+ *   pageLength: number
+ * }
+ *
+ * interface ISearchResult {
+ *   TODO
+ * }
+ *
+ * interface ISearchState {
+ *   preExecutedSearch: ISearchQuery,
+ *   executedSearch: {
+ *     id: string,
+ *     pending: boolean,
+ *     response: {
+ *       total: number,
+ *       executionTime: number,
+ *       results: Array<ISearchResult>,
+ *       error: string
+ *     },
+ *     query: ISearchQuery
+ *   }
+ * }
+ *
+ */
 
 var initialState = {
   // suggestPending: false,
@@ -135,11 +200,6 @@ var initialState = {
   executedSearch: undefined
   // options: {},
   // suggestions: []
-};
-
-var emptyResponse = {
-  results: []
-  // facets: {}
 };
 
 exports.default = function () {
@@ -218,12 +278,13 @@ exports.default = function () {
       });case types.SEARCH_REQUESTED:
       return _extends({}, state, {
         executedSearch: {
-          // TODO: re-initialize results and facets each time
-          pending: true,
-          results: [],
-          // facets: {},
-          error: undefined,
           id: Math.random().toString().substr(2, 10),
+          pending: true,
+          response: {
+            results: [],
+            // facets: {},
+            error: undefined
+          },
           // TODO: Now we are accessing preExecutedSearch to do this
           // This prevents us from breaking up this reducer.
           // Should we instead require that the search be part of the payload?
@@ -233,24 +294,27 @@ exports.default = function () {
 
     case types.SEARCH_SUCCESS:
       {
-        var response = action.payload || emptyResponse;
+        var response = action.payload;
         return _extends({}, state, {
           executedSearch: _extends({}, state.executedSearch, {
             pending: false,
-            results: response.results,
-            total: response.total,
-            executionTime: response.executionTime
-            // facets: response.facets
-
+            response: {
+              results: response.results,
+              total: response.total,
+              // facets: response.facets,
+              executionTime: response.executionTime
+            }
             // suggestQtext: '',
           }) });
       }
 
     case types.SEARCH_FAILURE:
       return _extends({}, state, {
-        executedSearch: _extends({}, state.executedSearch, emptyResponse, {
+        executedSearch: _extends({}, state.executedSearch, {
           pending: false,
-          error: action.payload && action.payload.error
+          response: _extends({}, state.executedSearch.response, {
+            error: action.payload && action.payload.error
+          })
           // suggestQtext: '',
         })
 
@@ -286,80 +350,91 @@ exports.default = function () {
   }
 };
 
+var getPreExecutedQuery = function getPreExecutedQuery(state) {
+  return state.preExecutedSearch;
+};
+
 var getExecutedSearch = function getExecutedSearch(state) {
-  return state.search.executedSearch;
+  return state.executedSearch;
 };
 var getExecutedSearchQuery = function getExecutedSearchQuery(state) {
   var search = getExecutedSearch(state);
   return search && search.query;
 };
+var getSearchResponse = function getSearchResponse(state) {
+  var search = getExecutedSearch(state);
+  return search && search.response;
+};
 
+var getFromExecutedSearch = function getFromExecutedSearch(state, propertyName) {
+  var search = getExecutedSearch(state);
+  return search && search[propertyName];
+};
 var getFromExecutedSearchQuery = function getFromExecutedSearchQuery(state, propertyName) {
   var query = getExecutedSearchQuery(state);
   return query && query[propertyName];
 };
+var getFromSearchResponse = function getFromSearchResponse(state, propertyName) {
+  var response = getSearchResponse(state);
+  return response && response[propertyName];
+};
+
+var getSearchTotal = function getSearchTotal(state) {
+  return getFromSearchResponse(state, 'total');
+};
+
+var getPageLength = function getPageLength(state) {
+  return getFromExecutedSearchQuery(state, 'pageLength');
+};
+var isSearchPending = function isSearchPending(state) {
+  return getFromExecutedSearch(state, 'pending');
+};
 
 var searchSelectors = exports.searchSelectors = {
+  // From preExecutedSearch
+  getPreExecutedQuery: getPreExecutedQuery,
   getVisibleQtext: function getVisibleQtext(state) {
-    return state.search.qtext;
+    return getPreExecutedQuery(state).qtext;
   },
 
+  // Executed search bookkeeping
   getExecutedSearch: getExecutedSearch,
-  getSearchResults: function getSearchResults(state) {
-    return getExecutedSearch(state).results;
-  },
   getExecutedSearchId: function getExecutedSearchId(state) {
     return getExecutedSearch(state).id;
   },
+  isSearchPending: isSearchPending,
 
+  // From executed search query
   getExecutedSearchQuery: getExecutedSearchQuery,
-  getConstraints: function getConstraints(state) {
-    return getExecutedSearchQuery(state).constraints;
-  },
+  // getConstraints: state => getExecutedSearchQuery(state).constraints,
   getPage: function getPage(state) {
     return getFromExecutedSearchQuery(state, 'page');
   },
-  getPageLength: function getPageLength(state) {
-    return getFromExecutedSearchQuery(state, 'pageLength');
-  },
+  getPageLength: getPageLength,
   getExecutedSearchQtext: function getExecutedSearchQtext(state) {
     return getFromExecutedSearchQuery(state, 'qtext');
+  },
+
+  // From search response
+  // getSearchResponse: getSearchResponse,
+  getSearchResults: function getSearchResults(state) {
+    return getFromSearchResponse(state, 'results');
+  },
+  getSearchTotal: getSearchTotal,
+  getSearchExecutionTime: function getSearchExecutionTime(state) {
+    return getFromSearchResponse(state, 'executionTime');
+  },
+
+  // Calculated
+  getSearchTotalPages: function getSearchTotalPages(state) {
+    return Math.ceil(getSearchTotal(state) / getPageLength(state));
+  },
+  // TODO: test
+  isSearchComplete: function isSearchComplete(state) {
+    return getExecutedSearch(state) && !isSearchPending(state);
   }
+
 };
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.searchActionTypes = exports.searchActions = exports.searchSelectors = undefined;
-
-var _reducers = __webpack_require__(1);
-
-var _reducers2 = _interopRequireDefault(_reducers);
-
-var _actions = __webpack_require__(3);
-
-var searchActions = _interopRequireWildcard(_actions);
-
-var _actionTypes = __webpack_require__(0);
-
-var searchActionTypes = _interopRequireWildcard(_actionTypes);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = _reducers2.default; // Public API for the search module
-
-exports.searchSelectors = _reducers.searchSelectors;
-exports.searchActions = searchActions;
-exports.searchActionTypes = searchActionTypes;
 
 /***/ }),
 /* 3 */
@@ -377,28 +452,17 @@ var _actionTypes = __webpack_require__(0);
 
 var types = _interopRequireWildcard(_actionTypes);
 
-var _reducers = __webpack_require__(1);
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 // TODO: remove /api/search?
 // import searchAPI from './api/search'
-/* global fetch, URL */
-__webpack_require__(4);
-
-var runSearch = exports.runSearch = function runSearch(submittedQtext) {
+__webpack_require__(4); /* global fetch, URL */
+var runSearch = exports.runSearch = function runSearch(searchQuery) {
   return function (dispatch, getState) {
     dispatch({
       type: types.SEARCH_REQUESTED,
-      payload: { qtext: submittedQtext }
+      payload: { query: searchQuery }
     });
-
-    var state = getState();
-    // let qtext = selectors.getExecutedSearchQtext(state)
-    // let constraints = selectors.getConstraints(state)
-    // let page = selectors.getPage(state)
-    // let pageLength = selectors.getPageLength(state)
-    // let searchProfileName = 'all'; // TODO: put in store
 
     // TODO: send a request directly to middle-tier
     // with query options, qtext, combined query object as object
@@ -407,7 +471,7 @@ var runSearch = exports.runSearch = function runSearch(submittedQtext) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(_reducers.searchSelectors.getExecutedSearchQuery(state))
+      body: JSON.stringify(searchQuery)
     }).then(function (resp) {
       if (!resp.ok) throw new Error(resp.statusText);
       return resp.json();
