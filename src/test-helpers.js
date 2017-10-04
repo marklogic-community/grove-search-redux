@@ -66,3 +66,16 @@ export const finishedExecutedState = {
   }
 }
 deepFreeze(finishedExecutedState)
+
+export const failedState = {
+  ...pendingExecutedState,
+  executedSearch: {
+    ...pendingExecutedState.executedSearch,
+    pending: false,
+    response: {
+      ...pendingExecutedState.executedSearch.response,
+      error: 'An error'
+    }
+  }
+}
+deepFreeze(failedState)

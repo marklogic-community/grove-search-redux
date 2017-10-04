@@ -1,6 +1,5 @@
 /* eslint-env jest */
 import reducer, { searchSelectors as selectors } from './reducers'
-import deepFreeze from 'deep-freeze'
 import * as types from './actionTypes'
 
 // Various states described in test-helpers
@@ -10,7 +9,8 @@ import {
   pendingExecutedState,
   mockResults,
   mockSearchResponse,
-  finishedExecutedState
+  finishedExecutedState,
+  failedState
 } from './test-helpers'
 
 describe('search reducer', () => {
@@ -82,18 +82,6 @@ describe('search reducer', () => {
 
   describe('SEARCH_FAILURE', () => {
     it('adds error and removes pending state', () => {
-      const failedState = {
-        ...pendingExecutedState,
-        executedSearch: {
-          ...pendingExecutedState.executedSearch,
-          pending: false,
-          response: {
-            ...pendingExecutedState.executedSearch.response,
-            error: 'An error'
-          }
-        }
-      }
-      deepFreeze(failedState)
       expect(
         reducer(pendingExecutedState, {
           type: types.SEARCH_FAILURE,
@@ -149,6 +137,13 @@ describe('search reducer', () => {
   describe('getSearchTotal', () => {
     it('works', () => {
       expect(selectors.getSearchTotal(finishedExecutedState)).toEqual(1)
+    })
+  })
+
+  describe('getError', () => {
+    it('works', () => {
+      expect(selectors.getError(finishedExecutedState)).toEqual(undefined)
+      expect(selectors.getError(failedState)).toEqual('An error')
     })
   })
 

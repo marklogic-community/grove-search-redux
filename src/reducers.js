@@ -260,6 +260,7 @@ export const searchSelectors = {
   getSearchResults: state => getFromSearchResponse(state, 'results'),
   getSearchTotal: getSearchTotal,
   getSearchExecutionTime: state => getFromSearchResponse(state, 'executionTime'),
+  getError: state => getFromSearchResponse(state, 'error'),
 
   // Calculated
   getSearchTotalPages: state => Math.ceil(
