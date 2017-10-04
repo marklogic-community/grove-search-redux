@@ -78,12 +78,9 @@ export const setQtext = (qtext) => {
   }
 }
 
-// export const paginate = (n) => {
-//   return dispatch => {
-//     dispatch({ type: types.PAGINATE, payload: n })
-//     return dispatch(runSearch())
-//   }
-// }
+export const changePage = (n) => {
+  return { type: types.CHANGE_PAGE, payload: {page: n} }
+}
 
 // export const pageLength = (l) => {
 //   return dispatch => {

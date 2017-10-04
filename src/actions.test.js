@@ -25,6 +25,18 @@ describe('search actions', () => {
     })
   })
 
+  describe('changePage', () => {
+    it('creates a changePage action', () => {
+      const expectedAction = {
+        type: types.CHANGE_PAGE,
+        payload: {
+          page: 2
+        }
+      }
+      expect(actions.changePage(2)).toEqual(expectedAction)
+    })
+  })
+
   describe('async actions', () => {
     afterEach(() => {
       nock.cleanAll()

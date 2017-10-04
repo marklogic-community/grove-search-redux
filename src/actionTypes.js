@@ -1,7 +1,7 @@
 export const SET_QTEXT = 'search/SET_QTEXT'
 
-export const PAGINATE = 'search/PAGINATE'
-export const PAGE_LENGTH = 'search/PAGE_LENGTH'
+export const CHANGE_PAGE = 'search/CHANGE_PAGE'
+export const CHANGE_PAGE_LENGTH = 'search/CHANGE_PAGE_LENGTH'
 
 export const CONSTRAINT_ADD = 'search/CONSTRAINT_ADD'
 export const CONSTRAINT_REMOVE = 'search/CONSTRAINT_REMOVE'

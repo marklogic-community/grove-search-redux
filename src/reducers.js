@@ -45,6 +45,7 @@ const initialState = {
   // suggestions: []
 }
 
+// TODO: compose preExecutedSearch and executedSearch composers
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.SET_QTEXT:
@@ -56,11 +57,14 @@ export default (state = initialState, action) => {
         }
       }
 
-    // case types.PAGINATE:
-    //   return {
-    //     ...state,
-    //     page: action.payload
-    //   }
+    case types.CHANGE_PAGE:
+      return {
+        ...state,
+        preExecutedSearch: {
+          ...state.preExecutedSearch,
+          page: action.payload.page
+        }
+      }
 
     // case types.PAGE_LENGTH:
     //   return {

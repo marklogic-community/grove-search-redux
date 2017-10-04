@@ -123,6 +123,23 @@ describe('search reducer', () => {
     })
   })
 
+  describe('CHANGE_PAGE', () => {
+    it('works', () => {
+      expect(
+        reducer(finishedExecutedState, {
+          type: types.CHANGE_PAGE,
+          payload: {page: 3}
+        })
+      ).toEqual({
+        ...finishedExecutedState,
+        preExecutedSearch: {
+          ...finishedExecutedState.preExecutedSearch,
+          page: 3
+        }
+      })
+    })
+  })
+
   describe('getSearchResults', () => {
     it('works', () => {
       expect(selectors.getSearchResults(finishedExecutedState)).toEqual(mockResults)
