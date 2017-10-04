@@ -85,8 +85,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 var SET_QTEXT = exports.SET_QTEXT = 'search/SET_QTEXT';
 
-var PAGINATE = exports.PAGINATE = 'search/PAGINATE';
-var PAGE_LENGTH = exports.PAGE_LENGTH = 'search/PAGE_LENGTH';
+var CHANGE_PAGE = exports.CHANGE_PAGE = 'search/CHANGE_PAGE';
+var CHANGE_PAGE_LENGTH = exports.CHANGE_PAGE_LENGTH = 'search/CHANGE_PAGE_LENGTH';
 
 var CONSTRAINT_ADD = exports.CONSTRAINT_ADD = 'search/CONSTRAINT_ADD';
 var CONSTRAINT_REMOVE = exports.CONSTRAINT_REMOVE = 'search/CONSTRAINT_REMOVE';
@@ -172,14 +172,17 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
  * }
  *
  * interface ISearchState {
- *   preExecutedSearch: ISearchQuery,
+ *   stagedSearch: ISearchQuery,
  *   executedSearch: {
  *     id: string,
  *     pending: boolean,
  *     response: {
- *       total: number,
- *       executionTime: number,
+ *       metadata: {
+   *       total: number,
+   *       executionTime: number,
+ *       }
  *       results: Array<ISearchResult>,
+ *       facets: {},
  *       error: string
  *     },
  *     query: ISearchQuery
@@ -191,7 +194,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 var initialState = {
   // suggestPending: false,
   // optionsPending: false,
-  preExecutedSearch: {
+  stagedSearch: {
     qtext: '',
     page: 1,
     pageLength: 10
@@ -200,8 +203,10 @@ var initialState = {
   executedSearch: undefined
   // options: {},
   // suggestions: []
-};
 
+
+  // TODO: compose stagedSearch and executedSearch composers
+};
 exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
@@ -209,15 +214,16 @@ exports.default = function () {
   switch (action.type) {
     case types.SET_QTEXT:
       return _extends({}, state, {
-        preExecutedSearch: _extends({}, state.preExecutedSearch, {
+        stagedSearch: _extends({}, state.stagedSearch, {
           qtext: action.payload.qtext
         })
+      });
 
-        // case types.PAGINATE:
-        //   return {
-        //     ...state,
-        //     page: action.payload
-        //   }
+    case types.CHANGE_PAGE:
+      return _extends({}, state, {
+        stagedSearch: _extends({}, state.stagedSearch, {
+          page: action.payload.page
+        })
 
         // case types.PAGE_LENGTH:
         //   return {
@@ -285,10 +291,10 @@ exports.default = function () {
             // facets: {},
             error: undefined
           },
-          // TODO: Now we are accessing preExecutedSearch to do this
+          // TODO: Now we are accessing stagedSearch to do this
           // This prevents us from breaking up this reducer.
           // Should we instead require that the search be part of the payload?
-          query: _extends({}, state.preExecutedSearch)
+          query: _extends({}, state.stagedSearch)
         }
       });
 
@@ -350,8 +356,8 @@ exports.default = function () {
   }
 };
 
-var getPreExecutedQuery = function getPreExecutedQuery(state) {
-  return state.preExecutedSearch;
+var getStagedQuery = function getStagedQuery(state) {
+  return state.stagedSearch;
 };
 
 var getExecutedSearch = function getExecutedSearch(state) {
@@ -391,10 +397,10 @@ var isSearchPending = function isSearchPending(state) {
 };
 
 var searchSelectors = exports.searchSelectors = {
-  // From preExecutedSearch
-  getPreExecutedQuery: getPreExecutedQuery,
+  // From stagedSearch
+  getStagedQuery: getStagedQuery,
   getVisibleQtext: function getVisibleQtext(state) {
-    return getPreExecutedQuery(state).qtext;
+    return getStagedQuery(state).qtext;
   },
 
   // Executed search bookkeeping
@@ -424,6 +430,9 @@ var searchSelectors = exports.searchSelectors = {
   getSearchExecutionTime: function getSearchExecutionTime(state) {
     return getFromSearchResponse(state, 'executionTime');
   },
+  getError: function getError(state) {
+    return getFromSearchResponse(state, 'error');
+  },
 
   // Calculated
   getSearchTotalPages: function getSearchTotalPages(state) {
@@ -446,7 +455,7 @@ var searchSelectors = exports.searchSelectors = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.setQtext = exports.runSearch = undefined;
+exports.changePage = exports.setQtext = exports.runSearch = undefined;
 
 var _actionTypes = __webpack_require__(0);
 
@@ -532,12 +541,9 @@ var setQtext = exports.setQtext = function setQtext(qtext) {
   };
 };
 
-// export const paginate = (n) => {
-//   return dispatch => {
-//     dispatch({ type: types.PAGINATE, payload: n })
-//     return dispatch(runSearch())
-//   }
-// }
+var changePage = exports.changePage = function changePage(n) {
+  return { type: types.CHANGE_PAGE, payload: { page: n } };
+};
 
 // export const pageLength = (l) => {
 //   return dispatch => {
