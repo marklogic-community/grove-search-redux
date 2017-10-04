@@ -11,14 +11,14 @@ describe('search API', () => {
       expect(selectors.getPage(store.getState())).toBeUndefined()
       store.dispatch(
         actions.runSearch(
-          selectors.getPreExecutedQuery(store.getState())
+          selectors.getStagedQuery(store.getState())
         )
       )
       expect(selectors.getPage(store.getState())).toEqual(1)
       store.dispatch(actions.changePage(3))
       store.dispatch(
         actions.runSearch(
-          selectors.getPreExecutedQuery(store.getState())
+          selectors.getStagedQuery(store.getState())
         )
       )
       expect(selectors.getPage(store.getState())).toEqual(3)

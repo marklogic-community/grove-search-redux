@@ -15,14 +15,17 @@ import * as types from './actionTypes'
  * }
  *
  * interface ISearchState {
- *   preExecutedSearch: ISearchQuery,
+ *   stagedSearch: ISearchQuery,
  *   executedSearch: {
  *     id: string,
  *     pending: boolean,
  *     response: {
- *       total: number,
- *       executionTime: number,
+ *       metadata: {
+   *       total: number,
+   *       executionTime: number,
+ *       }
  *       results: Array<ISearchResult>,
+ *       facets: {},
  *       error: string
  *     },
  *     query: ISearchQuery
@@ -34,7 +37,7 @@ import * as types from './actionTypes'
 const initialState = {
   // suggestPending: false,
   // optionsPending: false,
-  preExecutedSearch: {
+  stagedSearch: {
     qtext: '',
     page: 1,
     pageLength: 10
@@ -45,14 +48,14 @@ const initialState = {
   // suggestions: []
 }
 
-// TODO: compose preExecutedSearch and executedSearch composers
+// TODO: compose stagedSearch and executedSearch composers
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.SET_QTEXT:
       return {
         ...state,
-        preExecutedSearch: {
-          ...state.preExecutedSearch,
+        stagedSearch: {
+          ...state.stagedSearch,
           qtext: action.payload.qtext
         }
       }
@@ -60,8 +63,8 @@ export default (state = initialState, action) => {
     case types.CHANGE_PAGE:
       return {
         ...state,
-        preExecutedSearch: {
-          ...state.preExecutedSearch,
+        stagedSearch: {
+          ...state.stagedSearch,
           page: action.payload.page
         }
       }
@@ -133,10 +136,10 @@ export default (state = initialState, action) => {
             // facets: {},
             error: undefined
           },
-          // TODO: Now we are accessing preExecutedSearch to do this
+          // TODO: Now we are accessing stagedSearch to do this
           // This prevents us from breaking up this reducer.
           // Should we instead require that the search be part of the payload?
-          query: {...state.preExecutedSearch}
+          query: {...state.stagedSearch}
         }
       }
 
@@ -204,7 +207,7 @@ export default (state = initialState, action) => {
   }
 }
 
-const getPreExecutedQuery = state => state.preExecutedSearch
+const getStagedQuery = state => state.stagedSearch
 
 const getExecutedSearch = state => state.executedSearch
 const getExecutedSearchQuery = state => {
@@ -236,9 +239,9 @@ const getPageLength = state =>
 const isSearchPending = state => getFromExecutedSearch(state, 'pending')
 
 export const searchSelectors = {
-  // From preExecutedSearch
-  getPreExecutedQuery: getPreExecutedQuery,
-  getVisibleQtext: state => getPreExecutedQuery(state).qtext,
+  // From stagedSearch
+  getStagedQuery: getStagedQuery,
+  getVisibleQtext: state => getStagedQuery(state).qtext,
 
   // Executed search bookkeeping
   getExecutedSearch: getExecutedSearch,

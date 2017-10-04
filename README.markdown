@@ -32,7 +32,7 @@ import { searchActions } from 'ml-search-redux';
 
 // Using `wrappedSearchSelectors` from the code above
 // `state` imported most likely using the React-Redux Provider
-searchActions.runSearch(wrappedSearchSelectors.getPreExecutedQuery(state));
+searchActions.runSearch(wrappedSearchSelectors.getStagedQuery(state));
 ```
 
 ## 'Ducks' architecture

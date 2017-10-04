@@ -19,7 +19,7 @@ describe('search reducer', () => {
   })
 
   describe('SEARCH_REQUESTED', () => {
-    it('hydrates the search based on preExecutedSearch', () => {
+    it('hydrates the search based on stagedSearch', () => {
       expect(
         reducer(userCreatedSearchState, {
           type: types.SEARCH_REQUESTED
@@ -109,8 +109,8 @@ describe('search reducer', () => {
     it('works', () => {
       const expectedState = {
         ...initialState,
-        preExecutedSearch: {
-          ...initialState.preExecutedSearch,
+        stagedSearch: {
+          ...initialState.stagedSearch,
           qtext: 'new qtext'
         }
       }
@@ -132,8 +132,8 @@ describe('search reducer', () => {
         })
       ).toEqual({
         ...finishedExecutedState,
-        preExecutedSearch: {
-          ...finishedExecutedState.preExecutedSearch,
+        stagedSearch: {
+          ...finishedExecutedState.stagedSearch,
           page: 3
         }
       })
@@ -238,9 +238,9 @@ describe('search reducer', () => {
     })
   })
 
-  describe('getPreExecutedQuery', () => {
+  describe('getStagedQuery', () => {
     it('works', () => {
-      expect(selectors.getPreExecutedQuery(userCreatedSearchState)).toEqual({
+      expect(selectors.getStagedQuery(userCreatedSearchState)).toEqual({
         qtext: 'qtext',
         page: 1,
         pageLength: 10
