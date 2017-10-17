@@ -102,3 +102,33 @@ export const changePage = (n) => {
 //     return dispatch(runSearch())
 //   }
 // }
+
+export const loadDetail = (uri) => {
+  console.log('here i am in redux')
+  return (dispatch, getState) => {
+    dispatch({
+      type: types.DETAIL_REQUESTED,
+      payload: {uri: uri}
+    })
+
+    // TODO: send a request directly to middle-tier
+    // with query options, qtext, combined query object as object
+    return fetch(new URL('/api/documents?uri=' + uri, document.baseURI).toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(resp => {
+      if (!resp.ok) throw new Error(resp.statusText)
+      return resp.json()
+    }).then(
+      resp => dispatch({ type: types.DETAIL_SUCCESS, payload: {resp} }),
+      error => dispatch({
+        type: types.DETAIL_FAILURE,
+        payload: {
+          error: 'Detail error: ' + error.message
+        }
+      })
+    )
+  }
+}

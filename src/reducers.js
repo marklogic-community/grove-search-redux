@@ -201,6 +201,49 @@ export default (state = initialState, action) => {
     //     optionsPending: false,
     //     options: {}
     //   }
+    case types.DETAIL_REQUESTED:
+      return {
+        ...state,
+        executedDetail: {
+          id: Math.random().toString().substr(2, 10),
+          pending: true,
+          response: {
+            data: {},
+            error: undefined
+          }
+          // TODO: Now we are accessing stagedSearch to do this
+          // This prevents us from breaking up this reducer.
+          // Should we instead require that the search be part of the payload?
+        }
+      }
+    case types.DETAIL_SUCCESS: {
+      const response = action.payload.resp.detailResponse
+      return {
+        ...state,
+        executedDetail: {
+          ...state.executedDetail,
+          pending: false,
+          response: {
+            data: response
+          }
+        }
+        // suggestQtext: '',
+      }
+    }
+
+    case types.DETAIL_FAILURE:
+      return {
+        ...state,
+        executedDetail: {
+          ...state.executedDetail,
+          pending: false,
+          response: {
+            ...state.executedDetail.response,
+            error: action.payload && action.payload.error
+          }
+        }
+        // suggestQtext: '',
+      }
 
     default:
       return state
@@ -238,6 +281,25 @@ const getPageLength = state =>
   getFromExecutedSearchQuery(state, 'pageLength')
 const isSearchPending = state => getFromExecutedSearch(state, 'pending')
 
+const getExecutedDetail = state => state.executedDetail
+
+const getFromExecutedDetail = (state, propertyName) => {
+  const detail = getExecutedDetail(state)
+  return detail && detail[propertyName]
+}
+
+const getDetailResponse = state => {
+  const detail = getExecutedDetail(state)
+  return detail && detail.response
+}
+
+const getFromDetailResponse = (state, propertyName) => {
+  const response = getDetailResponse(state)
+  return response && response[propertyName]
+}
+
+const isDetailPending = state => getFromExecutedDetail(state, 'pending')
+
 export const searchSelectors = {
   // From stagedSearch
   getStagedQuery: getStagedQuery,
@@ -267,6 +329,10 @@ export const searchSelectors = {
     getSearchTotal(state) / getPageLength(state)
   ),
   // TODO: test
-  isSearchComplete: state => getExecutedSearch(state) && !isSearchPending(state)
+  isSearchComplete: state => getExecutedSearch(state) && !isSearchPending(state),
 
+  // Detail page loads
+  isDetailPending: isDetailPending,
+  isDetailComplete: state => getExecutedDetail(state) && !isDetailPending(state),
+  getDetail: state => getFromDetailResponse(state, 'detail')
 }
