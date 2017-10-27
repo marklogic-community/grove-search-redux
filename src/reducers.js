@@ -208,7 +208,7 @@ export default (state = initialState, action) => {
           id: Math.random().toString().substr(2, 10),
           pending: true,
           response: {
-            data: {},
+            detail: {},
             error: undefined
           }
           // TODO: Now we are accessing stagedSearch to do this
@@ -224,7 +224,7 @@ export default (state = initialState, action) => {
           ...state.executedDetail,
           pending: false,
           response: {
-            data: response
+            detail: response
           }
         }
         // suggestQtext: '',
