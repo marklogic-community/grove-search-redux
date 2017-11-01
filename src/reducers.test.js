@@ -22,7 +22,8 @@ describe('search reducer', () => {
     it('hydrates the search based on stagedSearch', () => {
       expect(
         reducer(userCreatedSearchState, {
-          type: types.SEARCH_REQUESTED
+          type: types.SEARCH_REQUESTED,
+          payload: {query: selectors.getStagedQuery(finishedExecutedState)}
         })
       ).toEqual({
         ...pendingExecutedState,
@@ -51,7 +52,7 @@ describe('search reducer', () => {
       }
       const resultingState = reducer(newInitialState, {
         type: types.SEARCH_REQUESTED,
-        payload: {qtext: 'qtext'}
+        payload: {query: selectors.getStagedQuery(finishedExecutedState)}
       })
       expect(resultingState).toEqual(pendingExecutedState)
       // Ensure that ids are different, because pendingExecutedState

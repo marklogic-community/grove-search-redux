@@ -5,7 +5,7 @@ import * as types from './actionTypes'
 require('isomorphic-fetch')
 
 export const runSearch = (searchQuery) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({
       type: types.SEARCH_REQUESTED,
       payload: {query: searchQuery}
