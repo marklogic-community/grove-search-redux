@@ -104,7 +104,6 @@ export const changePage = (n) => {
 // }
 
 export const loadDetail = (uri) => {
-  console.log('here i am in redux')
   return (dispatch, getState) => {
     dispatch({
       type: types.DETAIL_REQUESTED,
