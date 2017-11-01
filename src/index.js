@@ -1,7 +1,7 @@
 // Public API for the search module
-import searchReducer, { searchSelectors } from './reducers'
-import * as searchActions from './actions'
-import * as searchActionTypes from './actionTypes'
+import reducer, { selectors } from './reducers'
+import * as actions from './actions'
+import * as actionTypes from './actionTypes'
 
-export default searchReducer
-export { searchSelectors, searchActions, searchActionTypes }
+export default reducer
+export { selectors, actions, actionTypes }

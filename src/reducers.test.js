@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import reducer, { searchSelectors as selectors } from './reducers'
+import reducer, { selectors } from './reducers'
 import * as types from './actionTypes'
 
 // Various states described in test-helpers

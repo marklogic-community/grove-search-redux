@@ -3,7 +3,7 @@ import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import nock from 'nock'
 
-import reducer, { searchSelectors as selectors } from './index'
+import reducer, { selectors } from './index'
 import * as actions from './actions'
 
 describe('search', () => {

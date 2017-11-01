@@ -142,7 +142,7 @@ const bindSelectors = (selectors, mountPoint) => {
   }, {})
 }
 
-export const searchSelectors = {
+export const selectors = {
   ...bindSelectors(executedSelectors, 'executedSearch'),
   ...bindSelectors(stagedSelectors, 'stagedSearch')
 }
