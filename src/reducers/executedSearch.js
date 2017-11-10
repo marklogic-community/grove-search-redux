@@ -14,7 +14,7 @@ export default (state = {}, action) => {
         query: {...action.payload.query}
       }
     case types.SEARCH_SUCCESS: {
-      const response = action.payload
+      const response = action.payload.response
       return {
         ...state,
         pending: false,
@@ -64,7 +64,9 @@ const getSearchTotal = state => getFromSearchResponse(state, 'total')
 
 const getPageLength = state =>
   getFromExecutedSearchQuery(state, 'pageLength')
-const isSearchPending = state => getFromExecutedSearch(state, 'pending')
+const isSearchPending = state => (
+  getFromExecutedSearch(state, 'pending') || false
+)
 
 export const selectors = {
   // Executed search bookkeeping
