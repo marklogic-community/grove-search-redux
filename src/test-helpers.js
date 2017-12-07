@@ -8,7 +8,7 @@ export const initialState = {
     page: 1,
     pageLength: 10
   },
-  executedSearch: undefined
+  executedSearch: {}
 }
 deepFreeze(initialState)
 

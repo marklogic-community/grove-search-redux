@@ -4,32 +4,50 @@ import * as types from './actionTypes'
 // import searchAPI from './api/search'
 require('isomorphic-fetch')
 
-export const runSearch = (searchQuery) => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: types.SEARCH_REQUESTED,
-      payload: {query: searchQuery}
-    })
-
-    // TODO: send a request directly to middle-tier
-    // with query options, qtext, combined query object as object
+const defaultAPI = {
+  search: searchQuery => {
     return fetch(new URL('/api/search', document.baseURI).toString(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(searchQuery)
-    }).then(resp => {
-      if (!resp.ok) throw new Error(resp.statusText)
-      return resp.json()
-    }).then(
-      resp => dispatch({ type: types.SEARCH_SUCCESS, payload: resp }),
-      error => dispatch({
-        type: types.SEARCH_FAILURE,
-        payload: {
-          error: 'Search error: ' + error.message
-        }
-      })
+    }).then(response => {
+      if (!response.ok) throw new Error(response.statusText)
+      return response.json()
+    })
+  }
+}
+
+export const runSearch = (searchQuery, extraArgs = {}) => {
+  let searchAPI = defaultAPI
+  if (extraArgs.searchAPI) {
+    searchAPI = extraArgs.searchAPI
+    delete extraArgs.searchAPI
+  }
+  return (dispatch) => {
+    dispatch({
+      type: types.SEARCH_REQUESTED,
+      payload: {query: searchQuery, ...extraArgs}
+    })
+
+    // TODO: send a request directly to middle-tier
+    // with query options, qtext, combined query object as object
+    return searchAPI.search(searchQuery).then(
+      response => dispatch({
+        type: types.SEARCH_SUCCESS,
+        payload: {response, ...extraArgs}
+      }),
+      error => {
+        console.warn('Error searching: ', error)
+        dispatch({
+          type: types.SEARCH_FAILURE,
+          payload: {
+            error: 'Search error: ' + error.message,
+            ...extraArgs
+          }
+        })
+      }
     )
   }
 }
@@ -42,13 +60,13 @@ export const runSearch = (searchQuery) => {
 //     let query = qb.ext.combined(constraintQuery(state.constraints), state.qtext)
 
 //     return client.suggest(state.suggestQtext, query, { options: 'all' })
-//       .then(resp => {
-//         if (!resp.ok) throw new Error('bad search')
-//         return resp.json()
+//       .then(response => {
+//         if (!response.ok) throw new Error('bad search')
+//         return response.json()
 //       })
 //       .then(
-//         resp => dispatch({ type: types.SUGGEST_SUCCESS, payload: resp }),
-//         resp => dispatch({ type: types.SUGGEST_FAILURE, payload: resp }),
+//         response => dispatch({ type: types.SUGGEST_SUCCESS, payload: response }),
+//         response => dispatch({ type: types.SUGGEST_FAILURE, payload: response }),
 //       )
 //   }
 // }
@@ -58,15 +76,15 @@ export const runSearch = (searchQuery) => {
 //     dispatch({ type: types.OPTIONS_REQUESTED })
 
 //     return client.options('all')
-//     // !resp.ok?
-//       .then(resp => resp.json())
-//       .then(resp => {
-//         if (!(resp && resp.options)) throw new TypeError('invalid options')
-//         return resp
+//     // !response.ok?
+//       .then(response => response.json())
+//       .then(response => {
+//         if (!(response && response.options)) throw new TypeError('invalid options')
+//         return response
 //       })
 //       .then(
-//         resp => dispatch({ type: types.OPTIONS_SUCCESS, payload: resp }),
-//         resp => dispatch({ type: types.OPTIONS_FAILURE, payload: resp })
+//         response => dispatch({ type: types.OPTIONS_SUCCESS, payload: response }),
+//         response => dispatch({ type: types.OPTIONS_FAILURE, payload: response })
 //       )
 //   }
 // }

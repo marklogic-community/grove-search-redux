@@ -55,9 +55,11 @@ describe('search actions', () => {
         {
           type: types.SEARCH_SUCCESS,
           payload: {
-            results: [],
-            facets: {}
-            // TODO: What else? Maybe where we define the shape of the contract?
+            response: {
+              results: [],
+              facets: {}
+              // TODO: What else? Maybe where we define the shape of the contract?
+            }
           }
         }
       ]
