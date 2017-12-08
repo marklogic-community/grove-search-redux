@@ -1,5 +1,9 @@
 /* global fetch, URL */
-import * as types from './actionTypes'
+import * as types from '../actionTypes'
+
+// TODO: extract documents to one level up (ml-documents-redux)
+export * from './documents'
+
 // TODO: remove /api/search?
 // import searchAPI from './api/search'
 require('isomorphic-fetch')
@@ -120,32 +124,3 @@ export const changePage = (n) => {
 //     return dispatch(runSearch())
 //   }
 // }
-
-export const loadDetail = (uri) => {
-  return (dispatch, getState) => {
-    dispatch({
-      type: types.DETAIL_REQUESTED,
-      payload: {uri: uri}
-    })
-
-    // TODO: send a request directly to middle-tier
-    // with query options, qtext, combined query object as object
-    return fetch(new URL('/api/documents?uri=' + uri, document.baseURI).toString(), {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(resp => {
-      if (!resp.ok) throw new Error(resp.statusText)
-      return resp.json()
-    }).then(
-      resp => dispatch({ type: types.DETAIL_SUCCESS, payload: {resp} }),
-      error => dispatch({
-        type: types.DETAIL_FAILURE,
-        payload: {
-          error: 'Detail error: ' + error.message
-        }
-      })
-    )
-  }
-}

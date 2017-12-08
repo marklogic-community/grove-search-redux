@@ -1,3 +1,6 @@
+// TODO: extract documents to one level up (ml-documents-redux)
+export * from './documentActionTypes'
+
 export const SET_QTEXT = 'search/SET_QTEXT'
 
 export const CHANGE_PAGE = 'search/CHANGE_PAGE'

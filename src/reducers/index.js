@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux'
 import stagedSearch, {selectors as stagedSelectors} from './stagedSearch'
 import executedSearch, {selectors as executedSelectors} from './executedSearch'
+// TODO: extract documents to one level up (ml-documents-redux)
+import documents, {selectors as documentSelectors} from './documents'
 import * as types from '../actionTypes'
 
 /**
@@ -72,7 +74,10 @@ const executedDetail = (state = {}, action) => {
 }
 
 export default combineReducers({
-  stagedSearch, executedSearch, executedDetail
+  stagedSearch,
+  executedSearch,
+  executedDetail,
+  documents
 })
 // export default (state = initialState, action) => {
 //   switch (action.type) {
@@ -201,6 +206,7 @@ const isDetailPending = state => getFromExecutedDetail(state, 'pending')
 export const selectors = {
   ...bindSelectors(executedSelectors, 'executedSearch'),
   ...bindSelectors(stagedSelectors, 'stagedSearch'),
+  ...bindSelectors(documentSelectors, 'documents'),
   isDetailPending: isDetailPending,
   isDetailComplete: state => getExecutedDetail(state) && !isDetailPending(state),
   getDetail: state => getFromDetailResponse(state, 'detail')
