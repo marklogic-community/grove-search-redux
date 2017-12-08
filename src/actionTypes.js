@@ -20,7 +20,3 @@ export const SEARCH_FAILURE = 'search/SEARCH_FAILURE'
 export const OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED'
 export const OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS'
 export const OPTIONS_FAILURE = 'search/OPTIONS_FAILURE'
-
-export const DETAIL_REQUESTED = 'detail/DETAIL_REQUESTED'
-export const DETAIL_SUCCESS = 'detail/DETAIL_SUCCESS'
-export const DETAIL_FAILURE = 'detail/DETAIL_FAILURE'
