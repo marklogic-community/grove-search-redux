@@ -28,11 +28,10 @@ export const pendingExecutedState = {
     //  TODO: getSearchStatus
     pending: true,
     response: {
-      executionTime: undefined,
-      total: undefined,
+      // executionTime: undefined,
+      // total: undefined,
       // facets: {},
-      results: [],
-      error: undefined
+      results: []
     },
     query: {...userCreatedSearchState.stagedSearch}
   }

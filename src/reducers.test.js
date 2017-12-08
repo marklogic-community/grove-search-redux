@@ -15,7 +15,7 @@ import {
 
 describe('search reducer', () => {
   it('returns the initial state', () => {
-    expect(reducer(undefined, {})).toEqual(initialState)
+    expect(reducer(undefined, {})).toMatchObject(initialState)
   })
 
   describe('SEARCH_REQUESTED', () => {
@@ -25,7 +25,7 @@ describe('search reducer', () => {
           type: types.SEARCH_REQUESTED,
           payload: {query: selectors.getStagedQuery(finishedExecutedState)}
         })
-      ).toEqual({
+      ).toMatchObject({
         ...pendingExecutedState,
         executedSearch: {
           ...pendingExecutedState.executedSearch,
@@ -54,7 +54,7 @@ describe('search reducer', () => {
         type: types.SEARCH_REQUESTED,
         payload: {query: selectors.getStagedQuery(finishedExecutedState)}
       })
-      expect(resultingState).toEqual(pendingExecutedState)
+      expect(resultingState).toMatchObject(pendingExecutedState)
       // Ensure that ids are different, because pendingExecutedState
       // uses expect.any(String) for id
       expect(
@@ -71,11 +71,11 @@ describe('search reducer', () => {
         reducer(pendingExecutedState, {
           type: types.SEARCH_SUCCESS,
           payload: {
-            ...mockSearchResponse,
+            response: { ...mockSearchResponse },
             id: 'pendingID'
           }
         })
-      ).toEqual(finishedExecutedState)
+      ).toMatchObject(finishedExecutedState)
     })
 
     it('eliminates race conditions')
@@ -88,7 +88,7 @@ describe('search reducer', () => {
           type: types.SEARCH_FAILURE,
           payload: { error: 'An error' }
         })
-      ).toEqual(failedState)
+      ).toMatchObject(failedState)
     })
 
     it('eliminates race conditions')
@@ -108,7 +108,7 @@ describe('search reducer', () => {
           type: types.SET_QTEXT,
           payload: {qtext: 'new qtext'}
         })
-      ).toEqual(expectedState)
+      ).toMatchObject(expectedState)
     })
   })
 
@@ -119,7 +119,7 @@ describe('search reducer', () => {
           type: types.CHANGE_PAGE,
           payload: {page: 3}
         })
-      ).toEqual({
+      ).toMatchObject({
         ...finishedExecutedState,
         stagedSearch: {
           ...finishedExecutedState.stagedSearch,
