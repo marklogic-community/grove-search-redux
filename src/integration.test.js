@@ -45,14 +45,14 @@ describe('search', () => {
             messageCode: 'REST-INVALIDTYPE'
           }
         })
-      expect(selectors.getError(store.getState())).toBeUndefined()
+      expect(selectors.getSearchError(store.getState())).toBeUndefined()
       let isFirstUpdate = true
       store.subscribe(() => {
         if (isFirstUpdate) {
-          expect(selectors.getError(store.getState())).toBeUndefined()
+          expect(selectors.getSearchError(store.getState())).toBeUndefined()
           isFirstUpdate = false
         } else {
-          expect(selectors.getError(store.getState())).toEqual(
+          expect(selectors.getSearchError(store.getState())).toEqual(
             'Search error: Bad Request'
           )
           done()

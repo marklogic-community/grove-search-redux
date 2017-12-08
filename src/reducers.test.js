@@ -141,10 +141,10 @@ describe('search reducer', () => {
     })
   })
 
-  describe('getError', () => {
+  describe('getSearchError', () => {
     it('works', () => {
-      expect(selectors.getError(finishedExecutedState)).toEqual(undefined)
-      expect(selectors.getError(failedState)).toEqual('An error')
+      expect(selectors.getSearchError(finishedExecutedState)).toEqual(undefined)
+      expect(selectors.getSearchError(failedState)).toEqual('An error')
     })
   })
 
