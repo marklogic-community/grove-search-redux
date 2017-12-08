@@ -1,7 +1,6 @@
 # MarkLogic Search Implemented in Redux
 
-This is a Redux implementation of MarkLogic search, for use in proving that
-such Redux modules can be made to work with React, Vue.js, and Angular 2+. This was created as part of the MarkLogic Treehouse project.
+This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic Sawyer (formerly "Treehouse") project.
 
 ## Install
 
