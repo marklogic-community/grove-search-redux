@@ -1,27 +1,34 @@
 # MarkLogic Search Implemented in Redux
 
-This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic Sawyer (formerly "Treehouse") project.
+This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic Sawyer (formerly "Treehouse") project. See the [reference application](https://project.marklogic.com/repo/projects/NACW/repos/ml-treehouse/browse) for an example of using this library in practice.
 
 ## Install
 
     npm install ml-search-redux --save
-
-TODO: more about how to integrate into Redux app
 
 ## Use
 
 The provided selectors only know about their slice of state, so your consuming code needs to wrap them to provide their particular slice of state. For example:
 
 ```javascript
-import { searchActions, searchSelectors } from 'ml-search-redux';
+import {
+  actions as searchActions,
+  selectors as searchSelectors
+} from 'ml-search-redux';
 
-const wrappedSearchSelectors = Object.keys(searchSelectors).reduce(
-  (newSelectors, name) => {
-    newSelectors[name] = state => searchSelectors[name](state.search)
-    return newSelectors;
-  },
-  {}
-);
+const bindSelector = (selector, mountPoint) => {
+  return (state, ...args) => {
+    return selector(state[mountPoint], ...args)
+  }
+}
+const bindSelectors = (selectors, mountPoint) => {
+  return Object.keys(selectors).reduce((bound, key) => {
+    bound[key] = bindSelector(selectors[key], mountPoint)
+    return bound
+  }, {})
+}
+
+const boundSearchSelectors = bindSelectors(searchSelectors, 'search');
 ```
 
 Also, you will need to provide a searchQuery to the `runSearch` action. This is done for you already if you are using the default ML-Treehouse React components. In other cases, this can be done with something like:
