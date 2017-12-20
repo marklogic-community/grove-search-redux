@@ -6,7 +6,7 @@ import nock from 'nock'
 import reducer, { selectors } from './index'
 import * as actions from './actions'
 
-import { mockResults } from './test-helpers'
+import { mockResults, mockSearchResponse } from './test-helpers'
 
 describe('search', () => {
   let store
@@ -39,7 +39,7 @@ describe('search', () => {
     it('runs a successful search', (done) => {
       nock('http://localhost')
         .post(/search/)
-        .reply(200, {results: mockResults})
+        .reply(200, mockSearchResponse)
       expect(selectors.getSearchResults(store.getState())).toEqual([])
       expect(selectors.isSearchPending(store.getState())).toBe(false)
       const unsubscribe = store.subscribe(() => {
@@ -55,6 +55,9 @@ describe('search', () => {
         try {
           expect(selectors.isSearchPending(store.getState())).toBe(false)
           expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
+          expect(selectors.getSearchExecutionTime(store.getState())).toEqual(
+            0.00198
+          )
         } catch (error) {
           done.fail(error)
         }

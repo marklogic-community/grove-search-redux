@@ -28,8 +28,7 @@ export const pendingExecutedState = {
     //  TODO: getSearchStatus
     pending: true,
     response: {
-      // executionTime: undefined,
-      // total: undefined,
+      // metadata: undefined
       // facets: {},
       results: []
     },
@@ -45,12 +44,13 @@ export const mockResults = [{
 }]
 
 export const mockSearchResponse = {
-  executionTime: 0.00198,
-  total: 1,
-  results: mockResults
-  // facets: {
-  //   Category: {type: 'xs:string', facetValues: []}
-  // }
+  response: {
+    metadata: {
+      executionTime: 0.00198,
+      total: 1
+    },
+    results: mockResults
+  }
 }
 
 export const finishedExecutedState = {
@@ -60,7 +60,7 @@ export const finishedExecutedState = {
     pending: false,
     response: {
       ...pendingExecutedState.executedSearch.response,
-      ...mockSearchResponse
+      ...mockSearchResponse.response
     }
   }
 }

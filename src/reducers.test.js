@@ -71,7 +71,7 @@ describe('search reducer', () => {
         reducer(pendingExecutedState, {
           type: types.SEARCH_SUCCESS,
           payload: {
-            response: { ...mockSearchResponse },
+            response: { ...mockSearchResponse.response },
             id: 'pendingID'
           }
         })

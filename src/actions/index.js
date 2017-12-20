@@ -35,9 +35,9 @@ export const runSearch = (searchQuery, extraArgs = {}) => {
     // TODO: send a request directly to middle-tier
     // with query options, qtext, combined query object as object
     return searchAPI.search(searchQuery).then(
-      response => dispatch({
+      data => dispatch({
         type: types.SEARCH_SUCCESS,
-        payload: {response, ...extraArgs}
+        payload: {response: data.response, ...extraArgs}
       }),
       error => {
         console.warn('Error searching: ', error)

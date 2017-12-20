@@ -46,8 +46,10 @@ describe('search actions', () => {
       nock('http://localhost')
         .post(/search/)
         .reply(200, {
-          results: [],
-          facets: {}
+          response: {
+            results: [],
+            facets: {}
+          }
         })
       const mockQuery = {}
       const expectedActions = [

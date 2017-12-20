@@ -18,12 +18,7 @@ export default (state = {}, action) => {
       return {
         ...state,
         pending: false,
-        response: {
-          results: response.results,
-          total: response.total,
-          // facets: response.facets,
-          executionTime: response.executionTime
-        }
+        response: response
       }
     }
     case types.SEARCH_FAILURE:
@@ -48,6 +43,7 @@ const getSearchResponse = state => {
   return state && state.response
 }
 
+// TODO: clean up this clear anti-pattern
 const getFromExecutedSearch = (state, propertyName) => {
   return state && state[propertyName]
 }
@@ -59,8 +55,12 @@ const getFromSearchResponse = (state, propertyName) => {
   const response = getSearchResponse(state)
   return response && response[propertyName]
 }
+const getFromSearchResponseMetadata = (state, propertyName) => {
+  const metadata = getFromSearchResponse(state, 'metadata')
+  return metadata && metadata[propertyName]
+}
 
-const getSearchTotal = state => getFromSearchResponse(state, 'total')
+const getSearchTotal = state => getFromSearchResponseMetadata(state, 'total')
 
 const getPageLength = state =>
   getFromExecutedSearchQuery(state, 'pageLength')
@@ -85,7 +85,9 @@ export const selectors = {
   // getSearchResponse: getSearchResponse,
   getSearchResults: state => getFromSearchResponse(state, 'results') || [],
   getSearchTotal: getSearchTotal,
-  getSearchExecutionTime: state => getFromSearchResponse(state, 'executionTime'),
+  getSearchExecutionTime: state => (
+    getFromSearchResponseMetadata(state, 'executionTime')
+  ),
   getSearchError: state => getFromSearchResponse(state, 'error'),
 
   // Calculated
