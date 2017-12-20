@@ -1,9 +1,6 @@
 /* global fetch, URL */
 import * as types from '../actionTypes'
 
-// TODO: extract documents to one level up (ml-documents-redux)
-export * from './documents'
-
 // TODO: remove /api/search?
 // import searchAPI from './api/search'
 require('isomorphic-fetch')

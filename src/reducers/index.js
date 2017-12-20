@@ -1,13 +1,10 @@
 import { combineReducers } from 'redux'
 import stagedSearch, {selectors as stagedSelectors} from './stagedSearch'
 import executedSearch, {selectors as executedSelectors} from './executedSearch'
-// TODO: extract documents to one level up (ml-documents-redux)
-import documents, {selectors as documentSelectors} from './documents'
 
 export default combineReducers({
   stagedSearch,
-  executedSearch,
-  documents
+  executedSearch
 })
 // export default (state = initialState, action) => {
 //   switch (action.type) {
@@ -116,6 +113,5 @@ const bindSelectors = (selectors, mountPoint) => {
 
 export const selectors = {
   ...bindSelectors(executedSelectors, 'executedSearch'),
-  ...bindSelectors(stagedSelectors, 'stagedSearch'),
-  ...bindSelectors(documentSelectors, 'documents')
+  ...bindSelectors(stagedSelectors, 'stagedSearch')
 }
