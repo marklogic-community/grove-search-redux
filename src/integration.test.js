@@ -6,6 +6,8 @@ import nock from 'nock'
 import reducer, { selectors } from './index'
 import * as actions from './actions'
 
+import { mockResults } from './test-helpers'
+
 describe('search', () => {
   let store
   beforeEach(() => {
@@ -31,8 +33,34 @@ describe('search', () => {
     })
   })
 
-  describe('runSearch failure and error reporting', () => {
+  describe('runSearch', () => {
     afterEach(nock.cleanAll)
+
+    it('runs a successful search', (done) => {
+      nock('http://localhost')
+        .post(/search/)
+        .reply(200, {results: mockResults})
+      expect(selectors.getSearchResults(store.getState())).toEqual([])
+      expect(selectors.isSearchPending(store.getState())).toBe(false)
+      const unsubscribe = store.subscribe(() => {
+        try {
+          expect(selectors.isSearchPending(store.getState())).toBe(true)
+          expect(selectors.getSearchResults(store.getState())).toEqual([])
+        } catch (error) {
+          done.fail(error)
+        }
+        unsubscribe()
+      })
+      store.dispatch(actions.runSearch()).then(() => {
+        try {
+          expect(selectors.isSearchPending(store.getState())).toBe(false)
+          expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
+        } catch (error) {
+          done.fail(error)
+        }
+        done()
+      })
+    })
 
     it('reports error after search failure', (done) => {
       nock('http://localhost')

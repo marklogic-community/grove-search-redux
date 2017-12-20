@@ -83,7 +83,7 @@ export const selectors = {
 
   // From search response
   // getSearchResponse: getSearchResponse,
-  getSearchResults: state => getFromSearchResponse(state, 'results'),
+  getSearchResults: state => getFromSearchResponse(state, 'results') || [],
   getSearchTotal: getSearchTotal,
   getSearchExecutionTime: state => getFromSearchResponse(state, 'executionTime'),
   getSearchError: state => getFromSearchResponse(state, 'error'),
