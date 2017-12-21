@@ -46,21 +46,41 @@ describe('search', () => {
         try {
           expect(selectors.isSearchPending(store.getState())).toBe(true)
           expect(selectors.getSearchResults(store.getState())).toEqual([])
+          // Page defaults
+          expect(selectors.getPage(store.getState())).toEqual(1)
+          expect(selectors.getPageLength(store.getState())).toEqual(10)
         } catch (error) {
           done.fail(error)
         }
         unsubscribe()
       })
-      store.dispatch(actions.runSearch()).then(() => {
+      store.dispatch(actions.runSearch(
+        selectors.getStagedQuery(store.getState())
+      )).then(() => {
         try {
           expect(selectors.isSearchPending(store.getState())).toBe(false)
           expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
           expect(selectors.getSearchExecutionTime(store.getState())).toEqual(
             0.00198
           )
+          expect(selectors.getPage(store.getState())).toEqual(1)
+          expect(selectors.getPageLength(store.getState())).toEqual(10)
         } catch (error) {
           done.fail(error)
         }
+        done()
+      })
+    })
+
+    it('can paginate', (done) => {
+      nock('http://localhost')
+        .post(/search/)
+        .reply(200, mockSearchResponse)
+      store.dispatch(actions.changePage(2))
+      store.dispatch(actions.runSearch(
+        selectors.getStagedQuery(store.getState())
+      )).then(() => {
+        expect(selectors.getPage(store.getState())).toEqual(2)
         done()
       })
     })
