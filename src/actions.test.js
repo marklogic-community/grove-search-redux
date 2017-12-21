@@ -88,7 +88,7 @@ describe('search actions', () => {
         {
           type: types.SEARCH_FAILURE,
           payload: {
-            error: 'Search error: Bad Request'
+            error: expect.stringContaining('error')
           }
         }
       ]

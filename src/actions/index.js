@@ -14,7 +14,11 @@ const defaultAPI = {
       },
       body: JSON.stringify(searchQuery)
     }).then(response => {
-      if (!response.ok) throw new Error(response.statusText)
+      if (!response.ok) {
+        return response.text().then((error) => {
+          throw new Error(error)
+        })
+      }
       return response.json()
     })
   }
@@ -44,7 +48,7 @@ export const runSearch = (searchQuery, extraArgs = {}) => {
         dispatch({
           type: types.SEARCH_FAILURE,
           payload: {
-            error: 'Search error: ' + error.message,
+            error: 'These was an error performing your search. ' + error.message,
             ...extraArgs
           }
         })

@@ -104,7 +104,7 @@ describe('search', () => {
           isFirstUpdate = false
         } else {
           expect(selectors.getSearchError(store.getState())).toEqual(
-            'Search error: Bad Request'
+            expect.stringContaining('error')
           )
           done()
         }
