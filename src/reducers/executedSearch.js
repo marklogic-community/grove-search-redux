@@ -79,7 +79,7 @@ export const selectors = {
   // getConstraints: state => getExecutedSearchQuery(state).constraints,
   getPage: state => getFromExecutedSearchQuery(state, 'page'),
   getPageLength: getPageLength,
-  getExecutedSearchQtext: state => getFromExecutedSearchQuery(state, 'qtext'),
+  getExecutedSearchQueryText: state => getFromExecutedSearchQuery(state, 'queryText'),
 
   // From search response
   // getSearchResponse: getSearchResponse,

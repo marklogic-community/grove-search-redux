@@ -4,7 +4,7 @@ import deepFreeze from 'deep-freeze'
 // TODO: should the search options name be part of the Redux store?
 export const initialState = {
   stagedSearch: {
-    qtext: '',
+    queryText: '',
     page: 1,
     pageLength: 10
   },
@@ -16,7 +16,7 @@ export const userCreatedSearchState = {
   ...initialState,
   stagedSearch: {
     ...initialState.stagedSearch,
-    qtext: 'qtext'
+    queryText: 'queryText'
   }
 }
 deepFreeze(userCreatedSearchState)

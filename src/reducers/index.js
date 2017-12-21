@@ -45,14 +45,14 @@ export default combineReducers({
 //     //   return {
 //     //     ...state,
 //     //     suggestPending: true,
-//     //     suggestQtext: action.payload || ''
+//     //     suggestQueryText: action.payload || ''
 //     //   }
 
 //     // case types.SUGGEST_SUCCESS:
 //     //   return {
 //     //     ...state,
 //     //     suggestPending: false,
-//     //     // suggestQtext: '',
+//     //     // suggestQueryText: '',
 //     //     suggestions: action.payload.suggestions || []
 //     //   }
 
@@ -61,7 +61,7 @@ export default combineReducers({
 //     //     ...state,
 //     //     // TODO: put error somewhere
 //     //     suggestPending: false,
-//     //     // suggestQtext: '',
+//     //     // suggestQueryText: '',
 //     //     suggestions: []
 //     //   }
 

@@ -1,11 +1,11 @@
 import * as types from '../actionTypes'
 
-export default (state = {qtext: '', page: 1, pageLength: 10}, action) => {
+export default (state = {queryText: '', page: 1, pageLength: 10}, action) => {
   switch (action.type) {
-    case types.SET_QTEXT:
+    case types.SET_QUERYTEXT:
       return {
         ...state,
-        qtext: action.payload.qtext
+        queryText: action.payload.queryText
       }
     case types.CHANGE_PAGE:
       return {
@@ -20,5 +20,5 @@ export default (state = {qtext: '', page: 1, pageLength: 10}, action) => {
 // SELECTORS
 export const selectors = {
   getStagedQuery: state => state,
-  getVisibleQtext: state => state.qtext
+  getVisibleQueryText: state => state.queryText
 }

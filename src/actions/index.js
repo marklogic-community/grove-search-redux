@@ -37,7 +37,7 @@ export const runSearch = (searchQuery, extraArgs = {}) => {
     })
 
     // TODO: send a request directly to middle-tier
-    // with query options, qtext, combined query object as object
+    // with query options, queryText, combined query object as object
     return searchAPI.search(searchQuery).then(
       data => dispatch({
         type: types.SEARCH_SUCCESS,
@@ -57,14 +57,14 @@ export const runSearch = (searchQuery, extraArgs = {}) => {
   }
 }
 
-// export const suggest = (qtext) => {
+// export const suggest = (queryText) => {
 //   return (dispatch, getState) => {
-//     dispatch({ type: types.SUGGEST_REQUESTED, payload: qtext })
+//     dispatch({ type: types.SUGGEST_REQUESTED, payload: queryText })
 
 //     let state = getState().search
-//     let query = qb.ext.combined(constraintQuery(state.constraints), state.qtext)
+//     let query = qb.ext.combined(constraintQuery(state.constraints), state.queryText)
 
-//     return client.suggest(state.suggestQtext, query, { options: 'all' })
+//     return client.suggest(state.suggestQueryText, query, { options: 'all' })
 //       .then(response => {
 //         if (!response.ok) throw new Error('bad search')
 //         return response.json()
@@ -94,10 +94,10 @@ export const runSearch = (searchQuery, extraArgs = {}) => {
 //   }
 // }
 
-export const setQtext = (qtext) => {
+export const setQueryText = (queryText) => {
   return {
-    type: types.SET_QTEXT,
-    payload: {qtext}
+    type: types.SET_QUERYTEXT,
+    payload: {queryText}
   }
 }
 

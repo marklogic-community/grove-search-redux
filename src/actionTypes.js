@@ -1,4 +1,4 @@
-export const SET_QTEXT = 'search/SET_QTEXT'
+export const SET_QUERYTEXT = 'search/SET_QUERYTEXT'
 
 export const CHANGE_PAGE = 'search/CHANGE_PAGE'
 export const CHANGE_PAGE_LENGTH = 'search/CHANGE_PAGE_LENGTH'

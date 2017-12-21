@@ -46,7 +46,7 @@ describe('search reducer', () => {
           results: [1, 2, 3],
           query: {
             ...finishedExecutedState,
-            qtext: 'earlier search qtext'
+            queryText: 'earlier search queryText'
           }
         }
       }
@@ -94,19 +94,19 @@ describe('search reducer', () => {
     it('eliminates race conditions')
   })
 
-  describe('SET_QTEXT', () => {
+  describe('SET_QUERYTEXT', () => {
     it('works', () => {
       const expectedState = {
         ...initialState,
         stagedSearch: {
           ...initialState.stagedSearch,
-          qtext: 'new qtext'
+          queryText: 'new queryText'
         }
       }
       expect(
         reducer(initialState, {
-          type: types.SET_QTEXT,
-          payload: {qtext: 'new qtext'}
+          type: types.SET_QUERYTEXT,
+          payload: {queryText: 'new queryText'}
         })
       ).toMatchObject(expectedState)
     })
@@ -216,11 +216,11 @@ describe('search reducer', () => {
     })
   })
 
-  describe('getExecutedSearchQtext', () => {
+  describe('getExecutedSearchQueryText', () => {
     it('works', () => {
       expect(
-        selectors.getExecutedSearchQtext(finishedExecutedState)
-      ).toEqual(finishedExecutedState.executedSearch.query.qtext)
+        selectors.getExecutedSearchQueryText(finishedExecutedState)
+      ).toEqual(finishedExecutedState.executedSearch.query.queryText)
     })
   })
 
@@ -237,16 +237,16 @@ describe('search reducer', () => {
   describe('getStagedQuery', () => {
     it('works', () => {
       expect(selectors.getStagedQuery(userCreatedSearchState)).toEqual({
-        qtext: 'qtext',
+        queryText: 'queryText',
         page: 1,
         pageLength: 10
       })
     })
   })
 
-  describe('getVisibleQtext', () => {
+  describe('getVisibleQueryText', () => {
     it('works', () => {
-      expect(selectors.getVisibleQtext(userCreatedSearchState)).toEqual('qtext')
+      expect(selectors.getVisibleQueryText(userCreatedSearchState)).toEqual('queryText')
     })
   })
 })

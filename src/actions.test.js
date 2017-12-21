@@ -12,16 +12,16 @@ const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
 describe('search actions', () => {
-  describe('setQtext', () => {
-    it('creates a setQtext action', () => {
-      const qtext = 'qtext'
+  describe('setQueryText', () => {
+    it('creates a setQueryText action', () => {
+      const queryText = 'queryText'
       const expectedAction = {
-        type: types.SET_QTEXT,
+        type: types.SET_QUERYTEXT,
         payload: {
-          qtext: qtext
+          queryText: queryText
         }
       }
-      expect(actions.setQtext(qtext)).toEqual(expectedAction)
+      expect(actions.setQueryText(queryText)).toEqual(expectedAction)
     })
   })
 
