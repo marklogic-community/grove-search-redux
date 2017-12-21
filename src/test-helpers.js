@@ -43,13 +43,29 @@ export const mockResults = [{
   matches: []
 }]
 
+export const mockFacets = {
+  'EyeColor': [
+    {
+      name: 'blue',
+      value: 'blue',
+      frequency: 30
+    },
+    {
+      name: 'brown',
+      value: 'brown',
+      frequency: 60
+    }
+  ]
+}
+
 export const mockSearchResponse = {
   response: {
     metadata: {
       executionTime: 0.00198,
       total: 1
     },
-    results: mockResults
+    results: mockResults,
+    facets: mockFacets
   }
 }
 

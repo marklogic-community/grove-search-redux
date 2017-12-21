@@ -6,7 +6,7 @@ import nock from 'nock'
 import reducer, { selectors } from './index'
 import * as actions from './actions'
 
-import { mockResults, mockSearchResponse } from './test-helpers'
+import { mockResults, mockFacets, mockSearchResponse } from './test-helpers'
 
 describe('search', () => {
   let store
@@ -60,6 +60,7 @@ describe('search', () => {
         try {
           expect(selectors.isSearchPending(store.getState())).toBe(false)
           expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
+          expect(selectors.searchFacets(store.getState())).toEqual(mockFacets)
           expect(selectors.getSearchExecutionTime(store.getState())).toEqual(
             0.00198
           )

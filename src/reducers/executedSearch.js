@@ -84,6 +84,7 @@ export const selectors = {
   // From search response
   // getSearchResponse: getSearchResponse,
   getSearchResults: state => getFromSearchResponse(state, 'results') || [],
+  searchFacets: state => getFromSearchResponse(state, 'facets'),
   getSearchTotal: getSearchTotal,
   getSearchExecutionTime: state => (
     getFromSearchResponseMetadata(state, 'executionTime')
