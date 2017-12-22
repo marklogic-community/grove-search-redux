@@ -112,16 +112,12 @@ export const changePage = (n) => {
 //   }
 // }
 
-// export const addConstraint = (c) => {
-//   return dispatch => {
-//     dispatch({ type: CONSTRAINT_ADD, payload: c })
-//     return dispatch(runSearch())
-//   }
-// }
+export const addConstraint = (constraintName, value) => ({
+  type: types.CONSTRAINT_ADD,
+  payload: {constraintName, value}
+})
 
-// export const rmConstraint = (c) => {
-//   return dispatch => {
-//     dispatch({ type: CONSTRAINT_REMOVE, payload: c })
-//     return dispatch(runSearch())
-//   }
-// }
+export const removeConstraint = (constraintName, value) => ({
+  type: types.CONSTRAINT_REMOVE,
+  payload: {constraintName, value}
+})

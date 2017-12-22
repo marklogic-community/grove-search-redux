@@ -33,6 +33,42 @@ describe('search', () => {
     })
   })
 
+  it('manages constraints', () => {
+    expect(selectors.stagedConstraints(store.getState())).toEqual({})
+    // TODO: validation that it is valid and not duplicate? Where?
+    // Probably not duplicate in reducer, right? A NOOP?
+    store.dispatch(actions.addConstraint('eyeColor', 'blue'))
+    expect(
+      selectors.stagedConstraints(store.getState())
+    ).toEqual({
+      eyeColor: [
+        {
+          // TODO: negated: false,
+          name: 'blue'
+        }
+      ]
+    })
+    store.dispatch(actions.addConstraint('eyeColor', 'brown'))
+    expect(
+      selectors.stagedConstraints(store.getState())
+    ).toEqual({
+      eyeColor: [
+        { name: 'blue' },
+        { name: 'brown' }
+      ]
+    })
+    store.dispatch(actions.removeConstraint('eyeColor', 'blue'))
+    expect(
+      selectors.stagedConstraints(store.getState())
+    ).toEqual({
+      eyeColor: [
+        { name: 'brown' }
+      ]
+    })
+    store.dispatch(actions.removeConstraint('eyeColor', 'brown'))
+    expect(selectors.stagedConstraints(store.getState())).toEqual({})
+  })
+
   describe('runSearch', () => {
     afterEach(nock.cleanAll)
 
@@ -96,14 +132,17 @@ describe('search', () => {
     })
 
     it('can paginate', (done) => {
-      nock('http://localhost')
-        .post(/search/)
-        .reply(200, mockSearchResponse)
+      const mockSearch = jest.fn(() => Promise.resolve({}))
+      const mockAPI = { search: mockSearch }
       store.dispatch(actions.changePage(2))
       store.dispatch(actions.runSearch(
-        selectors.getStagedQuery(store.getState())
+        selectors.getStagedQuery(store.getState()),
+        {api: mockAPI}
       )).then(() => {
         expect(selectors.getPage(store.getState())).toEqual(2)
+        expect(mockSearch).toHaveBeenCalledWith(
+          expect.objectContaining({page: 2})
+        )
         done()
       })
     })
