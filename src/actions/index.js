@@ -1,7 +1,7 @@
 /* global fetch, URL */
 import * as types from '../actionTypes'
 
-// TODO: remove /api/search?
+// TODO: remove /api/search? or just make it the actual defaultAPI below
 // import searchAPI from './api/search'
 require('isomorphic-fetch')
 
@@ -24,16 +24,16 @@ const defaultAPI = {
   }
 }
 
-export const runSearch = (searchQuery, extraArgs = {}) => {
+export const runSearch = (searchQuery, optionalArgs = {}) => {
   let searchAPI = defaultAPI
-  if (extraArgs.searchAPI) {
-    searchAPI = extraArgs.searchAPI
-    delete extraArgs.searchAPI
+  if (optionalArgs.api) {
+    searchAPI = optionalArgs.api
+    delete optionalArgs.api
   }
   return (dispatch) => {
     dispatch({
       type: types.SEARCH_REQUESTED,
-      payload: {query: searchQuery, ...extraArgs}
+      payload: {query: searchQuery, ...optionalArgs}
     })
 
     // TODO: send a request directly to middle-tier
@@ -41,7 +41,7 @@ export const runSearch = (searchQuery, extraArgs = {}) => {
     return searchAPI.search(searchQuery).then(
       data => dispatch({
         type: types.SEARCH_SUCCESS,
-        payload: {response: data.response, ...extraArgs}
+        payload: {response: data.response, ...optionalArgs}
       }),
       error => {
         console.warn('Error searching: ', error)
@@ -49,7 +49,7 @@ export const runSearch = (searchQuery, extraArgs = {}) => {
           type: types.SEARCH_FAILURE,
           payload: {
             error: 'These was an error performing your search. ' + error.message,
-            ...extraArgs
+            ...optionalArgs
           }
         })
       }

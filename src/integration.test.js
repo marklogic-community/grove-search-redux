@@ -73,6 +73,28 @@ describe('search', () => {
       })
     })
 
+    it('responds to queryText changes', (done) => {
+      const mockSearch = jest.fn(() => Promise.resolve({}))
+      const mockAPI = { search: mockSearch }
+      expect(selectors.getVisibleQueryText(store.getState())).toEqual('')
+      store.dispatch(actions.setQueryText('new text'))
+      expect(
+        selectors.getVisibleQueryText(store.getState())
+      ).toEqual('new text')
+      store.dispatch(actions.runSearch(
+        selectors.getStagedQuery(store.getState()),
+        {api: mockAPI}
+      )).then(() => {
+        expect(mockSearch).toHaveBeenCalledWith(
+          expect.objectContaining({queryText: 'new text'})
+        )
+        expect(
+          selectors.getExecutedSearchQueryText(store.getState())
+        ).toEqual('new text')
+        done()
+      })
+    })
+
     it('can paginate', (done) => {
       nock('http://localhost')
         .post(/search/)
