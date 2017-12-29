@@ -151,12 +151,10 @@ describe('search', () => {
       nock('http://localhost')
         .post(/search/)
         .reply(400, {
-          errorResponse: {
-            statusCode: 400,
-            status: 'Bad Request',
-            message: 'REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type',
-            messageCode: 'REST-INVALIDTYPE'
-          }
+          statusCode: 400,
+          status: 'Bad Request',
+          message: 'REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type',
+          messageCode: 'REST-INVALIDTYPE'
         })
       expect(selectors.getSearchError(store.getState())).toBeUndefined()
       let isFirstUpdate = true
@@ -166,7 +164,7 @@ describe('search', () => {
           isFirstUpdate = false
         } else {
           expect(selectors.getSearchError(store.getState())).toEqual(
-            expect.stringContaining('error')
+            expect.stringContaining('Invalid type')
           )
           done()
         }

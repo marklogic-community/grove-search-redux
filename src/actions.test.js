@@ -75,12 +75,10 @@ describe('search actions', () => {
       nock('http://localhost')
         .post(/search/)
         .reply(400, {
-          errorResponse: {
-            statusCode: 400,
-            status: 'Bad Request',
-            message: 'REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type',
-            messageCode: 'REST-INVALIDTYPE'
-          }
+          statusCode: 400,
+          status: 'Bad Request',
+          message: 'REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type',
+          messageCode: 'REST-INVALIDTYPE'
         })
       const mockQuery = {}
       const expectedActions = [
@@ -88,7 +86,7 @@ describe('search actions', () => {
         {
           type: types.SEARCH_FAILURE,
           payload: {
-            error: expect.stringContaining('error')
+            error: expect.stringContaining('Invalid type')
           }
         }
       ]

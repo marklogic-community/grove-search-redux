@@ -15,8 +15,8 @@ const defaultAPI = {
       body: JSON.stringify(searchQuery)
     }).then(response => {
       if (!response.ok) {
-        return response.text().then((error) => {
-          throw new Error(error)
+        return response.json().then((error) => {
+          throw new Error(error.message)
         })
       }
       return response.json()
@@ -47,10 +47,7 @@ export const runSearch = (searchQuery, optionalArgs = {}) => {
         console.warn('Error searching: ', error)
         dispatch({
           type: types.SEARCH_FAILURE,
-          payload: {
-            error: 'These was an error performing your search. ' + error.message,
-            ...optionalArgs
-          }
+          payload: { error: error.message, ...optionalArgs }
         })
       }
     )
