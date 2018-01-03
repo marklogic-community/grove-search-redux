@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -83,7 +83,7 @@ return /******/ (function(modules) { // webpackBootstrap
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var SET_QTEXT = exports.SET_QTEXT = 'search/SET_QTEXT';
+var SET_QUERYTEXT = exports.SET_QUERYTEXT = 'search/SET_QUERYTEXT';
 
 var CHANGE_PAGE = exports.CHANGE_PAGE = 'search/CHANGE_PAGE';
 var CHANGE_PAGE_LENGTH = exports.CHANGE_PAGE_LENGTH = 'search/CHANGE_PAGE_LENGTH';
@@ -105,6 +105,43 @@ var OPTIONS_FAILURE = exports.OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(26);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(7);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return __WEBPACK_IMPORTED_MODULE_4__compose__["a"]; });
+
+
+
+
+
+
+
+/*
+* This is a dummy function to check if the function name has been altered by minification.
+* If the function has been minified and NODE_ENV !== 'production', warn the user.
+*/
+function isCrushed() {}
+
+if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  Object(__WEBPACK_IMPORTED_MODULE_5__utils_warning__["a" /* default */])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+}
+
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -294,13 +331,13 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ActionTypes; });
 /* harmony export (immutable) */ __webpack_exports__["b"] = createStore;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_es_isPlainObject__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_symbol_observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_symbol_observable__);
 
@@ -553,7 +590,7 @@ var ActionTypes = {
 }
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -625,7 +662,7 @@ function isPlainObject(value) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -639,7 +676,7 @@ var Symbol = __WEBPACK_IMPORTED_MODULE_0__root_js__["a" /* default */].Symbol;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -666,7 +703,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -694,7 +731,7 @@ function warning(message) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -733,7 +770,7 @@ function compose() {
 }
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -773,12 +810,7 @@ exports.default = function () {
         var response = action.payload.response;
         return _extends({}, state, {
           pending: false,
-          response: {
-            results: response.results,
-            total: response.total,
-            // facets: response.facets,
-            executionTime: response.executionTime
-          }
+          response: response
         });
       }
     case types.SEARCH_FAILURE:
@@ -803,6 +835,7 @@ var getSearchResponse = function getSearchResponse(state) {
   return state && state.response;
 };
 
+// TODO: clean up this clear anti-pattern
 var getFromExecutedSearch = function getFromExecutedSearch(state, propertyName) {
   return state && state[propertyName];
 };
@@ -814,9 +847,13 @@ var getFromSearchResponse = function getFromSearchResponse(state, propertyName) 
   var response = getSearchResponse(state);
   return response && response[propertyName];
 };
+var getFromSearchResponseMetadata = function getFromSearchResponseMetadata(state, propertyName) {
+  var metadata = getFromSearchResponse(state, 'metadata');
+  return metadata && metadata[propertyName];
+};
 
 var getSearchTotal = function getSearchTotal(state) {
-  return getFromSearchResponse(state, 'total');
+  return getFromSearchResponseMetadata(state, 'total');
 };
 
 var getPageLength = function getPageLength(state) {
@@ -843,20 +880,23 @@ var selectors = exports.selectors = {
     return getFromExecutedSearchQuery(state, 'page');
   },
   getPageLength: getPageLength,
-  getExecutedSearchQtext: function getExecutedSearchQtext(state) {
-    return getFromExecutedSearchQuery(state, 'qtext');
+  getExecutedSearchQueryText: function getExecutedSearchQueryText(state) {
+    return getFromExecutedSearchQuery(state, 'queryText');
   },
 
   // From search response
   // getSearchResponse: getSearchResponse,
   getSearchResults: function getSearchResults(state) {
-    return getFromSearchResponse(state, 'results');
+    return getFromSearchResponse(state, 'results') || [];
+  },
+  searchFacets: function searchFacets(state) {
+    return getFromSearchResponse(state, 'facets');
   },
   getSearchTotal: getSearchTotal,
   getSearchExecutionTime: function getSearchExecutionTime(state) {
-    return getFromSearchResponse(state, 'executionTime');
+    return getFromSearchResponseMetadata(state, 'executionTime');
   },
-  getError: function getError(state) {
+  getSearchError: function getSearchError(state) {
     return getFromSearchResponse(state, 'error');
   },
 
@@ -871,7 +911,7 @@ var selectors = exports.selectors = {
 };
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -882,7 +922,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.executedSearchSelectors = exports.executedSearchReducer = exports.actionTypes = exports.actions = exports.selectors = undefined;
 
-var _reducers = __webpack_require__(10);
+var _reducers = __webpack_require__(11);
 
 var _reducers2 = _interopRequireDefault(_reducers);
 
@@ -894,7 +934,7 @@ var _actionTypes = __webpack_require__(0);
 
 var actionTypes = _interopRequireWildcard(_actionTypes);
 
-var _executedSearch = __webpack_require__(8);
+var _executedSearch = __webpack_require__(9);
 
 var _executedSearch2 = _interopRequireDefault(_executedSearch);
 
@@ -914,7 +954,7 @@ exports.executedSearchReducer = _executedSearch2.default;
 exports.executedSearchSelectors = _executedSearch.selectors;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -927,53 +967,22 @@ exports.selectors = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _redux = __webpack_require__(11);
+var _redux = __webpack_require__(1);
 
 var _stagedSearch = __webpack_require__(27);
 
 var _stagedSearch2 = _interopRequireDefault(_stagedSearch);
 
-var _executedSearch = __webpack_require__(8);
+var _executedSearch = __webpack_require__(9);
 
 var _executedSearch2 = _interopRequireDefault(_executedSearch);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * Search reducer state shape
- * Using TypeScript format, though not currently evaluated
- *
- * interface ISearchQuery {
- *   qtext:string
- *   page: number,
- *   pageLength: number
- * }
- *
- * interface ISearchResult {
- *   TODO
- * }
- *
- * interface ISearchState {
- *   stagedSearch: ISearchQuery,
- *   executedSearch: {
- *     id: string,
- *     pending: boolean,
- *     response: {
- *       metadata: {
-   *       total: number,
-   *       executionTime: number,
- *       }
- *       results: Array<ISearchResult>,
- *       facets: {},
- *       error: string
- *     },
- *     query: ISearchQuery
- *   }
- * }
- *
- */
-
-exports.default = (0, _redux.combineReducers)({ stagedSearch: _stagedSearch2.default, executedSearch: _executedSearch2.default });
+exports.default = (0, _redux.combineReducers)({
+  stagedSearch: _stagedSearch2.default,
+  executedSearch: _executedSearch2.default
+});
 // export default (state = initialState, action) => {
 //   switch (action.type) {
 
@@ -1013,14 +1022,14 @@ exports.default = (0, _redux.combineReducers)({ stagedSearch: _stagedSearch2.def
 //     //   return {
 //     //     ...state,
 //     //     suggestPending: true,
-//     //     suggestQtext: action.payload || ''
+//     //     suggestQueryText: action.payload || ''
 //     //   }
 
 //     // case types.SUGGEST_SUCCESS:
 //     //   return {
 //     //     ...state,
 //     //     suggestPending: false,
-//     //     // suggestQtext: '',
+//     //     // suggestQueryText: '',
 //     //     suggestions: action.payload.suggestions || []
 //     //   }
 
@@ -1029,7 +1038,7 @@ exports.default = (0, _redux.combineReducers)({ stagedSearch: _stagedSearch2.def
 //     //     ...state,
 //     //     // TODO: put error somewhere
 //     //     suggestPending: false,
-//     //     // suggestQtext: '',
+//     //     // suggestQueryText: '',
 //     //     suggestions: []
 //     //   }
 
@@ -1087,48 +1096,11 @@ var bindSelectors = function bindSelectors(selectors, mountPoint) {
 var selectors = exports.selectors = _extends({}, bindSelectors(_executedSearch.selectors, 'executedSearch'), bindSelectors(_stagedSearch.selectors, 'stagedSearch'));
 
 /***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(6);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return __WEBPACK_IMPORTED_MODULE_4__compose__["a"]; });
-
-
-
-
-
-
-
-/*
-* This is a dummy function to check if the function name has been altered by minification.
-* If the function has been minified and NODE_ENV !== 'production', warn the user.
-*/
-function isCrushed() {}
-
-if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  Object(__WEBPACK_IMPORTED_MODULE_5__utils_warning__["a" /* default */])('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-}
-
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
-
-/***/ }),
 /* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__getRawTag_js__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objectToString_js__ = __webpack_require__(16);
 
@@ -1188,14 +1160,14 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 
 /* harmony default export */ __webpack_exports__["a"] = (freeGlobal);
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(6)))
 
 /***/ }),
 /* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Symbol_js__ = __webpack_require__(5);
 
 
 /** Used for built-in method references. */
@@ -1386,7 +1358,7 @@ if (typeof self !== 'undefined') {
 
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(22)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(22)(module)))
 
 /***/ }),
 /* 22 */
@@ -1451,9 +1423,9 @@ function symbolObservablePonyfill(root) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/* harmony export (immutable) */ __webpack_exports__["a"] = combineReducers;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_es_isPlainObject__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_warning__ = __webpack_require__(7);
 
 
 
@@ -1584,7 +1556,7 @@ function combineReducers(reducers) {
     return hasChanged ? nextState : state;
   };
 }
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(1)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
 /* 25 */
@@ -1646,7 +1618,7 @@ function bindActionCreators(actionCreators, dispatch) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = applyMiddleware;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__compose__ = __webpack_require__(8);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 
@@ -1710,39 +1682,91 @@ exports.selectors = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _redux = __webpack_require__(1);
+
 var _actionTypes = __webpack_require__(0);
 
 var types = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-exports.default = function () {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { qtext: '', page: 1, pageLength: 10 };
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var queryText = function queryText() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
   var action = arguments[1];
 
   switch (action.type) {
-    case types.SET_QTEXT:
-      return _extends({}, state, {
-        qtext: action.payload.qtext
-      });
-    case types.CHANGE_PAGE:
-      return _extends({}, state, {
-        page: action.payload.page
-      });
+    case types.SET_QUERYTEXT:
+      return action.payload.queryText;
     default:
       return state;
   }
 };
 
-// SELECTORS
+var page = function page() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+  var action = arguments[1];
 
+  switch (action.type) {
+    case types.CHANGE_PAGE:
+      return action.payload.page;
+    default:
+      return state;
+  }
+};
+
+var pageLength = function pageLength() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+  var action = arguments[1];
+
+  return state;
+};
+
+var constraints = function constraints() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var action = arguments[1];
+
+  var name = void 0;
+  switch (action.type) {
+    case types.CONSTRAINT_ADD:
+      name = action.payload.constraintName;
+      return _extends({}, state, _defineProperty({}, name, [].concat(_toConsumableArray(state[name] || []), [{ name: action.payload.value }])));
+    case types.CONSTRAINT_REMOVE:
+      name = action.payload.constraintName;
+      var filtered = state[name].filter(function (constraintValue) {
+        return constraintValue.name !== action.payload.value;
+      });
+      if (filtered.length === 0) {
+        // immutably remove the entry from state altogether
+        var clone = Object.assign({}, state);
+        delete clone[name];
+        return clone;
+      } else {
+        return _extends({}, state, _defineProperty({}, name, filtered));
+      }
+    default:
+      return state;
+  }
+};
+
+exports.default = (0, _redux.combineReducers)({
+  queryText: queryText, page: page, pageLength: pageLength, constraints: constraints
+});
+
+// SELECTORS
 
 var selectors = exports.selectors = {
   getStagedQuery: function getStagedQuery(state) {
     return state;
   },
-  getVisibleQtext: function getVisibleQtext(state) {
-    return state.qtext;
+  getVisibleQueryText: function getVisibleQueryText(state) {
+    return state.queryText;
+  },
+  stagedConstraints: function stagedConstraints(state) {
+    return state.constraints;
   }
 };
 
@@ -1756,7 +1780,7 @@ var selectors = exports.selectors = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.changePage = exports.setQtext = exports.runSearch = undefined;
+exports.removeConstraint = exports.addConstraint = exports.changePage = exports.setQueryText = exports.runSearch = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* global fetch, URL */
 
@@ -1767,7 +1791,7 @@ var types = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-// TODO: remove /api/search?
+// TODO: remove /api/search? or just make it the actual defaultAPI below
 // import searchAPI from './api/search'
 __webpack_require__(29);
 
@@ -1780,53 +1804,55 @@ var defaultAPI = {
       },
       body: JSON.stringify(searchQuery)
     }).then(function (response) {
-      if (!response.ok) throw new Error(response.statusText);
+      if (!response.ok) {
+        return response.json().then(function (error) {
+          throw new Error(error.message);
+        });
+      }
       return response.json();
     });
   }
 };
 
 var runSearch = exports.runSearch = function runSearch(searchQuery) {
-  var extraArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var optionalArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   var searchAPI = defaultAPI;
-  if (extraArgs.searchAPI) {
-    searchAPI = extraArgs.searchAPI;
-    delete extraArgs.searchAPI;
+  if (optionalArgs.api) {
+    searchAPI = optionalArgs.api;
+    delete optionalArgs.api;
   }
   return function (dispatch) {
     dispatch({
       type: types.SEARCH_REQUESTED,
-      payload: _extends({ query: searchQuery }, extraArgs)
+      payload: _extends({ query: searchQuery }, optionalArgs)
     });
 
     // TODO: send a request directly to middle-tier
-    // with query options, qtext, combined query object as object
-    return searchAPI.search(searchQuery).then(function (response) {
+    // with query options, queryText, combined query object as object
+    return searchAPI.search(searchQuery).then(function (data) {
       return dispatch({
         type: types.SEARCH_SUCCESS,
-        payload: _extends({ response: response }, extraArgs)
+        payload: _extends({ response: data.response }, optionalArgs)
       });
     }, function (error) {
       console.warn('Error searching: ', error);
       dispatch({
         type: types.SEARCH_FAILURE,
-        payload: _extends({
-          error: 'Search error: ' + error.message
-        }, extraArgs)
+        payload: _extends({ error: error.message }, optionalArgs)
       });
     });
   };
 };
 
-// export const suggest = (qtext) => {
+// export const suggest = (queryText) => {
 //   return (dispatch, getState) => {
-//     dispatch({ type: types.SUGGEST_REQUESTED, payload: qtext })
+//     dispatch({ type: types.SUGGEST_REQUESTED, payload: queryText })
 
 //     let state = getState().search
-//     let query = qb.ext.combined(constraintQuery(state.constraints), state.qtext)
+//     let query = qb.ext.combined(constraintQuery(state.constraints), state.queryText)
 
-//     return client.suggest(state.suggestQtext, query, { options: 'all' })
+//     return client.suggest(state.suggestQueryText, query, { options: 'all' })
 //       .then(response => {
 //         if (!response.ok) throw new Error('bad search')
 //         return response.json()
@@ -1856,10 +1882,10 @@ var runSearch = exports.runSearch = function runSearch(searchQuery) {
 //   }
 // }
 
-var setQtext = exports.setQtext = function setQtext(qtext) {
+var setQueryText = exports.setQueryText = function setQueryText(queryText) {
   return {
-    type: types.SET_QTEXT,
-    payload: { qtext: qtext }
+    type: types.SET_QUERYTEXT,
+    payload: { queryText: queryText }
   };
 };
 
@@ -1874,19 +1900,19 @@ var changePage = exports.changePage = function changePage(n) {
 //   }
 // }
 
-// export const addConstraint = (c) => {
-//   return dispatch => {
-//     dispatch({ type: CONSTRAINT_ADD, payload: c })
-//     return dispatch(runSearch())
-//   }
-// }
+var addConstraint = exports.addConstraint = function addConstraint(constraintName, value) {
+  return {
+    type: types.CONSTRAINT_ADD,
+    payload: { constraintName: constraintName, value: value }
+  };
+};
 
-// export const rmConstraint = (c) => {
-//   return dispatch => {
-//     dispatch({ type: CONSTRAINT_REMOVE, payload: c })
-//     return dispatch(runSearch())
-//   }
-// }
+var removeConstraint = exports.removeConstraint = function removeConstraint(constraintName, value) {
+  return {
+    type: types.CONSTRAINT_REMOVE,
+    payload: { constraintName: constraintName, value: value }
+  };
+};
 
 /***/ }),
 /* 29 */
