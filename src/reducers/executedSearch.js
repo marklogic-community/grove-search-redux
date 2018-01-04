@@ -1,37 +1,46 @@
-import * as types from '../actionTypes'
+import * as bareTypes from '../actionTypes'
 
-export default (state = {}, action) => {
-  switch (action.type) {
-    case types.SEARCH_REQUESTED:
-      return {
-        id: Math.random().toString().substr(2, 10),
-        pending: true,
-        response: {
-          results: [],
-          // facets: {},
-          error: undefined
-        },
-        query: {...action.payload.query}
-      }
-    case types.SEARCH_SUCCESS: {
-      const response = action.payload.response
-      return {
-        ...state,
-        pending: false,
-        response: response
-      }
-    }
-    case types.SEARCH_FAILURE:
-      return {
-        ...state,
-        pending: false,
-        response: {
-          ...state.response,
-          error: action.payload && action.payload.error
+export const createReducer = config => {
+  let types = bareTypes
+  if (config && config.namespace) {
+    types = Object.keys(types).reduce((newTypes, typeKey) => {
+      newTypes[typeKey] = config.namespace + '/' + types[typeKey]
+      return newTypes
+    }, {})
+  }
+  return (state = {}, action) => {
+    switch (action.type) {
+      case types.SEARCH_REQUESTED:
+        return {
+          id: Math.random().toString().substr(2, 10),
+          pending: true,
+          response: {
+            results: [],
+            // facets: {},
+            error: undefined
+          },
+          query: {...action.payload.query}
+        }
+      case types.SEARCH_SUCCESS: {
+        const response = action.payload.response
+        return {
+          ...state,
+          pending: false,
+          response: response
         }
       }
-    default:
-      return state
+      case types.SEARCH_FAILURE:
+        return {
+          ...state,
+          pending: false,
+          response: {
+            ...state.response,
+            error: action.payload && action.payload.error
+          }
+        }
+      default:
+        return state
+    }
   }
 }
 

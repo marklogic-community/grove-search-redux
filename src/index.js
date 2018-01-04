@@ -1,18 +1,23 @@
 // Public API for the search module
-import reducer, { selectors } from './reducers'
-import * as actions from './actions'
+import reducer, { createReducer, selectors } from './reducers'
+import createActions from './actions'
 import * as actionTypes from './actionTypes'
 
 // Lower-level reducers for composition
-import executedSearchReducer, {
+import {
+  createReducer as createExecutedSearchReducer,
   selectors as executedSearchSelectors
 } from './reducers/executedSearch'
 
+const actions = createActions()
+
 export default reducer
 export {
+  createReducer,
+  createActions,
   selectors,
   actions,
   actionTypes,
-  executedSearchReducer,
+  createExecutedSearchReducer,
   executedSearchSelectors
 }

@@ -5,8 +5,9 @@ import thunk from 'redux-thunk'
 import nock from 'nock'
 import { initialState } from './test-helpers'
 
-import * as actions from './actions'
+import createActions from './actions'
 import * as types from './actionTypes'
+const actions = createActions()
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

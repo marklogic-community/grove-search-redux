@@ -1,5 +1,5 @@
 /* global fetch, URL */
-import * as types from '../actionTypes'
+import * as bareTypes from '../actionTypes'
 
 // TODO: remove /api/search? or just make it the actual defaultAPI below
 // import searchAPI from './api/search'
@@ -24,97 +24,115 @@ const defaultAPI = {
   }
 }
 
-export const runSearch = (searchQuery, optionalArgs = {}) => {
-  let searchAPI = defaultAPI
-  if (optionalArgs.api) {
-    searchAPI = optionalArgs.api
-    delete optionalArgs.api
+export default config => {
+  let types = bareTypes
+  if (config && config.namespace) {
+    types = Object.keys(types).reduce((newTypes, typeKey) => {
+      newTypes[typeKey] = config.namespace + '/' + types[typeKey]
+      return newTypes
+    }, {})
   }
-  return (dispatch) => {
-    dispatch({
-      type: types.SEARCH_REQUESTED,
-      payload: {query: searchQuery, ...optionalArgs}
-    })
 
-    // TODO: send a request directly to middle-tier
-    // with query options, queryText, combined query object as object
-    return searchAPI.search(searchQuery).then(
-      data => dispatch({
-        type: types.SEARCH_SUCCESS,
-        payload: {response: data.response, ...optionalArgs}
-      }),
-      error => {
-        console.warn('Error searching: ', error)
-        dispatch({
-          type: types.SEARCH_FAILURE,
-          payload: { error: error.message, ...optionalArgs }
-        })
-      }
-    )
+  const runSearch = (searchQuery, optionalArgs = {}) => {
+    let searchAPI = defaultAPI
+    if (optionalArgs.api) {
+      searchAPI = optionalArgs.api
+      delete optionalArgs.api
+    }
+    return (dispatch) => {
+      dispatch({
+        type: types.SEARCH_REQUESTED,
+        payload: {query: searchQuery, ...optionalArgs}
+      })
+
+      // TODO: send a request directly to middle-tier
+      // with query options, queryText, combined query object as object
+      return searchAPI.search(searchQuery).then(
+        data => dispatch({
+          type: types.SEARCH_SUCCESS,
+          payload: {response: data.response, ...optionalArgs}
+        }),
+        error => {
+          console.warn('Error searching: ', error)
+          dispatch({
+            type: types.SEARCH_FAILURE,
+            payload: { error: error.message, ...optionalArgs }
+          })
+        }
+      )
+    }
   }
-}
 
-// export const suggest = (queryText) => {
-//   return (dispatch, getState) => {
-//     dispatch({ type: types.SUGGEST_REQUESTED, payload: queryText })
+  // const suggest = (queryText) => {
+  //   return (dispatch, getState) => {
+  //     dispatch({ type: types.SUGGEST_REQUESTED, payload: queryText })
 
-//     let state = getState().search
-//     let query = qb.ext.combined(constraintQuery(state.constraints), state.queryText)
+  //     let state = getState().search
+  //     let query = qb.ext.combined(constraintQuery(state.constraints), state.queryText)
 
-//     return client.suggest(state.suggestQueryText, query, { options: 'all' })
-//       .then(response => {
-//         if (!response.ok) throw new Error('bad search')
-//         return response.json()
-//       })
-//       .then(
-//         response => dispatch({ type: types.SUGGEST_SUCCESS, payload: response }),
-//         response => dispatch({ type: types.SUGGEST_FAILURE, payload: response }),
-//       )
-//   }
-// }
+  //     return client.suggest(state.suggestQueryText, query, { options: 'all' })
+  //       .then(response => {
+  //         if (!response.ok) throw new Error('bad search')
+  //         return response.json()
+  //       })
+  //       .then(
+  //         response => dispatch({ type: types.SUGGEST_SUCCESS, payload: response }),
+  //         response => dispatch({ type: types.SUGGEST_FAILURE, payload: response }),
+  //       )
+  //   }
+  // }
 
-// export const options = () => {
-//   return dispatch => {
-//     dispatch({ type: types.OPTIONS_REQUESTED })
+  // const options = () => {
+  //   return dispatch => {
+  //     dispatch({ type: types.OPTIONS_REQUESTED })
 
-//     return client.options('all')
-//     // !response.ok?
-//       .then(response => response.json())
-//       .then(response => {
-//         if (!(response && response.options)) throw new TypeError('invalid options')
-//         return response
-//       })
-//       .then(
-//         response => dispatch({ type: types.OPTIONS_SUCCESS, payload: response }),
-//         response => dispatch({ type: types.OPTIONS_FAILURE, payload: response })
-//       )
-//   }
-// }
+  //     return client.options('all')
+  //     // !response.ok?
+  //       .then(response => response.json())
+  //       .then(response => {
+  //         if (!(response && response.options)) throw new TypeError('invalid options')
+  //         return response
+  //       })
+  //       .then(
+  //         response => dispatch({ type: types.OPTIONS_SUCCESS, payload: response }),
+  //         response => dispatch({ type: types.OPTIONS_FAILURE, payload: response })
+  //       )
+  //   }
+  // }
 
-export const setQueryText = (queryText) => {
+  const setQueryText = (queryText) => {
+    return {
+      type: types.SET_QUERYTEXT,
+      payload: {queryText}
+    }
+  }
+
+  const changePage = (n) => {
+    return { type: types.CHANGE_PAGE, payload: {page: n} }
+  }
+
+  // const pageLength = (l) => {
+  //   return dispatch => {
+  //     dispatch({ type: types.PAGE_LENGTH, payload: l })
+  //     return dispatch(runSearch())
+  //   }
+  // }
+
+  const addConstraint = (constraintName, value) => ({
+    type: types.CONSTRAINT_ADD,
+    payload: {constraintName, value}
+  })
+
+  const removeConstraint = (constraintName, value) => ({
+    type: types.CONSTRAINT_REMOVE,
+    payload: {constraintName, value}
+  })
+
   return {
-    type: types.SET_QUERYTEXT,
-    payload: {queryText}
+    runSearch,
+    setQueryText,
+    changePage,
+    addConstraint,
+    removeConstraint
   }
 }
-
-export const changePage = (n) => {
-  return { type: types.CHANGE_PAGE, payload: {page: n} }
-}
-
-// export const pageLength = (l) => {
-//   return dispatch => {
-//     dispatch({ type: types.PAGE_LENGTH, payload: l })
-//     return dispatch(runSearch())
-//   }
-// }
-
-export const addConstraint = (constraintName, value) => ({
-  type: types.CONSTRAINT_ADD,
-  payload: {constraintName, value}
-})
-
-export const removeConstraint = (constraintName, value) => ({
-  type: types.CONSTRAINT_REMOVE,
-  payload: {constraintName, value}
-})

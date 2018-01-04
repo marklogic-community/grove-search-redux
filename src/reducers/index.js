@@ -1,11 +1,21 @@
 import { combineReducers } from 'redux'
-import stagedSearch, {selectors as stagedSelectors} from './stagedSearch'
-import executedSearch, {selectors as executedSelectors} from './executedSearch'
+import {
+  selectors as stagedSelectors,
+  createReducer as createStagedSearch
+} from './stagedSearch'
+import {
+  selectors as executedSelectors,
+  createReducer as createExecutedSearch
+} from './executedSearch'
 
-export default combineReducers({
-  stagedSearch,
-  executedSearch
-})
+export const createReducer = (config) => {
+  return combineReducers({
+    stagedSearch: createStagedSearch(config),
+    executedSearch: createExecutedSearch(config)
+  })
+}
+
+export default createReducer()
 // export default (state = initialState, action) => {
 //   switch (action.type) {
 

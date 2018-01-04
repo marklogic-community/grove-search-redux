@@ -3,8 +3,7 @@ import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
 import nock from 'nock'
 
-import reducer, { selectors } from './index'
-import * as actions from './actions'
+import reducer, { actions, selectors } from './index'
 
 import { mockResults, mockFacets, mockSearchResponse } from './test-helpers'
 
@@ -175,5 +174,11 @@ describe('search', () => {
         )
       )
     })
+
+    // Could have a long-running search error, while a second search succeeds
+    // Successful results should be maintained and error should not enter state
+    it('only reacts to the latest executedSearch results')
+
+    it('allows for reducer / action namespacing')
   })
 })
