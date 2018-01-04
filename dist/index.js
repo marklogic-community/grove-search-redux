@@ -779,55 +779,62 @@ function compose() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.selectors = undefined;
+exports.selectors = exports.createReducer = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _actionTypes = __webpack_require__(0);
 
-var types = _interopRequireWildcard(_actionTypes);
+var bareTypes = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-exports.default = function () {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var action = arguments[1];
+var createReducer = exports.createReducer = function createReducer(config) {
+  var types = bareTypes;
+  if (config && config.namespace) {
+    types = Object.keys(types).reduce(function (newTypes, typeKey) {
+      newTypes[typeKey] = config.namespace + '/' + types[typeKey];
+      return newTypes;
+    }, {});
+  }
+  return function () {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var action = arguments[1];
 
-  switch (action.type) {
-    case types.SEARCH_REQUESTED:
-      return {
-        id: Math.random().toString().substr(2, 10),
-        pending: true,
-        response: {
-          results: [],
-          // facets: {},
-          error: undefined
-        },
-        query: _extends({}, action.payload.query)
-      };
-    case types.SEARCH_SUCCESS:
-      {
-        var response = action.payload.response;
+    switch (action.type) {
+      case types.SEARCH_REQUESTED:
+        return {
+          id: Math.random().toString().substr(2, 10),
+          pending: true,
+          response: {
+            results: [],
+            // facets: {},
+            error: undefined
+          },
+          query: _extends({}, action.payload.query)
+        };
+      case types.SEARCH_SUCCESS:
+        {
+          var response = action.payload.response;
+          return _extends({}, state, {
+            pending: false,
+            response: response
+          });
+        }
+      case types.SEARCH_FAILURE:
         return _extends({}, state, {
           pending: false,
-          response: response
+          response: _extends({}, state.response, {
+            error: action.payload && action.payload.error
+          })
         });
-      }
-    case types.SEARCH_FAILURE:
-      return _extends({}, state, {
-        pending: false,
-        response: _extends({}, state.response, {
-          error: action.payload && action.payload.error
-        })
-      });
-    default:
-      return state;
-  }
+      default:
+        return state;
+    }
+  };
 };
 
 // SELECTORS
-
-
 var getExecutedSearchQuery = function getExecutedSearchQuery(state) {
   return state && state.query;
 };
@@ -920,7 +927,7 @@ var selectors = exports.selectors = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.executedSearchSelectors = exports.executedSearchReducer = exports.actionTypes = exports.actions = exports.selectors = undefined;
+exports.executedSearchSelectors = exports.createExecutedSearchReducer = exports.actionTypes = exports.actions = exports.selectors = exports.createActions = exports.createReducer = undefined;
 
 var _reducers = __webpack_require__(11);
 
@@ -928,7 +935,7 @@ var _reducers2 = _interopRequireDefault(_reducers);
 
 var _actions = __webpack_require__(28);
 
-var actions = _interopRequireWildcard(_actions);
+var _actions2 = _interopRequireDefault(_actions);
 
 var _actionTypes = __webpack_require__(0);
 
@@ -936,21 +943,21 @@ var actionTypes = _interopRequireWildcard(_actionTypes);
 
 var _executedSearch = __webpack_require__(9);
 
-var _executedSearch2 = _interopRequireDefault(_executedSearch);
-
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Public API for the search module
-exports.default = _reducers2.default;
+var actions = (0, _actions2.default)();
 
 // Lower-level reducers for composition
-
+exports.default = _reducers2.default;
+exports.createReducer = _reducers.createReducer;
+exports.createActions = _actions2.default;
 exports.selectors = _reducers.selectors;
 exports.actions = actions;
 exports.actionTypes = actionTypes;
-exports.executedSearchReducer = _executedSearch2.default;
+exports.createExecutedSearchReducer = _executedSearch.createReducer;
 exports.executedSearchSelectors = _executedSearch.selectors;
 
 /***/ }),
@@ -963,7 +970,7 @@ exports.executedSearchSelectors = _executedSearch.selectors;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.selectors = undefined;
+exports.selectors = exports.createReducer = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -971,18 +978,16 @@ var _redux = __webpack_require__(1);
 
 var _stagedSearch = __webpack_require__(27);
 
-var _stagedSearch2 = _interopRequireDefault(_stagedSearch);
-
 var _executedSearch = __webpack_require__(9);
 
-var _executedSearch2 = _interopRequireDefault(_executedSearch);
+var createReducer = exports.createReducer = function createReducer(config) {
+  return (0, _redux.combineReducers)({
+    stagedSearch: (0, _stagedSearch.createReducer)(config),
+    executedSearch: (0, _executedSearch.createReducer)(config)
+  });
+};
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = (0, _redux.combineReducers)({
-  stagedSearch: _stagedSearch2.default,
-  executedSearch: _executedSearch2.default
-});
+exports.default = createReducer();
 // export default (state = initialState, action) => {
 //   switch (action.type) {
 
@@ -1678,7 +1683,7 @@ function applyMiddleware() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.selectors = undefined;
+exports.selectors = exports.createReducer = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -1686,7 +1691,7 @@ var _redux = __webpack_require__(1);
 
 var _actionTypes = __webpack_require__(0);
 
-var types = _interopRequireWildcard(_actionTypes);
+var bareTypes = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -1694,70 +1699,79 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-var queryText = function queryText() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-  var action = arguments[1];
-
-  switch (action.type) {
-    case types.SET_QUERYTEXT:
-      return action.payload.queryText;
-    default:
-      return state;
+var createReducer = exports.createReducer = function createReducer(config) {
+  var types = bareTypes;
+  if (config && config.namespace) {
+    types = Object.keys(types).reduce(function (newTypes, typeKey) {
+      newTypes[typeKey] = config.namespace + '/' + types[typeKey];
+      return newTypes;
+    }, {});
   }
+
+  var queryText = function queryText() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+    var action = arguments[1];
+
+    switch (action.type) {
+      case types.SET_QUERYTEXT:
+        return action.payload.queryText;
+      default:
+        return state;
+    }
+  };
+
+  var page = function page() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+    var action = arguments[1];
+
+    switch (action.type) {
+      case types.CHANGE_PAGE:
+        return action.payload.page;
+      default:
+        return state;
+    }
+  };
+
+  var pageLength = function pageLength() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+    var action = arguments[1];
+
+    return state;
+  };
+
+  var constraints = function constraints() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    var action = arguments[1];
+
+    var name = void 0;
+    switch (action.type) {
+      case types.CONSTRAINT_ADD:
+        name = action.payload.constraintName;
+        return _extends({}, state, _defineProperty({}, name, [].concat(_toConsumableArray(state[name] || []), [{ name: action.payload.value }])));
+      case types.CONSTRAINT_REMOVE:
+        name = action.payload.constraintName;
+        var filtered = state[name].filter(function (constraintValue) {
+          return constraintValue.name !== action.payload.value;
+        });
+        if (filtered.length === 0) {
+          // immutably remove the entry from state altogether
+          var clone = Object.assign({}, state);
+          delete clone[name];
+          return clone;
+        } else {
+          return _extends({}, state, _defineProperty({}, name, filtered));
+        }
+      default:
+        return state;
+    }
+  };
+
+  return (0, _redux.combineReducers)({
+    queryText: queryText, page: page, pageLength: pageLength, constraints: constraints
+  });
 };
-
-var page = function page() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-  var action = arguments[1];
-
-  switch (action.type) {
-    case types.CHANGE_PAGE:
-      return action.payload.page;
-    default:
-      return state;
-  }
-};
-
-var pageLength = function pageLength() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-  var action = arguments[1];
-
-  return state;
-};
-
-var constraints = function constraints() {
-  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-  var action = arguments[1];
-
-  var name = void 0;
-  switch (action.type) {
-    case types.CONSTRAINT_ADD:
-      name = action.payload.constraintName;
-      return _extends({}, state, _defineProperty({}, name, [].concat(_toConsumableArray(state[name] || []), [{ name: action.payload.value }])));
-    case types.CONSTRAINT_REMOVE:
-      name = action.payload.constraintName;
-      var filtered = state[name].filter(function (constraintValue) {
-        return constraintValue.name !== action.payload.value;
-      });
-      if (filtered.length === 0) {
-        // immutably remove the entry from state altogether
-        var clone = Object.assign({}, state);
-        delete clone[name];
-        return clone;
-      } else {
-        return _extends({}, state, _defineProperty({}, name, filtered));
-      }
-    default:
-      return state;
-  }
-};
-
-exports.default = (0, _redux.combineReducers)({
-  queryText: queryText, page: page, pageLength: pageLength, constraints: constraints
-});
 
 // SELECTORS
-
 var selectors = exports.selectors = {
   getStagedQuery: function getStagedQuery(state) {
     return state;
@@ -1780,14 +1794,13 @@ var selectors = exports.selectors = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeConstraint = exports.addConstraint = exports.changePage = exports.setQueryText = exports.runSearch = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /* global fetch, URL */
 
 
 var _actionTypes = __webpack_require__(0);
 
-var types = _interopRequireWildcard(_actionTypes);
+var bareTypes = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -1814,103 +1827,121 @@ var defaultAPI = {
   }
 };
 
-var runSearch = exports.runSearch = function runSearch(searchQuery) {
-  var optionalArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  var searchAPI = defaultAPI;
-  if (optionalArgs.api) {
-    searchAPI = optionalArgs.api;
-    delete optionalArgs.api;
+exports.default = function (config) {
+  var types = bareTypes;
+  if (config && config.namespace) {
+    types = Object.keys(types).reduce(function (newTypes, typeKey) {
+      newTypes[typeKey] = config.namespace + '/' + types[typeKey];
+      return newTypes;
+    }, {});
   }
-  return function (dispatch) {
-    dispatch({
-      type: types.SEARCH_REQUESTED,
-      payload: _extends({ query: searchQuery }, optionalArgs)
-    });
 
-    // TODO: send a request directly to middle-tier
-    // with query options, queryText, combined query object as object
-    return searchAPI.search(searchQuery).then(function (data) {
-      return dispatch({
-        type: types.SEARCH_SUCCESS,
-        payload: _extends({ response: data.response }, optionalArgs)
-      });
-    }, function (error) {
-      console.warn('Error searching: ', error);
+  var runSearch = function runSearch(searchQuery) {
+    var optionalArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+    var searchAPI = defaultAPI;
+    if (optionalArgs.api) {
+      searchAPI = optionalArgs.api;
+      delete optionalArgs.api;
+    }
+    return function (dispatch) {
       dispatch({
-        type: types.SEARCH_FAILURE,
-        payload: _extends({ error: error.message }, optionalArgs)
+        type: types.SEARCH_REQUESTED,
+        payload: _extends({ query: searchQuery }, optionalArgs)
       });
-    });
+
+      // TODO: send a request directly to middle-tier
+      // with query options, queryText, combined query object as object
+      return searchAPI.search(searchQuery).then(function (data) {
+        return dispatch({
+          type: types.SEARCH_SUCCESS,
+          payload: _extends({ response: data.response }, optionalArgs)
+        });
+      }, function (error) {
+        console.warn('Error searching: ', error);
+        dispatch({
+          type: types.SEARCH_FAILURE,
+          payload: _extends({ error: error.message }, optionalArgs)
+        });
+      });
+    };
   };
-};
 
-// export const suggest = (queryText) => {
-//   return (dispatch, getState) => {
-//     dispatch({ type: types.SUGGEST_REQUESTED, payload: queryText })
+  // const suggest = (queryText) => {
+  //   return (dispatch, getState) => {
+  //     dispatch({ type: types.SUGGEST_REQUESTED, payload: queryText })
 
-//     let state = getState().search
-//     let query = qb.ext.combined(constraintQuery(state.constraints), state.queryText)
+  //     let state = getState().search
+  //     let query = qb.ext.combined(constraintQuery(state.constraints), state.queryText)
 
-//     return client.suggest(state.suggestQueryText, query, { options: 'all' })
-//       .then(response => {
-//         if (!response.ok) throw new Error('bad search')
-//         return response.json()
-//       })
-//       .then(
-//         response => dispatch({ type: types.SUGGEST_SUCCESS, payload: response }),
-//         response => dispatch({ type: types.SUGGEST_FAILURE, payload: response }),
-//       )
-//   }
-// }
+  //     return client.suggest(state.suggestQueryText, query, { options: 'all' })
+  //       .then(response => {
+  //         if (!response.ok) throw new Error('bad search')
+  //         return response.json()
+  //       })
+  //       .then(
+  //         response => dispatch({ type: types.SUGGEST_SUCCESS, payload: response }),
+  //         response => dispatch({ type: types.SUGGEST_FAILURE, payload: response }),
+  //       )
+  //   }
+  // }
 
-// export const options = () => {
-//   return dispatch => {
-//     dispatch({ type: types.OPTIONS_REQUESTED })
+  // const options = () => {
+  //   return dispatch => {
+  //     dispatch({ type: types.OPTIONS_REQUESTED })
 
-//     return client.options('all')
-//     // !response.ok?
-//       .then(response => response.json())
-//       .then(response => {
-//         if (!(response && response.options)) throw new TypeError('invalid options')
-//         return response
-//       })
-//       .then(
-//         response => dispatch({ type: types.OPTIONS_SUCCESS, payload: response }),
-//         response => dispatch({ type: types.OPTIONS_FAILURE, payload: response })
-//       )
-//   }
-// }
+  //     return client.options('all')
+  //     // !response.ok?
+  //       .then(response => response.json())
+  //       .then(response => {
+  //         if (!(response && response.options)) throw new TypeError('invalid options')
+  //         return response
+  //       })
+  //       .then(
+  //         response => dispatch({ type: types.OPTIONS_SUCCESS, payload: response }),
+  //         response => dispatch({ type: types.OPTIONS_FAILURE, payload: response })
+  //       )
+  //   }
+  // }
 
-var setQueryText = exports.setQueryText = function setQueryText(queryText) {
-  return {
-    type: types.SET_QUERYTEXT,
-    payload: { queryText: queryText }
+  var setQueryText = function setQueryText(queryText) {
+    return {
+      type: types.SET_QUERYTEXT,
+      payload: { queryText: queryText }
+    };
   };
-};
 
-var changePage = exports.changePage = function changePage(n) {
-  return { type: types.CHANGE_PAGE, payload: { page: n } };
-};
-
-// export const pageLength = (l) => {
-//   return dispatch => {
-//     dispatch({ type: types.PAGE_LENGTH, payload: l })
-//     return dispatch(runSearch())
-//   }
-// }
-
-var addConstraint = exports.addConstraint = function addConstraint(constraintName, value) {
-  return {
-    type: types.CONSTRAINT_ADD,
-    payload: { constraintName: constraintName, value: value }
+  var changePage = function changePage(n) {
+    return { type: types.CHANGE_PAGE, payload: { page: n } };
   };
-};
 
-var removeConstraint = exports.removeConstraint = function removeConstraint(constraintName, value) {
+  // const pageLength = (l) => {
+  //   return dispatch => {
+  //     dispatch({ type: types.PAGE_LENGTH, payload: l })
+  //     return dispatch(runSearch())
+  //   }
+  // }
+
+  var addConstraint = function addConstraint(constraintName, value) {
+    return {
+      type: types.CONSTRAINT_ADD,
+      payload: { constraintName: constraintName, value: value }
+    };
+  };
+
+  var removeConstraint = function removeConstraint(constraintName, value) {
+    return {
+      type: types.CONSTRAINT_REMOVE,
+      payload: { constraintName: constraintName, value: value }
+    };
+  };
+
   return {
-    type: types.CONSTRAINT_REMOVE,
-    payload: { constraintName: constraintName, value: value }
+    runSearch: runSearch,
+    setQueryText: setQueryText,
+    changePage: changePage,
+    addConstraint: addConstraint,
+    removeConstraint: removeConstraint
   };
 };
 
