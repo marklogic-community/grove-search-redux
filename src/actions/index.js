@@ -47,7 +47,7 @@ export default config => {
 
       // TODO: send a request directly to middle-tier
       // with query options, queryText, combined query object as object
-      return searchAPI.search(searchQuery).then(
+      return searchAPI.search(searchQuery, optionalArgs).then(
         data => dispatch({
           type: types.SEARCH_SUCCESS,
           payload: {response: data.response, ...optionalArgs}
