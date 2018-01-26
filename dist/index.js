@@ -99,6 +99,8 @@ var SEARCH_REQUESTED = exports.SEARCH_REQUESTED = 'search/SEARCH_REQUESTED';
 var SEARCH_SUCCESS = exports.SEARCH_SUCCESS = 'search/SEARCH_SUCCESS';
 var SEARCH_FAILURE = exports.SEARCH_FAILURE = 'search/SEARCH_FAILURE';
 
+var CLEAR_SEARCH_RESULTS = exports.CLEAR_SEARCH_RESULTS = 'search/CLEAR_SEARCH_RESULTS';
+
 var OPTIONS_REQUESTED = exports.OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED';
 var OPTIONS_SUCCESS = exports.OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS';
 var OPTIONS_FAILURE = exports.OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
@@ -828,6 +830,8 @@ var createReducer = exports.createReducer = function createReducer(config) {
             error: action.payload && action.payload.error
           })
         });
+      case types.CLEAR_SEARCH_RESULTS:
+        return {};
       default:
         return state;
     }
@@ -1836,6 +1840,13 @@ exports.default = function (config) {
     }, {});
   }
 
+  var receiveSuccessfulSearch = function receiveSuccessfulSearch(response, optionalArgs) {
+    return {
+      type: types.SEARCH_SUCCESS,
+      payload: _extends({ response: response }, optionalArgs)
+    };
+  };
+
   var runSearch = function runSearch(searchQuery) {
     var optionalArgs = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -1853,10 +1864,7 @@ exports.default = function (config) {
       // TODO: send a request directly to middle-tier
       // with query options, queryText, combined query object as object
       return searchAPI.search(searchQuery, optionalArgs).then(function (data) {
-        return dispatch({
-          type: types.SEARCH_SUCCESS,
-          payload: _extends({ response: data.response }, optionalArgs)
-        });
+        return dispatch(receiveSuccessfulSearch(data.response, optionalArgs));
       }, function (error) {
         console.warn('Error searching: ', error);
         dispatch({
@@ -1864,6 +1872,14 @@ exports.default = function (config) {
           payload: _extends({ error: error.message }, optionalArgs)
         });
       });
+    };
+  };
+
+  var clearSearchResults = function clearSearchResults() {
+    var optionalArgs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    return {
+      type: types.CLEAR_SEARCH_RESULTS,
+      payload: _extends({}, optionalArgs)
     };
   };
 
@@ -1938,6 +1954,8 @@ exports.default = function (config) {
 
   return {
     runSearch: runSearch,
+    receiveSuccessfulSearch: receiveSuccessfulSearch,
+    clearSearchResults: clearSearchResults,
     setQueryText: setQueryText,
     changePage: changePage,
     addConstraint: addConstraint,
