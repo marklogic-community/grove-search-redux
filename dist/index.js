@@ -1852,7 +1852,7 @@ exports.default = function (config) {
 
       // TODO: send a request directly to middle-tier
       // with query options, queryText, combined query object as object
-      return searchAPI.search(searchQuery).then(function (data) {
+      return searchAPI.search(searchQuery, optionalArgs).then(function (data) {
         return dispatch({
           type: types.SEARCH_SUCCESS,
           payload: _extends({ response: data.response }, optionalArgs)
