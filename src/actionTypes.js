@@ -14,6 +14,8 @@ export const SEARCH_REQUESTED = 'search/SEARCH_REQUESTED'
 export const SEARCH_SUCCESS = 'search/SEARCH_SUCCESS'
 export const SEARCH_FAILURE = 'search/SEARCH_FAILURE'
 
+export const CLEAR_SEARCH_RESULTS = 'search/CLEAR_SEARCH_RESULTS'
+
 export const OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED'
 export const OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS'
 export const OPTIONS_FAILURE = 'search/OPTIONS_FAILURE'

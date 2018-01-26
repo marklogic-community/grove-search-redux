@@ -38,6 +38,8 @@ export const createReducer = config => {
             error: action.payload && action.payload.error
           }
         }
+      case types.CLEAR_SEARCH_RESULTS:
+        return {}
       default:
         return state
     }

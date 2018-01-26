@@ -33,6 +33,11 @@ export default config => {
     }, {})
   }
 
+  const receiveSuccessfulSearch = (response, optionalArgs) => ({
+    type: types.SEARCH_SUCCESS,
+    payload: {response, ...optionalArgs}
+  })
+
   const runSearch = (searchQuery, optionalArgs = {}) => {
     let searchAPI = defaultAPI
     if (optionalArgs.api) {
@@ -48,10 +53,7 @@ export default config => {
       // TODO: send a request directly to middle-tier
       // with query options, queryText, combined query object as object
       return searchAPI.search(searchQuery, optionalArgs).then(
-        data => dispatch({
-          type: types.SEARCH_SUCCESS,
-          payload: {response: data.response, ...optionalArgs}
-        }),
+        data => dispatch(receiveSuccessfulSearch(data.response, optionalArgs)),
         error => {
           console.warn('Error searching: ', error)
           dispatch({
@@ -62,6 +64,11 @@ export default config => {
       )
     }
   }
+
+  const clearSearchResults = (optionalArgs = {}) => ({
+    type: types.CLEAR_SEARCH_RESULTS,
+    payload: {...optionalArgs}
+  })
 
   // const suggest = (queryText) => {
   //   return (dispatch, getState) => {
@@ -130,6 +137,8 @@ export default config => {
 
   return {
     runSearch,
+    receiveSuccessfulSearch,
+    clearSearchResults,
     setQueryText,
     changePage,
     addConstraint,

@@ -16,12 +16,14 @@ describe('search', () => {
   describe('page', () => {
     it('is initially undefined, defaults to 1 on search, and changes', () => {
       expect(selectors.getPage(store.getState())).toBeUndefined()
+      expect(selectors.getPageLength(store.getState())).toBeUndefined()
       store.dispatch(
         actions.runSearch(
           selectors.getStagedQuery(store.getState())
         )
       )
       expect(selectors.getPage(store.getState())).toEqual(1)
+      expect(selectors.getPageLength(store.getState())).toEqual(10)
       store.dispatch(actions.changePage(3))
       store.dispatch(
         actions.runSearch(
@@ -121,7 +123,8 @@ describe('search', () => {
         {api: mockAPI}
       )).then(() => {
         expect(mockSearch).toHaveBeenCalledWith(
-          expect.objectContaining({queryText: 'new text'})
+          expect.objectContaining({queryText: 'new text'}),
+          expect.anything()
         )
         expect(
           selectors.getExecutedSearchQueryText(store.getState())
@@ -140,7 +143,8 @@ describe('search', () => {
       )).then(() => {
         expect(selectors.getPage(store.getState())).toEqual(2)
         expect(mockSearch).toHaveBeenCalledWith(
-          expect.objectContaining({page: 2})
+          expect.objectContaining({page: 2}),
+          expect.anything()
         )
         done()
       })
@@ -173,6 +177,21 @@ describe('search', () => {
           selectors.getStagedQuery(store.getState())
         )
       )
+    })
+
+    it('allows search to be cleared', () => {
+      store.dispatch(
+        actions.receiveSuccessfulSearch(mockSearchResponse.response)
+      )
+      expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
+      store.dispatch(
+        actions.clearSearchResults()
+      )
+      expect(selectors.getSearchResults(store.getState())).toEqual([])
+      expect(selectors.isSearchPending(store.getState())).toBe(false)
+      expect(selectors.getPage(store.getState())).toBeUndefined()
+      expect(selectors.getPageLength(store.getState())).toBeUndefined()
+      expect(selectors.getSearchError(store.getState())).toBeUndefined()
     })
 
     // Could have a long-running search error, while a second search succeeds
