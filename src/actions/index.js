@@ -15,7 +15,7 @@ const defaultAPI = {
       body: JSON.stringify(searchQuery)
     }).then(response => {
       if (!response.ok) {
-        return response.json().then((error) => {
+        return response.json().then(error => {
           throw new Error(error.message)
         })
       }
@@ -35,7 +35,7 @@ export default config => {
 
   const receiveSuccessfulSearch = (response, optionalArgs) => ({
     type: types.SEARCH_SUCCESS,
-    payload: {response, ...optionalArgs}
+    payload: { response, ...optionalArgs }
   })
 
   const runSearch = (searchQuery, optionalArgs = {}) => {
@@ -44,10 +44,10 @@ export default config => {
       searchAPI = optionalArgs.api
       delete optionalArgs.api
     }
-    return (dispatch) => {
+    return dispatch => {
       dispatch({
         type: types.SEARCH_REQUESTED,
-        payload: {query: searchQuery, ...optionalArgs}
+        payload: { query: searchQuery, ...optionalArgs }
       })
 
       // TODO: send a request directly to middle-tier
@@ -67,7 +67,7 @@ export default config => {
 
   const clearSearchResults = (optionalArgs = {}) => ({
     type: types.CLEAR_SEARCH_RESULTS,
-    payload: {...optionalArgs}
+    payload: { ...optionalArgs }
   })
 
   // const suggest = (queryText) => {
@@ -107,15 +107,15 @@ export default config => {
   //   }
   // }
 
-  const setQueryText = (queryText) => {
+  const setQueryText = queryText => {
     return {
       type: types.SET_QUERYTEXT,
-      payload: {queryText}
+      payload: { queryText }
     }
   }
 
-  const changePage = (n) => {
-    return { type: types.CHANGE_PAGE, payload: {page: n} }
+  const changePage = n => {
+    return { type: types.CHANGE_PAGE, payload: { page: n } }
   }
 
   // const pageLength = (l) => {
@@ -125,14 +125,14 @@ export default config => {
   //   }
   // }
 
-  const addConstraint = (constraintName, value) => ({
+  const addConstraint = (constraintName, value, optional = {}) => ({
     type: types.CONSTRAINT_ADD,
-    payload: {constraintName, value}
+    payload: { constraintName, value, boolean: optional.boolean || 'and' }
   })
 
-  const removeConstraint = (constraintName, value) => ({
+  const removeConstraint = (constraintName, value, optional = {}) => ({
     type: types.CONSTRAINT_REMOVE,
-    payload: {constraintName, value}
+    payload: { constraintName, value, boolean: optional.boolean || 'and' }
   })
 
   return {

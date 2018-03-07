@@ -34,28 +34,36 @@ export const createReducer = config => {
 
   const constraints = (state = {}, action) => {
     let name
+    let boolean
     switch (action.type) {
       case types.CONSTRAINT_ADD:
         name = action.payload.constraintName
+        boolean = action.payload.boolean
         return {
           ...state,
-          [name]: [
-            ...(state[name] || []),
-            { name: action.payload.value }
-          ]
+          [name]: {
+            [boolean]: [
+              ...((state[name] && state[name][boolean]) || []),
+              {
+                name: action.payload.value,
+                value: action.payload.value
+              }
+            ]
+          }
         }
       case types.CONSTRAINT_REMOVE:
         name = action.payload.constraintName
-        let filtered = state[name].filter(constraintValue => (
-          constraintValue.name !== action.payload.value
-        ))
+        boolean = action.payload.boolean
+        const filtered = state[name][boolean].filter(
+          constraintValue => constraintValue.name !== action.payload.value
+        )
         if (filtered.length === 0) {
           // immutably remove the entry from state altogether
           let clone = Object.assign({}, state)
           delete clone[name]
           return clone
         } else {
-          return { ...state, [name]: filtered }
+          return { ...state, [name]: { [boolean]: filtered } }
         }
       default:
         return state
@@ -63,7 +71,10 @@ export const createReducer = config => {
   }
 
   return combineReducers({
-    queryText, page, pageLength, constraints
+    queryText,
+    page,
+    pageLength,
+    constraints
   })
 }
 
