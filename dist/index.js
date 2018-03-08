@@ -1748,13 +1748,19 @@ var createReducer = exports.createReducer = function createReducer(config) {
     var action = arguments[1];
 
     var name = void 0;
+    var boolean = void 0;
     switch (action.type) {
       case types.CONSTRAINT_ADD:
         name = action.payload.constraintName;
-        return _extends({}, state, _defineProperty({}, name, [].concat(_toConsumableArray(state[name] || []), [{ name: action.payload.value }])));
+        boolean = action.payload.boolean;
+        return _extends({}, state, _defineProperty({}, name, _defineProperty({}, boolean, [].concat(_toConsumableArray(state[name] && state[name][boolean] || []), [{
+          name: action.payload.value,
+          value: action.payload.value
+        }]))));
       case types.CONSTRAINT_REMOVE:
         name = action.payload.constraintName;
-        var filtered = state[name].filter(function (constraintValue) {
+        boolean = action.payload.boolean;
+        var filtered = state[name][boolean].filter(function (constraintValue) {
           return constraintValue.name !== action.payload.value;
         });
         if (filtered.length === 0) {
@@ -1763,7 +1769,7 @@ var createReducer = exports.createReducer = function createReducer(config) {
           delete clone[name];
           return clone;
         } else {
-          return _extends({}, state, _defineProperty({}, name, filtered));
+          return _extends({}, state, _defineProperty({}, name, _defineProperty({}, boolean, filtered)));
         }
       default:
         return state;
@@ -1771,7 +1777,10 @@ var createReducer = exports.createReducer = function createReducer(config) {
   };
 
   return (0, _redux.combineReducers)({
-    queryText: queryText, page: page, pageLength: pageLength, constraints: constraints
+    queryText: queryText,
+    page: page,
+    pageLength: pageLength,
+    constraints: constraints
   });
 };
 
@@ -1939,16 +1948,18 @@ exports.default = function (config) {
   // }
 
   var addConstraint = function addConstraint(constraintName, value) {
+    var optional = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     return {
       type: types.CONSTRAINT_ADD,
-      payload: { constraintName: constraintName, value: value }
+      payload: { constraintName: constraintName, value: value, boolean: optional.boolean || 'and' }
     };
   };
 
   var removeConstraint = function removeConstraint(constraintName, value) {
+    var optional = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     return {
       type: types.CONSTRAINT_REMOVE,
-      payload: { constraintName: constraintName, value: value }
+      payload: { constraintName: constraintName, value: value, boolean: optional.boolean || 'and' }
     };
   };
 

@@ -1,6 +1,6 @@
 {
   "name": "ml-search-redux",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
   "repository": "ssh://git@project.marklogic.com:7999/nacw/ml-search-redux.git",
@@ -40,9 +40,7 @@
     "webpack": "^3.5.5"
   },
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1",
-    "ml-query-builder.js": "^1.0.0",
-    "ml-rest.js": "^1.0.0-2"
+    "isomorphic-fetch": "^2.2.1"
   },
   "peerDependencies": {
     "redux": "~3",
