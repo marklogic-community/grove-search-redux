@@ -12,6 +12,7 @@ const defaultAPI = {
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'same-origin',
       body: JSON.stringify(searchQuery)
     }).then(response => {
       if (!response.ok) {
