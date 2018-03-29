@@ -1828,6 +1828,7 @@ var defaultAPI = {
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'same-origin',
       body: JSON.stringify(searchQuery)
     }).then(function (response) {
       if (!response.ok) {

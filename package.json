@@ -1,6 +1,6 @@
 {
   "name": "ml-search-redux",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
   "repository": "ssh://git@project.marklogic.com:7999/nacw/ml-search-redux.git",
