@@ -1,6 +1,6 @@
 # MarkLogic Search Implemented in Redux
 
-This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic Sawyer (formerly "Treehouse") project. See the [reference application](https://project.marklogic.com/repo/projects/NACW/repos/ml-treehouse/browse) for an example of using this library in practice.
+This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic UI Resources (MUIR) project. See the [reference application](https://project.marklogic.com/repo/projects/NACW/repos/muir/browse) for an example of using this library in practice.
 
 ## Install
 
