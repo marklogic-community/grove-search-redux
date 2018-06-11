@@ -12,13 +12,14 @@ export const createReducer = config => {
     switch (action.type) {
       case types.SEARCH_REQUESTED:
         return {
+          ...state,
           id: Math.random().toString().substr(2, 10),
           pending: true,
-          response: {
-            results: [],
-            // facets: {},
-            error: undefined
-          },
+          // response: {
+          //   results: [],
+          //   // facets: {},
+          //   error: undefined
+          // },
           query: {...action.payload.query}
         }
       case types.SEARCH_SUCCESS: {

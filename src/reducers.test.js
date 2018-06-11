@@ -18,53 +18,6 @@ describe('search reducer', () => {
     expect(reducer(undefined, {})).toMatchObject(initialState)
   })
 
-  describe('SEARCH_REQUESTED', () => {
-    it('hydrates the search based on stagedSearch', () => {
-      expect(
-        reducer(userCreatedSearchState, {
-          type: types.SEARCH_REQUESTED,
-          payload: {query: selectors.getStagedQuery(finishedExecutedState)}
-        })
-      ).toMatchObject({
-        ...pendingExecutedState,
-        executedSearch: {
-          ...pendingExecutedState.executedSearch,
-          id: expect.any(String)
-        }
-      })
-    })
-
-    // This might become useful eventually, so leaving this idea here
-    // it('allows the search query to be set explicitly with payload')
-
-    it('clears the previous search', () => {
-      const newInitialState = {
-        ...finishedExecutedState,
-        executedSearch: {
-          ...finishedExecutedState,
-          id: 'earlierSearchId',
-          results: [1, 2, 3],
-          query: {
-            ...finishedExecutedState,
-            queryText: 'earlier search queryText'
-          }
-        }
-      }
-      const resultingState = reducer(newInitialState, {
-        type: types.SEARCH_REQUESTED,
-        payload: {query: selectors.getStagedQuery(finishedExecutedState)}
-      })
-      expect(resultingState).toMatchObject(pendingExecutedState)
-      // Ensure that ids are different, because pendingExecutedState
-      // uses expect.any(String) for id
-      expect(
-        selectors.getExecutedSearchId(resultingState)
-      ).not.toEqual(
-        selectors.getExecutedSearchId(newInitialState)
-      )
-    })
-  })
-
   describe('SEARCH_SUCCESS', () => {
     it('updates executedSearch with results, facets, and turns off pending', () => {
       expect(

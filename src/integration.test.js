@@ -127,6 +127,37 @@ describe('search', () => {
         })
     })
 
+    // TODO: this helps to remove flickering when new searches run
+    // but it is a little odd logically
+    // This might suggest that current results and facets should
+    // exist outside the 'executedSearch'
+    it('maintains stale results while new search pending', done => {
+      nock('http://localhost')
+        .post(/search/)
+        .reply(200, mockSearchResponse)
+      store
+        .dispatch(actions.runSearch(selectors.getStagedQuery(store.getState())))
+        .then(() => {
+          const unsubscribe = store.subscribe(() => {
+            try {
+              expect(selectors.isSearchPending(store.getState())).toBe(true)
+              expect(selectors.getSearchResults(store.getState())).toEqual(
+                mockResults
+              )
+              done()
+            } catch (error) {
+              done.fail(error)
+            }
+            unsubscribe()
+          })
+        })
+        .then(() =>
+          store.dispatch(
+            actions.runSearch(selectors.getStagedQuery(store.getState()))
+          )
+        )
+    })
+
     it('responds to queryText changes', done => {
       const mockSearch = jest.fn(() => Promise.resolve({}))
       const mockAPI = { search: mockSearch }
