@@ -1,9 +1,9 @@
 {
-  "name": "ml-search-redux",
+  "name": "muir-search-redux",
   "version": "0.7.0",
   "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
-  "repository": "ssh://git@project.marklogic.com:7999/nacw/ml-search-redux.git",
+  "repository": "ssh://git@project.marklogic.com:7999/nacw/muir-search-redux.git",
   "scripts": {
     "build": "webpack",
     "test": "eslint src && jest",

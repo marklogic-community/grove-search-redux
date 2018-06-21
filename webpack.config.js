@@ -5,7 +5,7 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'ml-search-redux',
+    library: 'muir-search-redux',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },

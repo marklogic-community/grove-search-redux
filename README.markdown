@@ -4,7 +4,7 @@ This is a Redux implementation of MarkLogic search. It forms part of the MarkLog
 
 ## Install
 
-    npm install ml-search-redux --save
+    npm install muir-search-redux --save
 
 ## Use
 
@@ -14,7 +14,7 @@ The provided selectors only know about their slice of state, so your consuming c
 import {
   actions as searchActions,
   selectors as searchSelectors
-} from 'ml-search-redux';
+} from 'muir-search-redux';
 
 const bindSelector = (selector, mountPoint) => {
   return (state, ...args) => {
@@ -34,7 +34,7 @@ const boundSearchSelectors = bindSelectors(searchSelectors, 'search');
 Also, you will need to provide a searchQuery to the `runSearch` action. This is done for you already if you are using the default ML-Treehouse React components. In other cases, this can be done with something like:
 
 ```javascript
-import { searchActions } from 'ml-search-redux';
+import { searchActions } from 'muir-search-redux';
 
 // Using `wrappedSearchSelectors` from the code above
 // `state` imported most likely using the React-Redux Provider

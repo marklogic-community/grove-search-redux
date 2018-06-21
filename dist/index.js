@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("ml-search-redux", [], factory);
+		define("muir-search-redux", [], factory);
 	else if(typeof exports === 'object')
-		exports["ml-search-redux"] = factory();
+		exports["muir-search-redux"] = factory();
 	else
-		root["ml-search-redux"] = factory();
+		root["muir-search-redux"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -818,9 +818,19 @@ var createReducer = exports.createReducer = function createReducer(config) {
       case types.SEARCH_SUCCESS:
         {
           var response = action.payload.response;
+          var executionTime = response.metrics && response.metrics['total-time'];
+          if (executionTime) {
+            executionTime = parseFloat(executionTime.replace(/^PT/, '').replace(/S$/, ''));
+          }
           return _extends({}, state, {
             pending: false,
-            response: response
+            response: {
+              results: response.results,
+              facets: response.facets,
+              metadata: {
+                executionTime: executionTime
+              }
+            }
           });
         }
       case types.SEARCH_FAILURE:
@@ -1823,7 +1833,7 @@ __webpack_require__(29);
 
 var defaultAPI = {
   search: function search(searchQuery) {
-    return fetch(new URL('/api/search', document.baseURI).toString(), {
+    return fetch(new URL('/api/search/all', document.baseURI).toString(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -1874,7 +1884,7 @@ exports.default = function (config) {
       // TODO: send a request directly to middle-tier
       // with query options, queryText, combined query object as object
       return searchAPI.search(searchQuery, optionalArgs).then(function (data) {
-        return dispatch(receiveSuccessfulSearch(data.response, optionalArgs));
+        return dispatch(receiveSuccessfulSearch(data, optionalArgs));
       }, function (error) {
         console.warn('Error searching: ', error);
         dispatch({
