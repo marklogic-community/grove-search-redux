@@ -7,7 +7,7 @@ require('isomorphic-fetch')
 
 const defaultAPI = {
   search: searchQuery => {
-    return fetch(new URL('/api/search', document.baseURI).toString(), {
+    return fetch(new URL('/api/search/all', document.baseURI).toString(), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

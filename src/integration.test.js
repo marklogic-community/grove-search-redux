@@ -17,14 +17,19 @@ describe('search', () => {
     it('is initially undefined, defaults to 1 on search, and changes', () => {
       expect(selectors.getPage(store.getState())).toBeUndefined()
       expect(selectors.getPageLength(store.getState())).toBeUndefined()
+      const mockAPI = { search: () => Promise.resolve({}) }
       store.dispatch(
-        actions.runSearch(selectors.getStagedQuery(store.getState()))
+        actions.runSearch(selectors.getStagedQuery(store.getState()), {
+          api: mockAPI
+        })
       )
       expect(selectors.getPage(store.getState())).toEqual(1)
       expect(selectors.getPageLength(store.getState())).toEqual(10)
       store.dispatch(actions.changePage(3))
       store.dispatch(
-        actions.runSearch(selectors.getStagedQuery(store.getState()))
+        actions.runSearch(selectors.getStagedQuery(store.getState()), {
+          api: mockAPI
+        })
       )
       expect(selectors.getPage(store.getState())).toEqual(3)
     })
@@ -90,7 +95,7 @@ describe('search', () => {
 
     it('runs a successful search', done => {
       nock('http://localhost')
-        .post(/search/)
+        .post('/api/search/all')
         .reply(200, mockSearchResponse)
       expect(selectors.getSearchResults(store.getState())).toEqual([])
       expect(selectors.isSearchPending(store.getState())).toBe(false)
@@ -110,6 +115,7 @@ describe('search', () => {
         .dispatch(actions.runSearch(selectors.getStagedQuery(store.getState())))
         .then(() => {
           try {
+            expect(nock.isDone()).toBe(true)
             expect(selectors.isSearchPending(store.getState())).toBe(false)
             expect(selectors.getSearchResults(store.getState())).toEqual(
               mockResults
@@ -133,11 +139,13 @@ describe('search', () => {
     // exist outside the 'executedSearch'
     it('maintains stale results while new search pending', done => {
       nock('http://localhost')
-        .post(/search/)
+        .persist()
+        .post('/api/search/all')
         .reply(200, mockSearchResponse)
       store
         .dispatch(actions.runSearch(selectors.getStagedQuery(store.getState())))
         .then(() => {
+          expect(nock.isDone()).toBe(true)
           const unsubscribe = store.subscribe(() => {
             try {
               expect(selectors.isSearchPending(store.getState())).toBe(true)
@@ -206,7 +214,7 @@ describe('search', () => {
 
     it('reports error after search failure', done => {
       nock('http://localhost')
-        .post(/search/)
+        .post('/api/search/all')
         .reply(400, {
           statusCode: 400,
           status: 'Bad Request',
