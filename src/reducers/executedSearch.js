@@ -13,21 +13,33 @@ export const createReducer = config => {
       case types.SEARCH_REQUESTED:
         return {
           ...state,
-          id: Math.random().toString().substr(2, 10),
+          id: Math.random()
+            .toString()
+            .substr(2, 10),
           pending: true,
           // response: {
           //   results: [],
           //   // facets: {},
           //   error: undefined
           // },
-          query: {...action.payload.query}
+          query: { ...action.payload.query }
         }
       case types.SEARCH_SUCCESS: {
         const response = action.payload.response
+        let executionTime = response.metrics && response.metrics['total-time']
+        if (executionTime) {
+          executionTime = parseFloat(executionTime.replace(/^PT/, '').replace(/S$/, ''))
+        }
         return {
           ...state,
           pending: false,
-          response: response
+          response: {
+            results: response.results,
+            facets: response.facets,
+            metadata: {
+              executionTime
+            }
+          }
         }
       }
       case types.SEARCH_FAILURE:
@@ -74,11 +86,9 @@ const getFromSearchResponseMetadata = (state, propertyName) => {
 
 const getSearchTotal = state => getFromSearchResponseMetadata(state, 'total')
 
-const getPageLength = state =>
-  getFromExecutedSearchQuery(state, 'pageLength')
-const isSearchPending = state => (
+const getPageLength = state => getFromExecutedSearchQuery(state, 'pageLength')
+const isSearchPending = state =>
   getFromExecutedSearch(state, 'pending') || false
-)
 
 export const selectors = {
   // Executed search bookkeeping
@@ -91,22 +101,21 @@ export const selectors = {
   // getConstraints: state => getExecutedSearchQuery(state).constraints,
   getPage: state => getFromExecutedSearchQuery(state, 'page'),
   getPageLength: getPageLength,
-  getExecutedSearchQueryText: state => getFromExecutedSearchQuery(state, 'queryText'),
+  getExecutedSearchQueryText: state =>
+    getFromExecutedSearchQuery(state, 'queryText'),
 
   // From search response
   // getSearchResponse: getSearchResponse,
   getSearchResults: state => getFromSearchResponse(state, 'results') || [],
   searchFacets: state => getFromSearchResponse(state, 'facets'),
   getSearchTotal: getSearchTotal,
-  getSearchExecutionTime: state => (
-    getFromSearchResponseMetadata(state, 'executionTime')
-  ),
+  getSearchExecutionTime: state =>
+    getFromSearchResponseMetadata(state, 'executionTime'),
   getSearchError: state => getFromSearchResponse(state, 'error'),
 
   // Calculated
-  getSearchTotalPages: state => Math.ceil(
-    getSearchTotal(state) / getPageLength(state)
-  ),
+  getSearchTotalPages: state =>
+    Math.ceil(getSearchTotal(state) / getPageLength(state)),
   // TODO: test
   isSearchComplete: state => state.response && !isSearchPending(state)
 }

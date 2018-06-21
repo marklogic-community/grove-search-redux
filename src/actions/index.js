@@ -54,7 +54,7 @@ export default config => {
       // TODO: send a request directly to middle-tier
       // with query options, queryText, combined query object as object
       return searchAPI.search(searchQuery, optionalArgs).then(
-        data => dispatch(receiveSuccessfulSearch(data.response, optionalArgs)),
+        data => dispatch(receiveSuccessfulSearch(data, optionalArgs)),
         error => {
           console.warn('Error searching: ', error)
           dispatch({

@@ -47,14 +47,12 @@ describe('search actions', () => {
       nock('http://localhost')
         .post(/search/)
         .reply(200, {
-          response: {
-            results: [],
-            facets: {}
-          }
+          results: [],
+          facets: {}
         })
       const mockQuery = {}
       const expectedActions = [
-        { type: types.SEARCH_REQUESTED, payload: {query: mockQuery} },
+        { type: types.SEARCH_REQUESTED, payload: { query: mockQuery } },
         {
           type: types.SEARCH_SUCCESS,
           payload: {
@@ -83,7 +81,7 @@ describe('search actions', () => {
         })
       const mockQuery = {}
       const expectedActions = [
-        { type: types.SEARCH_REQUESTED, payload: {query: mockQuery} },
+        { type: types.SEARCH_REQUESTED, payload: { query: mockQuery } },
         {
           type: types.SEARCH_FAILURE,
           payload: {

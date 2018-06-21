@@ -59,14 +59,12 @@ export const mockFacets = {
 }
 
 export const mockSearchResponse = {
-  response: {
-    metadata: {
-      executionTime: 0.00198,
-      total: 1
-    },
-    results: mockResults,
-    facets: mockFacets
-  }
+  metrics: {
+    'total-time': 'PT0.00198S'
+  },
+  total: 1,
+  results: mockResults,
+  facets: mockFacets
 }
 
 export const finishedExecutedState = {
@@ -76,7 +74,12 @@ export const finishedExecutedState = {
     pending: false,
     response: {
       ...pendingExecutedState.executedSearch.response,
-      ...mockSearchResponse.response
+      results: mockSearchResponse.results,
+      facets: mockSearchResponse.facets,
+      metadata: {
+        executionTime: 0.00198,
+        total: mockSearchResponse.total
+      }
     }
   }
 }

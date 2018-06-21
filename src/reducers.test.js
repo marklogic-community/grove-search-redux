@@ -8,7 +8,6 @@ import {
   userCreatedSearchState,
   pendingExecutedState,
   mockResults,
-  mockSearchResponse,
   finishedExecutedState,
   failedState
 } from './test-helpers'
@@ -16,22 +15,6 @@ import {
 describe('search reducer', () => {
   it('returns the initial state', () => {
     expect(reducer(undefined, {})).toMatchObject(initialState)
-  })
-
-  describe('SEARCH_SUCCESS', () => {
-    it('updates executedSearch with results, facets, and turns off pending', () => {
-      expect(
-        reducer(pendingExecutedState, {
-          type: types.SEARCH_SUCCESS,
-          payload: {
-            response: { ...mockSearchResponse.response },
-            id: 'pendingID'
-          }
-        })
-      ).toMatchObject(finishedExecutedState)
-    })
-
-    it('eliminates race conditions')
   })
 
   describe('SEARCH_FAILURE', () => {
@@ -59,7 +42,7 @@ describe('search reducer', () => {
       expect(
         reducer(initialState, {
           type: types.SET_QUERYTEXT,
-          payload: {queryText: 'new queryText'}
+          payload: { queryText: 'new queryText' }
         })
       ).toMatchObject(expectedState)
     })
@@ -70,7 +53,7 @@ describe('search reducer', () => {
       expect(
         reducer(finishedExecutedState, {
           type: types.CHANGE_PAGE,
-          payload: {page: 3}
+          payload: { page: 3 }
         })
       ).toMatchObject({
         ...finishedExecutedState,
@@ -84,7 +67,9 @@ describe('search reducer', () => {
 
   describe('getSearchResults', () => {
     it('works', () => {
-      expect(selectors.getSearchResults(finishedExecutedState)).toEqual(mockResults)
+      expect(selectors.getSearchResults(finishedExecutedState)).toEqual(
+        mockResults
+      )
     })
   })
 
@@ -103,7 +88,9 @@ describe('search reducer', () => {
 
   describe('getSearchExecutionTime', () => {
     it('works', () => {
-      expect(selectors.getSearchExecutionTime(finishedExecutedState)).toEqual(0.00198)
+      expect(selectors.getSearchExecutionTime(finishedExecutedState)).toEqual(
+        0.00198
+      )
     })
   })
 
@@ -155,17 +142,17 @@ describe('search reducer', () => {
 
   describe('getExecutedSearch', () => {
     it('works', () => {
-      expect(
-        selectors.getExecutedSearch(finishedExecutedState)
-      ).toEqual(finishedExecutedState.executedSearch)
+      expect(selectors.getExecutedSearch(finishedExecutedState)).toEqual(
+        finishedExecutedState.executedSearch
+      )
     })
   })
 
   describe('getExecutedSearchQuery', () => {
     it('works', () => {
-      expect(
-        selectors.getExecutedSearchQuery(finishedExecutedState)
-      ).toEqual(finishedExecutedState.executedSearch.query)
+      expect(selectors.getExecutedSearchQuery(finishedExecutedState)).toEqual(
+        finishedExecutedState.executedSearch.query
+      )
     })
   })
 
@@ -199,7 +186,9 @@ describe('search reducer', () => {
 
   describe('getVisibleQueryText', () => {
     it('works', () => {
-      expect(selectors.getVisibleQueryText(userCreatedSearchState)).toEqual('queryText')
+      expect(selectors.getVisibleQueryText(userCreatedSearchState)).toEqual(
+        'queryText'
+      )
     })
   })
 })

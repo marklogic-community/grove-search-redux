@@ -241,7 +241,7 @@ describe('search', () => {
 
     it('allows search to be cleared', () => {
       store.dispatch(
-        actions.receiveSuccessfulSearch(mockSearchResponse.response)
+        actions.receiveSuccessfulSearch(mockSearchResponse)
       )
       expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
       store.dispatch(actions.clearSearchResults())
