@@ -100,29 +100,6 @@ describe('search reducer', () => {
     })
   })
 
-  // describe('getConstraints', () => {
-  //   it('works', () => {
-  //     const constraints = [
-  //       {
-  //         Products: 'Hammer'
-  //       }
-  //     ]
-  //     const mockState = {
-  //       search: {
-  //         ...finishedExecutedState,
-  //         executedSearch: {
-  //           ...finishedExecutedState.executedSearch,
-  //           query: {
-  //             ...finishedExecutedState.executedSearch.query,
-  //             constraints: constraints
-  //           }
-  //         }
-  //       }
-  //     }
-  //     expect(selectors.getConstraints(mockState)).toEqual(constraints)
-  //   })
-  // })
-
   describe('getPage', () => {
     it('works', () => {
       expect(selectors.getPage(finishedExecutedState)).toEqual(1)

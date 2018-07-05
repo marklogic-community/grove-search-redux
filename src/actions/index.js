@@ -126,13 +126,13 @@ export default config => {
   //   }
   // }
 
-  const addConstraint = (constraintName, value, optional = {}) => ({
-    type: types.CONSTRAINT_ADD,
+  const addFilter = (constraintName, value, optional = {}) => ({
+    type: types.FILTER_ADD,
     payload: { constraintName, value, boolean: optional.boolean || 'and' }
   })
 
-  const removeConstraint = (constraintName, value, optional = {}) => ({
-    type: types.CONSTRAINT_REMOVE,
+  const removeFilter = (constraintName, value, optional = {}) => ({
+    type: types.FILTER_REMOVE,
     payload: { constraintName, value, boolean: optional.boolean || 'and' }
   })
 
@@ -142,7 +142,7 @@ export default config => {
     clearSearchResults,
     setQueryText,
     changePage,
-    addConstraint,
-    removeConstraint
+    addFilter,
+    removeFilter
   }
 }

@@ -35,12 +35,12 @@ describe('search', () => {
     })
   })
 
-  it('manages constraints', () => {
-    expect(selectors.stagedConstraints(store.getState())).toEqual({})
+  it('manages filters', () => {
+    expect(selectors.stagedFilters(store.getState())).toEqual({})
     // TODO: validation that it is valid and not duplicate? Where?
     // Probably not duplicate in reducer, right? A NOOP?
-    store.dispatch(actions.addConstraint('eyeColor', 'blue'))
-    expect(selectors.stagedConstraints(store.getState())).toEqual({
+    store.dispatch(actions.addFilter('eyeColor', 'blue'))
+    expect(selectors.stagedFilters(store.getState())).toEqual({
       eyeColor: {
         and: [
           {
@@ -51,8 +51,8 @@ describe('search', () => {
         ]
       }
     })
-    store.dispatch(actions.addConstraint('eyeColor', 'brown'))
-    expect(selectors.stagedConstraints(store.getState())).toEqual({
+    store.dispatch(actions.addFilter('eyeColor', 'brown'))
+    expect(selectors.stagedFilters(store.getState())).toEqual({
       eyeColor: {
         and: [
           { name: 'blue', value: 'blue' },
@@ -60,34 +60,34 @@ describe('search', () => {
         ]
       }
     })
-    store.dispatch(actions.removeConstraint('eyeColor', 'blue'))
-    expect(selectors.stagedConstraints(store.getState())).toEqual({
+    store.dispatch(actions.removeFilter('eyeColor', 'blue'))
+    expect(selectors.stagedFilters(store.getState())).toEqual({
       eyeColor: { and: [{ name: 'brown', value: 'brown' }] }
     })
-    store.dispatch(actions.removeConstraint('eyeColor', 'brown'))
-    expect(selectors.stagedConstraints(store.getState())).toEqual({})
+    store.dispatch(actions.removeFilter('eyeColor', 'brown'))
+    expect(selectors.stagedFilters(store.getState())).toEqual({})
   })
 
-  it('manages ORed constraints', () => {
-    store.dispatch(actions.addConstraint('eyeColor', 'blue', { boolean: 'or' }))
+  it('manages ORed filters', () => {
+    store.dispatch(actions.addFilter('eyeColor', 'blue', { boolean: 'or' }))
     store.dispatch(
-      actions.addConstraint('eyeColor', 'brown', { boolean: 'or' })
+      actions.addFilter('eyeColor', 'brown', { boolean: 'or' })
     )
-    expect(selectors.stagedConstraints(store.getState())).toEqual({
+    expect(selectors.stagedFilters(store.getState())).toEqual({
       eyeColor: {
         or: [{ name: 'blue', value: 'blue' }, { name: 'brown', value: 'brown' }]
       }
     })
     store.dispatch(
-      actions.removeConstraint('eyeColor', 'blue', { boolean: 'or' })
+      actions.removeFilter('eyeColor', 'blue', { boolean: 'or' })
     )
-    expect(selectors.stagedConstraints(store.getState())).toEqual({
+    expect(selectors.stagedFilters(store.getState())).toEqual({
       eyeColor: { or: [{ name: 'brown', value: 'brown' }] }
     })
     store.dispatch(
-      actions.removeConstraint('eyeColor', 'brown', { boolean: 'or' })
+      actions.removeFilter('eyeColor', 'brown', { boolean: 'or' })
     )
-    expect(selectors.stagedConstraints(store.getState())).toEqual({})
+    expect(selectors.stagedFilters(store.getState())).toEqual({})
   })
 
   describe('runSearch', () => {

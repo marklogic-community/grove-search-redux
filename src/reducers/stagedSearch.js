@@ -32,11 +32,11 @@ export const createReducer = config => {
     return state
   }
 
-  const constraints = (state = {}, action) => {
+  const filters = (state = {}, action) => {
     let name
     let boolean
     switch (action.type) {
-      case types.CONSTRAINT_ADD:
+      case types.FILTER_ADD:
         name = action.payload.constraintName
         boolean = action.payload.boolean
         return {
@@ -51,11 +51,11 @@ export const createReducer = config => {
             ]
           }
         }
-      case types.CONSTRAINT_REMOVE:
+      case types.FILTER_REMOVE:
         name = action.payload.constraintName
         boolean = action.payload.boolean
         const filtered = state[name][boolean].filter(
-          constraintValue => constraintValue.name !== action.payload.value
+          filterValue => filterValue.name !== action.payload.value
         )
         if (filtered.length === 0) {
           // immutably remove the entry from state altogether
@@ -74,7 +74,7 @@ export const createReducer = config => {
     queryText,
     page,
     pageLength,
-    constraints
+    filters
   })
 }
 
@@ -82,5 +82,5 @@ export const createReducer = config => {
 export const selectors = {
   getStagedQuery: state => state,
   getVisibleQueryText: state => state.queryText,
-  stagedConstraints: state => state.constraints
+  stagedFilters: state => state.filters
 }

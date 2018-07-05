@@ -19,38 +19,6 @@ export default createReducer()
 // export default (state = initialState, action) => {
 //   switch (action.type) {
 
-//     // case types.PAGE_LENGTH:
-//     //   return {
-//     //     ...state,
-//     //     pageLength: action.payload
-//     //   }
-
-//     // case types.CONSTRAINT_ADD: {
-//     //   let c = action.payload
-//     //   let constraints = {...state.constraints}
-//     //   let constraint = constraints[c.name] =  {...constraints[c.name]}
-//     //   constraint.values = [...(constraint.values || []), c.value]
-
-//     //   return {
-//     //     ...state,
-//     //     constraints
-//     //   }
-//     // }
-
-//     // case types.CONSTRAINT_REMOVE: {
-//     //   let c = action.payload
-//     //   let constraints = {...state.constraints}
-//     //   let constraint = constraints[c.name] = {...constraints[c.name]}
-//     //   if (constraint && constraint.values) {
-//     //     constraint.values = constraint.values.filter(x => x !== c.value)
-//     //   }
-
-//     //   return {
-//     //     ...state,
-//     //     constraints
-//     //   }
-//     // }
-
 //     // case types.SUGGEST_REQUESTED:
 //     //   return {
 //     //     ...state,
