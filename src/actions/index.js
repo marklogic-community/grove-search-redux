@@ -13,7 +13,17 @@ const defaultAPI = {
         'Content-Type': 'application/json'
       },
       credentials: 'same-origin',
-      body: JSON.stringify(searchQuery)
+      body: JSON.stringify({
+        ...searchQuery,
+        queryText: undefined,
+        filters: {and: [
+          {
+            type: 'queryText',
+            value: searchQuery.queryText
+          },
+          ...searchQuery.filters
+        ]}
+      })
     }).then(response => {
       if (!response.ok) {
         return response.json().then(error => {
@@ -126,14 +136,14 @@ export default config => {
   //   }
   // }
 
-  const addFilter = (constraintName, value, optional = {}) => ({
+  const addFilter = (constraint, value, optional = {}) => ({
     type: types.FILTER_ADD,
-    payload: { constraintName, value, boolean: optional.boolean || 'and' }
+    payload: { constraint, value, boolean: optional.boolean || 'and' }
   })
 
-  const removeFilter = (constraintName, value, optional = {}) => ({
+  const removeFilter = (constraint, value, optional = {}) => ({
     type: types.FILTER_REMOVE,
-    payload: { constraintName, value, boolean: optional.boolean || 'and' }
+    payload: { constraint, value, boolean: optional.boolean || 'and' }
   })
 
   return {

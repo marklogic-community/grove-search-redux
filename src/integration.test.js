@@ -36,58 +36,84 @@ describe('search', () => {
   })
 
   it('manages filters', () => {
-    expect(selectors.stagedFilters(store.getState())).toEqual({})
+    expect(selectors.stagedFilters(store.getState())).toEqual([])
     // TODO: validation that it is valid and not duplicate? Where?
     // Probably not duplicate in reducer, right? A NOOP?
     store.dispatch(actions.addFilter('eyeColor', 'blue'))
-    expect(selectors.stagedFilters(store.getState())).toEqual({
-      eyeColor: {
-        and: [
-          {
-            // TODO: negated: false,
-            name: 'blue',
-            value: 'blue'
-          }
-        ]
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['blue']
       }
-    })
+    ])
     store.dispatch(actions.addFilter('eyeColor', 'brown'))
-    expect(selectors.stagedFilters(store.getState())).toEqual({
-      eyeColor: {
-        and: [
-          { name: 'blue', value: 'blue' },
-          { name: 'brown', value: 'brown' }
-        ]
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['blue', 'brown']
       }
-    })
+    ])
     store.dispatch(actions.removeFilter('eyeColor', 'blue'))
-    expect(selectors.stagedFilters(store.getState())).toEqual({
-      eyeColor: { and: [{ name: 'brown', value: 'brown' }] }
-    })
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['brown']
+      }
+    ])
+    store.dispatch(actions.addFilter('gender', 'female'))
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['brown']
+      },
+      {
+        type: 'selection',
+        constraint: 'gender',
+        mode: 'and',
+        value: ['female']
+      }
+    ])
     store.dispatch(actions.removeFilter('eyeColor', 'brown'))
-    expect(selectors.stagedFilters(store.getState())).toEqual({})
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'gender',
+        mode: 'and',
+        value: ['female']
+      }
+    ])
   })
 
   it('manages ORed filters', () => {
     store.dispatch(actions.addFilter('eyeColor', 'blue', { boolean: 'or' }))
-    store.dispatch(
-      actions.addFilter('eyeColor', 'brown', { boolean: 'or' })
-    )
-    expect(selectors.stagedFilters(store.getState())).toEqual({
-      eyeColor: {
-        or: [{ name: 'blue', value: 'blue' }, { name: 'brown', value: 'brown' }]
+    store.dispatch(actions.addFilter('eyeColor', 'brown', { boolean: 'or' }))
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'or',
+        value: ['blue', 'brown']
       }
-    })
-    store.dispatch(
-      actions.removeFilter('eyeColor', 'blue', { boolean: 'or' })
-    )
-    expect(selectors.stagedFilters(store.getState())).toEqual({
-      eyeColor: { or: [{ name: 'brown', value: 'brown' }] }
-    })
-    store.dispatch(
-      actions.removeFilter('eyeColor', 'brown', { boolean: 'or' })
-    )
-    expect(selectors.stagedFilters(store.getState())).toEqual({})
+    ])
+    store.dispatch(actions.removeFilter('eyeColor', 'blue', { boolean: 'or' }))
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'or',
+        value: ['brown']
+      }
+    ])
+    store.dispatch(actions.removeFilter('eyeColor', 'brown', { boolean: 'or' }))
+    expect(selectors.stagedFilters(store.getState())).toEqual([])
   })
 
   describe('runSearch', () => {
@@ -240,9 +266,7 @@ describe('search', () => {
     })
 
     it('allows search to be cleared', () => {
-      store.dispatch(
-        actions.receiveSuccessfulSearch(mockSearchResponse)
-      )
+      store.dispatch(actions.receiveSuccessfulSearch(mockSearchResponse))
       expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
       store.dispatch(actions.clearSearchResults())
       expect(selectors.getSearchResults(store.getState())).toEqual([])

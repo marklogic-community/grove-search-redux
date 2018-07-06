@@ -32,39 +32,66 @@ export const createReducer = config => {
     return state
   }
 
-  const filters = (state = {}, action) => {
-    let name
+  // For now at least, always 'and' together filters
+  const filters = (state = [], action) => {
+    let constraint
     let boolean
     switch (action.type) {
       case types.FILTER_ADD:
-        name = action.payload.constraintName
+        constraint = action.payload.constraint
         boolean = action.payload.boolean
-        return {
-          ...state,
-          [name]: {
-            [boolean]: [
-              ...((state[name] && state[name][boolean]) || []),
-              {
-                name: action.payload.value,
-                value: action.payload.value
+        const existingFilter = state.find(
+          filter => filter.constraint === constraint && filter.mode === boolean
+        )
+        if (existingFilter) {
+          return state.map(filter => {
+            if (filter === existingFilter) {
+              return {
+                ...filter,
+                value: [...filter.value, action.payload.value]
               }
-            ]
-          }
+            } else {
+              return filter
+            }
+          })
+        } else {
+          return [
+            ...state,
+            {
+              constraint,
+              mode: boolean,
+              type: 'selection',
+              value: [action.payload.value]
+            }
+          ]
         }
       case types.FILTER_REMOVE:
-        name = action.payload.constraintName
+        constraint = action.payload.constraint
         boolean = action.payload.boolean
-        const filtered = state[name][boolean].filter(
-          filterValue => filterValue.name !== action.payload.value
-        )
-        if (filtered.length === 0) {
-          // immutably remove the entry from state altogether
-          let clone = Object.assign({}, state)
-          delete clone[name]
-          return clone
-        } else {
-          return { ...state, [name]: { [boolean]: filtered } }
-        }
+        return state.reduce((newState, searchFilter) => {
+          if (
+            searchFilter.constraint === constraint &&
+            searchFilter.mode === boolean
+          ) {
+            const remainingValues = searchFilter.value.filter(
+              v => v !== action.payload.value
+            )
+            if (remainingValues.length === 0) {
+              // remove the entry from state altogether
+              return newState
+            } else {
+              return [
+                ...newState,
+                {
+                  ...searchFilter,
+                  value: remainingValues
+                }
+              ]
+            }
+          } else {
+            return [...newState, searchFilter]
+          }
+        }, [])
       default:
         return state
     }
