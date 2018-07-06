@@ -88,8 +88,8 @@ var SET_QUERYTEXT = exports.SET_QUERYTEXT = 'search/SET_QUERYTEXT';
 var CHANGE_PAGE = exports.CHANGE_PAGE = 'search/CHANGE_PAGE';
 var CHANGE_PAGE_LENGTH = exports.CHANGE_PAGE_LENGTH = 'search/CHANGE_PAGE_LENGTH';
 
-var CONSTRAINT_ADD = exports.CONSTRAINT_ADD = 'search/CONSTRAINT_ADD';
-var CONSTRAINT_REMOVE = exports.CONSTRAINT_REMOVE = 'search/CONSTRAINT_REMOVE';
+var FILTER_ADD = exports.FILTER_ADD = 'search/FILTER_ADD';
+var FILTER_REMOVE = exports.FILTER_REMOVE = 'search/FILTER_REMOVE';
 
 var SUGGEST_REQUESTED = exports.SUGGEST_REQUESTED = 'search/SUGGEST_REQUESTED';
 var SUGGEST_SUCCESS = exports.SUGGEST_SUCCESS = 'search/SUGGEST_SUCCESS';
@@ -896,7 +896,6 @@ var selectors = exports.selectors = {
 
   // From executed search query
   getExecutedSearchQuery: getExecutedSearchQuery,
-  // getConstraints: state => getExecutedSearchQuery(state).constraints,
   getPage: function getPage(state) {
     return getFromExecutedSearchQuery(state, 'page');
   },
@@ -1004,38 +1003,6 @@ var createReducer = exports.createReducer = function createReducer(config) {
 exports.default = createReducer();
 // export default (state = initialState, action) => {
 //   switch (action.type) {
-
-//     // case types.PAGE_LENGTH:
-//     //   return {
-//     //     ...state,
-//     //     pageLength: action.payload
-//     //   }
-
-//     // case types.CONSTRAINT_ADD: {
-//     //   let c = action.payload
-//     //   let constraints = {...state.constraints}
-//     //   let constraint = constraints[c.name] =  {...constraints[c.name]}
-//     //   constraint.values = [...(constraint.values || []), c.value]
-
-//     //   return {
-//     //     ...state,
-//     //     constraints
-//     //   }
-//     // }
-
-//     // case types.CONSTRAINT_REMOVE: {
-//     //   let c = action.payload
-//     //   let constraints = {...state.constraints}
-//     //   let constraint = constraints[c.name] = {...constraints[c.name]}
-//     //   if (constraint && constraint.values) {
-//     //     constraint.values = constraint.values.filter(x => x !== c.value)
-//     //   }
-
-//     //   return {
-//     //     ...state,
-//     //     constraints
-//     //   }
-//     // }
 
 //     // case types.SUGGEST_REQUESTED:
 //     //   return {
@@ -1709,8 +1676,6 @@ var bareTypes = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var createReducer = exports.createReducer = function createReducer(config) {
@@ -1753,34 +1718,58 @@ var createReducer = exports.createReducer = function createReducer(config) {
     return state;
   };
 
-  var constraints = function constraints() {
-    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  // For now at least, always 'and' together filters
+  var filters = function filters() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
     var action = arguments[1];
 
-    var name = void 0;
+    var constraint = void 0;
     var boolean = void 0;
     switch (action.type) {
-      case types.CONSTRAINT_ADD:
-        name = action.payload.constraintName;
+      case types.FILTER_ADD:
+        constraint = action.payload.constraint;
         boolean = action.payload.boolean;
-        return _extends({}, state, _defineProperty({}, name, _defineProperty({}, boolean, [].concat(_toConsumableArray(state[name] && state[name][boolean] || []), [{
-          name: action.payload.value,
-          value: action.payload.value
-        }]))));
-      case types.CONSTRAINT_REMOVE:
-        name = action.payload.constraintName;
-        boolean = action.payload.boolean;
-        var filtered = state[name][boolean].filter(function (constraintValue) {
-          return constraintValue.name !== action.payload.value;
+        var existingFilter = state.find(function (filter) {
+          return filter.constraint === constraint && filter.mode === boolean;
         });
-        if (filtered.length === 0) {
-          // immutably remove the entry from state altogether
-          var clone = Object.assign({}, state);
-          delete clone[name];
-          return clone;
+        if (existingFilter) {
+          return state.map(function (filter) {
+            if (filter === existingFilter) {
+              return _extends({}, filter, {
+                value: [].concat(_toConsumableArray(filter.value), [action.payload.value])
+              });
+            } else {
+              return filter;
+            }
+          });
         } else {
-          return _extends({}, state, _defineProperty({}, name, _defineProperty({}, boolean, filtered)));
+          return [].concat(_toConsumableArray(state), [{
+            constraint: constraint,
+            mode: boolean,
+            type: 'selection',
+            value: [action.payload.value]
+          }]);
         }
+      case types.FILTER_REMOVE:
+        constraint = action.payload.constraint;
+        boolean = action.payload.boolean;
+        return state.reduce(function (newState, searchFilter) {
+          if (searchFilter.constraint === constraint && searchFilter.mode === boolean) {
+            var remainingValues = searchFilter.value.filter(function (v) {
+              return v !== action.payload.value;
+            });
+            if (remainingValues.length === 0) {
+              // remove the entry from state altogether
+              return newState;
+            } else {
+              return [].concat(_toConsumableArray(newState), [_extends({}, searchFilter, {
+                value: remainingValues
+              })]);
+            }
+          } else {
+            return [].concat(_toConsumableArray(newState), [searchFilter]);
+          }
+        }, []);
       default:
         return state;
     }
@@ -1790,7 +1779,7 @@ var createReducer = exports.createReducer = function createReducer(config) {
     queryText: queryText,
     page: page,
     pageLength: pageLength,
-    constraints: constraints
+    filters: filters
   });
 };
 
@@ -1802,8 +1791,8 @@ var selectors = exports.selectors = {
   getVisibleQueryText: function getVisibleQueryText(state) {
     return state.queryText;
   },
-  stagedConstraints: function stagedConstraints(state) {
-    return state.constraints;
+  stagedFilters: function stagedFilters(state) {
+    return state.filters;
   }
 };
 
@@ -1827,6 +1816,8 @@ var bareTypes = _interopRequireWildcard(_actionTypes);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 // TODO: remove /api/search? or just make it the actual defaultAPI below
 // import searchAPI from './api/search'
 __webpack_require__(29);
@@ -1839,7 +1830,13 @@ var defaultAPI = {
         'Content-Type': 'application/json'
       },
       credentials: 'same-origin',
-      body: JSON.stringify(searchQuery)
+      body: JSON.stringify(_extends({}, searchQuery, {
+        queryText: undefined,
+        filters: { and: [{
+            type: 'queryText',
+            value: searchQuery.queryText
+          }].concat(_toConsumableArray(searchQuery.filters)) }
+      }))
     }).then(function (response) {
       if (!response.ok) {
         return response.json().then(function (error) {
@@ -1958,19 +1955,19 @@ exports.default = function (config) {
   //   }
   // }
 
-  var addConstraint = function addConstraint(constraintName, value) {
+  var addFilter = function addFilter(constraint, value) {
     var optional = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     return {
-      type: types.CONSTRAINT_ADD,
-      payload: { constraintName: constraintName, value: value, boolean: optional.boolean || 'and' }
+      type: types.FILTER_ADD,
+      payload: { constraint: constraint, value: value, boolean: optional.boolean || 'and' }
     };
   };
 
-  var removeConstraint = function removeConstraint(constraintName, value) {
+  var removeFilter = function removeFilter(constraint, value) {
     var optional = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
     return {
-      type: types.CONSTRAINT_REMOVE,
-      payload: { constraintName: constraintName, value: value, boolean: optional.boolean || 'and' }
+      type: types.FILTER_REMOVE,
+      payload: { constraint: constraint, value: value, boolean: optional.boolean || 'and' }
     };
   };
 
@@ -1980,8 +1977,8 @@ exports.default = function (config) {
     clearSearchResults: clearSearchResults,
     setQueryText: setQueryText,
     changePage: changePage,
-    addConstraint: addConstraint,
-    removeConstraint: removeConstraint
+    addFilter: addFilter,
+    removeFilter: removeFilter
   };
 };
 
