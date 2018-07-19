@@ -1,6 +1,6 @@
 {
   "name": "muir-search-redux",
-  "version": "0.7.0",
+  "version": "0.10.0-alpha",
   "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
   "repository": "ssh://git@project.marklogic.com:7999/nacw/muir-search-redux.git",
