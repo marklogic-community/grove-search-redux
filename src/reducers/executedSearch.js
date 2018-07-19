@@ -1,12 +1,12 @@
-import * as bareTypes from '../actionTypes'
+import * as bareTypes from '../actionTypes';
 
 export const createReducer = config => {
-  let types = bareTypes
+  let types = bareTypes;
   if (config && config.namespace) {
     types = Object.keys(types).reduce((newTypes, typeKey) => {
-      newTypes[typeKey] = config.namespace + '/' + types[typeKey]
-      return newTypes
-    }, {})
+      newTypes[typeKey] = config.namespace + '/' + types[typeKey];
+      return newTypes;
+    }, {});
   }
   return (state = {}, action) => {
     switch (action.type) {
@@ -23,12 +23,14 @@ export const createReducer = config => {
           //   error: undefined
           // },
           query: { ...action.payload.query }
-        }
+        };
       case types.SEARCH_SUCCESS: {
-        const response = action.payload.response
-        let executionTime = response.metrics && response.metrics['total-time']
+        const response = action.payload.response;
+        let executionTime = response.metrics && response.metrics['total-time'];
         if (executionTime) {
-          executionTime = parseFloat(executionTime.replace(/^PT/, '').replace(/S$/, ''))
+          executionTime = parseFloat(
+            executionTime.replace(/^PT/, '').replace(/S$/, '')
+          );
         }
         return {
           ...state,
@@ -40,7 +42,7 @@ export const createReducer = config => {
               executionTime
             }
           }
-        }
+        };
       }
       case types.SEARCH_FAILURE:
         return {
@@ -50,45 +52,45 @@ export const createReducer = config => {
             ...state.response,
             error: action.payload && action.payload.error
           }
-        }
+        };
       case types.CLEAR_SEARCH_RESULTS:
-        return {}
+        return {};
       default:
-        return state
+        return state;
     }
-  }
-}
+  };
+};
 
 // SELECTORS
 const getExecutedSearchQuery = state => {
-  return state && state.query
-}
+  return state && state.query;
+};
 const getSearchResponse = state => {
-  return state && state.response
-}
+  return state && state.response;
+};
 
 // TODO: clean up this clear anti-pattern
 const getFromExecutedSearch = (state, propertyName) => {
-  return state && state[propertyName]
-}
+  return state && state[propertyName];
+};
 const getFromExecutedSearchQuery = (state, propertyName) => {
-  const query = getExecutedSearchQuery(state)
-  return query && query[propertyName]
-}
+  const query = getExecutedSearchQuery(state);
+  return query && query[propertyName];
+};
 const getFromSearchResponse = (state, propertyName) => {
-  const response = getSearchResponse(state)
-  return response && response[propertyName]
-}
+  const response = getSearchResponse(state);
+  return response && response[propertyName];
+};
 const getFromSearchResponseMetadata = (state, propertyName) => {
-  const metadata = getFromSearchResponse(state, 'metadata')
-  return metadata && metadata[propertyName]
-}
+  const metadata = getFromSearchResponse(state, 'metadata');
+  return metadata && metadata[propertyName];
+};
 
-const getSearchTotal = state => getFromSearchResponseMetadata(state, 'total')
+const getSearchTotal = state => getFromSearchResponseMetadata(state, 'total');
 
-const getPageLength = state => getFromExecutedSearchQuery(state, 'pageLength')
+const getPageLength = state => getFromExecutedSearchQuery(state, 'pageLength');
 const isSearchPending = state =>
-  getFromExecutedSearch(state, 'pending') || false
+  getFromExecutedSearch(state, 'pending') || false;
 
 export const selectors = {
   // Executed search bookkeeping
@@ -117,4 +119,4 @@ export const selectors = {
     Math.ceil(getSearchTotal(state) / getPageLength(state)),
   // TODO: test
   isSearchComplete: state => state.response && !isSearchPending(state)
-}
+};

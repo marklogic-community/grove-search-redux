@@ -1,21 +1,21 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from 'redux';
 import {
   selectors as stagedSelectors,
   createReducer as createStagedSearch
-} from './stagedSearch'
+} from './stagedSearch';
 import {
   selectors as executedSelectors,
   createReducer as createExecutedSearch
-} from './executedSearch'
+} from './executedSearch';
 
-export const createReducer = (config) => {
+export const createReducer = config => {
   return combineReducers({
     stagedSearch: createStagedSearch(config),
     executedSearch: createExecutedSearch(config)
-  })
-}
+  });
+};
 
-export default createReducer()
+export default createReducer();
 // export default (state = initialState, action) => {
 //   switch (action.type) {
 
@@ -78,18 +78,18 @@ export default createReducer()
 // SELECTORS
 const bindSelector = (selector, mountPoint) => {
   return (state, ...args) => {
-    return selector(state[mountPoint], ...args)
-  }
-}
+    return selector(state[mountPoint], ...args);
+  };
+};
 
 const bindSelectors = (selectors, mountPoint) => {
   return Object.keys(selectors).reduce((bound, key) => {
-    bound[key] = bindSelector(selectors[key], mountPoint)
-    return bound
-  }, {})
-}
+    bound[key] = bindSelector(selectors[key], mountPoint);
+    return bound;
+  }, {});
+};
 
 export const selectors = {
   ...bindSelectors(executedSelectors, 'executedSearch'),
   ...bindSelectors(stagedSelectors, 'stagedSearch')
-}
+};

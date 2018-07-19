@@ -1,45 +1,45 @@
 /* eslint-env jest */
-import { applyMiddleware, createStore } from 'redux'
-import thunk from 'redux-thunk'
-import nock from 'nock'
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
+import nock from 'nock';
 
-import reducer, { actions, selectors } from './index'
+import reducer, { actions, selectors } from './index';
 
-import { mockResults, mockFacets, mockSearchResponse } from './test-helpers'
+import { mockResults, mockFacets, mockSearchResponse } from './test-helpers';
 
 describe('search', () => {
-  let store
+  let store;
   beforeEach(() => {
-    store = createStore(reducer, applyMiddleware(thunk))
-  })
+    store = createStore(reducer, applyMiddleware(thunk));
+  });
 
   describe('page', () => {
     it('is initially undefined, defaults to 1 on search, and changes', () => {
-      expect(selectors.getPage(store.getState())).toBeUndefined()
-      expect(selectors.getPageLength(store.getState())).toBeUndefined()
-      const mockAPI = { search: () => Promise.resolve({}) }
+      expect(selectors.getPage(store.getState())).toBeUndefined();
+      expect(selectors.getPageLength(store.getState())).toBeUndefined();
+      const mockAPI = { search: () => Promise.resolve({}) };
       store.dispatch(
         actions.runSearch(selectors.getStagedQuery(store.getState()), {
           api: mockAPI
         })
-      )
-      expect(selectors.getPage(store.getState())).toEqual(1)
-      expect(selectors.getPageLength(store.getState())).toEqual(10)
-      store.dispatch(actions.changePage(3))
+      );
+      expect(selectors.getPage(store.getState())).toEqual(1);
+      expect(selectors.getPageLength(store.getState())).toEqual(10);
+      store.dispatch(actions.changePage(3));
       store.dispatch(
         actions.runSearch(selectors.getStagedQuery(store.getState()), {
           api: mockAPI
         })
-      )
-      expect(selectors.getPage(store.getState())).toEqual(3)
-    })
-  })
+      );
+      expect(selectors.getPage(store.getState())).toEqual(3);
+    });
+  });
 
   it('manages filters', () => {
-    expect(selectors.stagedFilters(store.getState())).toEqual([])
+    expect(selectors.stagedFilters(store.getState())).toEqual([]);
     // TODO: validation that it is valid and not duplicate? Where?
     // Probably not duplicate in reducer, right? A NOOP?
-    store.dispatch(actions.addFilter('eyeColor', 'blue'))
+    store.dispatch(actions.addFilter('eyeColor', 'blue'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -47,8 +47,8 @@ describe('search', () => {
         mode: 'and',
         value: ['blue']
       }
-    ])
-    store.dispatch(actions.addFilter('eyeColor', 'brown'))
+    ]);
+    store.dispatch(actions.addFilter('eyeColor', 'brown'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -56,8 +56,8 @@ describe('search', () => {
         mode: 'and',
         value: ['blue', 'brown']
       }
-    ])
-    store.dispatch(actions.removeFilter('eyeColor', 'blue'))
+    ]);
+    store.dispatch(actions.removeFilter('eyeColor', 'blue'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -65,8 +65,8 @@ describe('search', () => {
         mode: 'and',
         value: ['brown']
       }
-    ])
-    store.dispatch(actions.addFilter('gender', 'female'))
+    ]);
+    store.dispatch(actions.addFilter('gender', 'female'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -80,8 +80,8 @@ describe('search', () => {
         mode: 'and',
         value: ['female']
       }
-    ])
-    store.dispatch(actions.removeFilter('eyeColor', 'brown'))
+    ]);
+    store.dispatch(actions.removeFilter('eyeColor', 'brown'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -89,12 +89,12 @@ describe('search', () => {
         mode: 'and',
         value: ['female']
       }
-    ])
-  })
+    ]);
+  });
 
   it('manages ORed filters', () => {
-    store.dispatch(actions.addFilter('eyeColor', 'blue', { boolean: 'or' }))
-    store.dispatch(actions.addFilter('eyeColor', 'brown', { boolean: 'or' }))
+    store.dispatch(actions.addFilter('eyeColor', 'blue', { boolean: 'or' }));
+    store.dispatch(actions.addFilter('eyeColor', 'brown', { boolean: 'or' }));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -102,8 +102,8 @@ describe('search', () => {
         mode: 'or',
         value: ['blue', 'brown']
       }
-    ])
-    store.dispatch(actions.removeFilter('eyeColor', 'blue', { boolean: 'or' }))
+    ]);
+    store.dispatch(actions.removeFilter('eyeColor', 'blue', { boolean: 'or' }));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -111,53 +111,57 @@ describe('search', () => {
         mode: 'or',
         value: ['brown']
       }
-    ])
-    store.dispatch(actions.removeFilter('eyeColor', 'brown', { boolean: 'or' }))
-    expect(selectors.stagedFilters(store.getState())).toEqual([])
-  })
+    ]);
+    store.dispatch(
+      actions.removeFilter('eyeColor', 'brown', { boolean: 'or' })
+    );
+    expect(selectors.stagedFilters(store.getState())).toEqual([]);
+  });
 
   describe('runSearch', () => {
-    afterEach(nock.cleanAll)
+    afterEach(nock.cleanAll);
 
     it('runs a successful search', done => {
       nock('http://localhost')
         .post('/api/search/all')
-        .reply(200, mockSearchResponse)
-      expect(selectors.getSearchResults(store.getState())).toEqual([])
-      expect(selectors.isSearchPending(store.getState())).toBe(false)
+        .reply(200, mockSearchResponse);
+      expect(selectors.getSearchResults(store.getState())).toEqual([]);
+      expect(selectors.isSearchPending(store.getState())).toBe(false);
       const unsubscribe = store.subscribe(() => {
         try {
-          expect(selectors.isSearchPending(store.getState())).toBe(true)
-          expect(selectors.getSearchResults(store.getState())).toEqual([])
+          expect(selectors.isSearchPending(store.getState())).toBe(true);
+          expect(selectors.getSearchResults(store.getState())).toEqual([]);
           // Page defaults
-          expect(selectors.getPage(store.getState())).toEqual(1)
-          expect(selectors.getPageLength(store.getState())).toEqual(10)
+          expect(selectors.getPage(store.getState())).toEqual(1);
+          expect(selectors.getPageLength(store.getState())).toEqual(10);
         } catch (error) {
-          done.fail(error)
+          done.fail(error);
         }
-        unsubscribe()
-      })
+        unsubscribe();
+      });
       store
         .dispatch(actions.runSearch(selectors.getStagedQuery(store.getState())))
         .then(() => {
           try {
-            expect(nock.isDone()).toBe(true)
-            expect(selectors.isSearchPending(store.getState())).toBe(false)
+            expect(nock.isDone()).toBe(true);
+            expect(selectors.isSearchPending(store.getState())).toBe(false);
             expect(selectors.getSearchResults(store.getState())).toEqual(
               mockResults
-            )
-            expect(selectors.searchFacets(store.getState())).toEqual(mockFacets)
+            );
+            expect(selectors.searchFacets(store.getState())).toEqual(
+              mockFacets
+            );
             expect(selectors.getSearchExecutionTime(store.getState())).toEqual(
               0.00198
-            )
-            expect(selectors.getPage(store.getState())).toEqual(1)
-            expect(selectors.getPageLength(store.getState())).toEqual(10)
+            );
+            expect(selectors.getPage(store.getState())).toEqual(1);
+            expect(selectors.getPageLength(store.getState())).toEqual(10);
           } catch (error) {
-            done.fail(error)
+            done.fail(error);
           }
-          done()
-        })
-    })
+          done();
+        });
+    });
 
     // TODO: this helps to remove flickering when new searches run
     // but it is a little odd logically
@@ -167,39 +171,39 @@ describe('search', () => {
       nock('http://localhost')
         .persist()
         .post('/api/search/all')
-        .reply(200, mockSearchResponse)
+        .reply(200, mockSearchResponse);
       store
         .dispatch(actions.runSearch(selectors.getStagedQuery(store.getState())))
         .then(() => {
-          expect(nock.isDone()).toBe(true)
+          expect(nock.isDone()).toBe(true);
           const unsubscribe = store.subscribe(() => {
             try {
-              expect(selectors.isSearchPending(store.getState())).toBe(true)
+              expect(selectors.isSearchPending(store.getState())).toBe(true);
               expect(selectors.getSearchResults(store.getState())).toEqual(
                 mockResults
-              )
-              done()
+              );
+              done();
             } catch (error) {
-              done.fail(error)
+              done.fail(error);
             }
-            unsubscribe()
-          })
+            unsubscribe();
+          });
         })
         .then(() =>
           store.dispatch(
             actions.runSearch(selectors.getStagedQuery(store.getState()))
           )
-        )
-    })
+        );
+    });
 
     it('responds to queryText changes', done => {
-      const mockSearch = jest.fn(() => Promise.resolve({}))
-      const mockAPI = { search: mockSearch }
-      expect(selectors.getVisibleQueryText(store.getState())).toEqual('')
-      store.dispatch(actions.setQueryText('new text'))
+      const mockSearch = jest.fn(() => Promise.resolve({}));
+      const mockAPI = { search: mockSearch };
+      expect(selectors.getVisibleQueryText(store.getState())).toEqual('');
+      store.dispatch(actions.setQueryText('new text'));
       expect(selectors.getVisibleQueryText(store.getState())).toEqual(
         'new text'
-      )
+      );
       store
         .dispatch(
           actions.runSearch(selectors.getStagedQuery(store.getState()), {
@@ -210,18 +214,18 @@ describe('search', () => {
           expect(mockSearch).toHaveBeenCalledWith(
             expect.objectContaining({ queryText: 'new text' }),
             expect.anything()
-          )
+          );
           expect(
             selectors.getExecutedSearchQueryText(store.getState())
-          ).toEqual('new text')
-          done()
-        })
-    })
+          ).toEqual('new text');
+          done();
+        });
+    });
 
     it('can paginate', done => {
-      const mockSearch = jest.fn(() => Promise.resolve({}))
-      const mockAPI = { search: mockSearch }
-      store.dispatch(actions.changePage(2))
+      const mockSearch = jest.fn(() => Promise.resolve({}));
+      const mockAPI = { search: mockSearch };
+      store.dispatch(actions.changePage(2));
       store
         .dispatch(
           actions.runSearch(selectors.getStagedQuery(store.getState()), {
@@ -229,14 +233,14 @@ describe('search', () => {
           })
         )
         .then(() => {
-          expect(selectors.getPage(store.getState())).toEqual(2)
+          expect(selectors.getPage(store.getState())).toEqual(2);
           expect(mockSearch).toHaveBeenCalledWith(
             expect.objectContaining({ page: 2 }),
             expect.anything()
-          )
-          done()
-        })
-    })
+          );
+          done();
+        });
+    });
 
     it('reports error after search failure', done => {
       nock('http://localhost')
@@ -246,40 +250,40 @@ describe('search', () => {
           status: 'Bad Request',
           message: 'REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type',
           messageCode: 'REST-INVALIDTYPE'
-        })
-      expect(selectors.getSearchError(store.getState())).toBeUndefined()
-      let isFirstUpdate = true
+        });
+      expect(selectors.getSearchError(store.getState())).toBeUndefined();
+      let isFirstUpdate = true;
       store.subscribe(() => {
         if (isFirstUpdate) {
-          expect(selectors.getSearchError(store.getState())).toBeUndefined()
-          isFirstUpdate = false
+          expect(selectors.getSearchError(store.getState())).toBeUndefined();
+          isFirstUpdate = false;
         } else {
           expect(selectors.getSearchError(store.getState())).toEqual(
             expect.stringContaining('Invalid type')
-          )
-          done()
+          );
+          done();
         }
-      })
+      });
       store.dispatch(
         actions.runSearch(selectors.getStagedQuery(store.getState()))
-      )
-    })
+      );
+    });
 
     it('allows search to be cleared', () => {
-      store.dispatch(actions.receiveSuccessfulSearch(mockSearchResponse))
-      expect(selectors.getSearchResults(store.getState())).toEqual(mockResults)
-      store.dispatch(actions.clearSearchResults())
-      expect(selectors.getSearchResults(store.getState())).toEqual([])
-      expect(selectors.isSearchPending(store.getState())).toBe(false)
-      expect(selectors.getPage(store.getState())).toBeUndefined()
-      expect(selectors.getPageLength(store.getState())).toBeUndefined()
-      expect(selectors.getSearchError(store.getState())).toBeUndefined()
-    })
+      store.dispatch(actions.receiveSuccessfulSearch(mockSearchResponse));
+      expect(selectors.getSearchResults(store.getState())).toEqual(mockResults);
+      store.dispatch(actions.clearSearchResults());
+      expect(selectors.getSearchResults(store.getState())).toEqual([]);
+      expect(selectors.isSearchPending(store.getState())).toBe(false);
+      expect(selectors.getPage(store.getState())).toBeUndefined();
+      expect(selectors.getPageLength(store.getState())).toBeUndefined();
+      expect(selectors.getSearchError(store.getState())).toBeUndefined();
+    });
 
     // Could have a long-running search error, while a second search succeeds
     // Successful results should be maintained and error should not enter state
-    it('only reacts to the latest executedSearch results')
+    it('only reacts to the latest executedSearch results');
 
-    it('allows for reducer / action namespacing')
-  })
-})
+    it('allows for reducer / action namespacing');
+  });
+});

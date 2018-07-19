@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import deepFreeze from 'deep-freeze'
+import deepFreeze from 'deep-freeze';
 
 // TODO: should the search options name be part of the Redux store?
 export const initialState = {
@@ -9,8 +9,8 @@ export const initialState = {
     pageLength: 10
   },
   executedSearch: {}
-}
-deepFreeze(initialState)
+};
+deepFreeze(initialState);
 
 export const userCreatedSearchState = {
   ...initialState,
@@ -18,8 +18,8 @@ export const userCreatedSearchState = {
     ...initialState.stagedSearch,
     queryText: 'queryText'
   }
-}
-deepFreeze(userCreatedSearchState)
+};
+deepFreeze(userCreatedSearchState);
 
 export const pendingExecutedState = {
   ...userCreatedSearchState,
@@ -32,19 +32,21 @@ export const pendingExecutedState = {
       // facets: {},
       results: []
     },
-    query: {...userCreatedSearchState.stagedSearch}
+    query: { ...userCreatedSearchState.stagedSearch }
   }
-}
-deepFreeze(pendingExecutedState)
+};
+deepFreeze(pendingExecutedState);
 
-export const mockResults = [{
-  uri: '1.json',
-  label: 'Label',
-  matches: []
-}]
+export const mockResults = [
+  {
+    uri: '1.json',
+    label: 'Label',
+    matches: []
+  }
+];
 
 export const mockFacets = {
-  'EyeColor': [
+  EyeColor: [
     {
       name: 'blue',
       value: 'blue',
@@ -56,7 +58,7 @@ export const mockFacets = {
       frequency: 60
     }
   ]
-}
+};
 
 export const mockSearchResponse = {
   metrics: {
@@ -65,7 +67,7 @@ export const mockSearchResponse = {
   total: 1,
   results: mockResults,
   facets: mockFacets
-}
+};
 
 export const finishedExecutedState = {
   ...pendingExecutedState,
@@ -82,8 +84,8 @@ export const finishedExecutedState = {
       }
     }
   }
-}
-deepFreeze(finishedExecutedState)
+};
+deepFreeze(finishedExecutedState);
 
 export const failedState = {
   ...pendingExecutedState,
@@ -95,5 +97,5 @@ export const failedState = {
       error: 'An error'
     }
   }
-}
-deepFreeze(failedState)
+};
+deepFreeze(failedState);

@@ -1,30 +1,30 @@
 /* eslint-env jest */
 
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
-import nock from 'nock'
-import { initialState } from './test-helpers'
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import nock from 'nock';
+import { initialState } from './test-helpers';
 
-import createActions from './actions'
-import * as types from './actionTypes'
-const actions = createActions()
+import createActions from './actions';
+import * as types from './actionTypes';
+const actions = createActions();
 
-const middlewares = [thunk]
-const mockStore = configureMockStore(middlewares)
+const middlewares = [thunk];
+const mockStore = configureMockStore(middlewares);
 
 describe('search actions', () => {
   describe('setQueryText', () => {
     it('creates a setQueryText action', () => {
-      const queryText = 'queryText'
+      const queryText = 'queryText';
       const expectedAction = {
         type: types.SET_QUERYTEXT,
         payload: {
           queryText: queryText
         }
-      }
-      expect(actions.setQueryText(queryText)).toEqual(expectedAction)
-    })
-  })
+      };
+      expect(actions.setQueryText(queryText)).toEqual(expectedAction);
+    });
+  });
 
   describe('changePage', () => {
     it('creates a changePage action', () => {
@@ -33,15 +33,15 @@ describe('search actions', () => {
         payload: {
           page: 2
         }
-      }
-      expect(actions.changePage(2)).toEqual(expectedAction)
-    })
-  })
+      };
+      expect(actions.changePage(2)).toEqual(expectedAction);
+    });
+  });
 
   describe('async actions', () => {
     afterEach(() => {
-      nock.cleanAll()
-    })
+      nock.cleanAll();
+    });
 
     it('creates SEARCH_SUCCESS when search successful', () => {
       nock('http://localhost')
@@ -49,8 +49,8 @@ describe('search actions', () => {
         .reply(200, {
           results: [],
           facets: {}
-        })
-      const mockQuery = {}
+        });
+      const mockQuery = {};
       const expectedActions = [
         { type: types.SEARCH_REQUESTED, payload: { query: mockQuery } },
         {
@@ -63,12 +63,12 @@ describe('search actions', () => {
             }
           }
         }
-      ]
-      const store = mockStore({ search: initialState })
+      ];
+      const store = mockStore({ search: initialState });
       return store.dispatch(actions.runSearch(mockQuery)).then(() => {
-        expect(store.getActions()).toEqual(expectedActions)
-      })
-    })
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+    });
 
     it('creates SEARCH_FAILURE when search failed', () => {
       nock('http://localhost')
@@ -78,8 +78,8 @@ describe('search actions', () => {
           status: 'Bad Request',
           message: 'REST-INVALIDTYPE: (rest:INVALIDTYPE) Invalid type',
           messageCode: 'REST-INVALIDTYPE'
-        })
-      const mockQuery = {}
+        });
+      const mockQuery = {};
       const expectedActions = [
         { type: types.SEARCH_REQUESTED, payload: { query: mockQuery } },
         {
@@ -88,13 +88,13 @@ describe('search actions', () => {
             error: expect.stringContaining('Invalid type')
           }
         }
-      ]
+      ];
       const store = mockStore({
         search: initialState
-      })
+      });
       return store.dispatch(actions.runSearch(mockQuery)).then(() => {
-        expect(store.getActions()).toEqual(expectedActions)
-      })
-    })
-  })
-})
+        expect(store.getActions()).toEqual(expectedActions);
+      });
+    });
+  });
+});
