@@ -1,4 +1,4 @@
-/* global fetch, URL, require */
+/* global require */
 import * as bareTypes from '../actionTypes';
 
 // TODO: remove /api/search? or just make it the actual defaultAPI below
