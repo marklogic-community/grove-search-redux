@@ -22,7 +22,7 @@ const defaultAPI = {
               type: 'queryText',
               value: searchQuery.queryText
             },
-            ...searchQuery.filters
+            ...(searchQuery.filters || [])
           ]
         }
       })
