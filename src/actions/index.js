@@ -1,9 +1,9 @@
-/* global fetch, URL */
+/* global fetch, URL, require */
 import * as bareTypes from '../actionTypes';
 
 // TODO: remove /api/search? or just make it the actual defaultAPI below
 // import searchAPI from './api/search'
-import 'isomorphic-fetch';
+require('isomorphic-fetch');
 
 const defaultAPI = {
   search: searchQuery => {
