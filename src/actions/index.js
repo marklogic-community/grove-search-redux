@@ -63,17 +63,30 @@ export default config => {
         payload: { query: searchQuery, ...optionalArgs }
       });
 
-      // TODO: send a request directly to middle-tier
-      // with query options, queryText, combined query object as object
-      return searchAPI.search(searchQuery, optionalArgs).then(
-        data => dispatch(receiveSuccessfulSearch(data, optionalArgs)),
-        error => {
-          dispatch({
-            type: types.SEARCH_FAILURE,
-            payload: { error: error.message, ...optionalArgs }
-          });
-        }
-      );
+      // TODO: consider changing shape of state instead of modifying
+      // shape of query here
+      const { page, pageLength, ...muirSearchQuery } = searchQuery;
+      return searchAPI
+        .search(
+          {
+            ...muirSearchQuery,
+            options: {
+              start:
+                pageLength && page ? pageLength * (page - 1) + 1 : undefined,
+              pageLength: pageLength
+            }
+          },
+          optionalArgs
+        )
+        .then(
+          data => dispatch(receiveSuccessfulSearch(data, optionalArgs)),
+          error => {
+            dispatch({
+              type: types.SEARCH_FAILURE,
+              payload: { error: error.message, ...optionalArgs }
+            });
+          }
+        );
     };
   };
 

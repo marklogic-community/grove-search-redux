@@ -265,7 +265,7 @@ describe('search', () => {
         .then(() => {
           expect(selectors.getPage(store.getState())).toEqual(2);
           expect(mockSearch).toHaveBeenCalledWith(
-            expect.objectContaining({ page: 2 }),
+            expect.objectContaining({ options: { pageLength: 10, start: 11 } }),
             expect.anything()
           );
           done();
