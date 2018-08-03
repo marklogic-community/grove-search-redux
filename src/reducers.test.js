@@ -75,7 +75,7 @@ describe('search reducer', () => {
 
   describe('getSearchTotal', () => {
     it('works', () => {
-      expect(selectors.getSearchTotal(finishedExecutedState)).toEqual(1);
+      expect(selectors.getSearchTotal(finishedExecutedState)).toEqual(101);
     });
   });
 
@@ -98,7 +98,7 @@ describe('search reducer', () => {
 
   describe('getSearchTotalPages', () => {
     it('works', () => {
-      expect(selectors.getSearchTotalPages(finishedExecutedState)).toEqual(1);
+      expect(selectors.getSearchTotalPages(finishedExecutedState)).toEqual(11);
     });
   });
 

@@ -64,7 +64,7 @@ export const mockSearchResponse = {
   metrics: {
     'total-time': 'PT0.00198S'
   },
-  total: 1,
+  total: 101,
   results: mockResults,
   facets: mockFacets
 };

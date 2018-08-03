@@ -183,6 +183,7 @@ describe('search', () => {
             expect(selectors.getSearchExecutionTime(store.getState())).toEqual(
               0.00198
             );
+            expect(selectors.getSearchTotal(store.getState())).toEqual(101);
             expect(selectors.getPage(store.getState())).toEqual(1);
             expect(selectors.getPageLength(store.getState())).toEqual(10);
           } catch (error) {

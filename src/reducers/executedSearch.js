@@ -39,7 +39,8 @@ export const createReducer = config => {
             results: response.results,
             facets: response.facets,
             metadata: {
-              executionTime
+              executionTime,
+              total: response.total
             }
           }
         };
