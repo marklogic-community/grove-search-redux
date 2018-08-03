@@ -137,9 +137,14 @@ export default config => {
   //   }
   // }
 
-  const addFilter = (constraint, value, optional = {}) => ({
+  const addFilter = (constraint, constraintType, value, optional = {}) => ({
     type: types.FILTER_ADD,
-    payload: { constraint, value, boolean: optional.boolean || 'and' }
+    payload: {
+      constraint,
+      constraintType: constraintType || undefined,
+      value,
+      boolean: optional.boolean || 'and'
+    }
   });
 
   const removeFilter = (constraint, value, optional = {}) => ({

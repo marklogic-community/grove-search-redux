@@ -39,6 +39,10 @@ export const createReducer = config => {
     switch (action.type) {
       case types.FILTER_ADD: {
         constraint = action.payload.constraint;
+        let constraintType = action.payload.constraintType;
+        if (constraintType && constraintType.substring(0, 3) === 'xs:') {
+          constraintType = 'range';
+        }
         boolean = action.payload.boolean;
         const existingFilter = state.find(
           filter => filter.constraint === constraint && filter.mode === boolean
@@ -59,6 +63,7 @@ export const createReducer = config => {
             ...state,
             {
               constraint,
+              constraintType,
               mode: boolean,
               type: 'selection',
               value: [action.payload.value]

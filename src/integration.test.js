@@ -39,7 +39,7 @@ describe('search', () => {
     expect(selectors.stagedFilters(store.getState())).toEqual([]);
     // TODO: validation that it is valid and not duplicate? Where?
     // Probably not duplicate in reducer, right? A NOOP?
-    store.dispatch(actions.addFilter('eyeColor', 'blue'));
+    store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -48,7 +48,7 @@ describe('search', () => {
         value: ['blue']
       }
     ]);
-    store.dispatch(actions.addFilter('eyeColor', 'brown'));
+    store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -66,7 +66,7 @@ describe('search', () => {
         value: ['brown']
       }
     ]);
-    store.dispatch(actions.addFilter('gender', 'female'));
+    store.dispatch(actions.addFilter('gender', null, 'female'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -93,8 +93,12 @@ describe('search', () => {
   });
 
   it('manages ORed filters', () => {
-    store.dispatch(actions.addFilter('eyeColor', 'blue', { boolean: 'or' }));
-    store.dispatch(actions.addFilter('eyeColor', 'brown', { boolean: 'or' }));
+    store.dispatch(
+      actions.addFilter('eyeColor', null, 'blue', { boolean: 'or' })
+    );
+    store.dispatch(
+      actions.addFilter('eyeColor', null, 'brown', { boolean: 'or' })
+    );
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
@@ -116,6 +120,31 @@ describe('search', () => {
       actions.removeFilter('eyeColor', 'brown', { boolean: 'or' })
     );
     expect(selectors.stagedFilters(store.getState())).toEqual([]);
+  });
+
+  // TODO: deprecate, see MUIR-276; this is a leaky abstraction
+  it('passes through constraintType', () => {
+    store.dispatch(actions.addFilter('gender', 'collection', 'female'));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'gender',
+        constraintType: 'collection',
+        mode: 'and',
+        value: ['female']
+      }
+    ]);
+    store.dispatch(actions.removeFilter('gender', 'female'));
+    store.dispatch(actions.addFilter('gender', 'xs:string', 'female'));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'gender',
+        constraintType: 'range',
+        mode: 'and',
+        value: ['female']
+      }
+    ]);
   });
 
   describe('runSearch', () => {
