@@ -65,11 +65,11 @@ export default config => {
 
       // TODO: consider changing shape of state instead of modifying
       // shape of query here
-      const { page, pageLength, ...muirSearchQuery } = searchQuery;
+      const { page, pageLength, ...groveSearchQuery } = searchQuery;
       return searchAPI
         .search(
           {
-            ...muirSearchQuery,
+            ...groveSearchQuery,
             options: {
               start:
                 pageLength && page ? pageLength * (page - 1) + 1 : undefined,

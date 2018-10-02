@@ -1,10 +1,10 @@
 # MarkLogic Search Implemented in Redux
 
-This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic UI Resources (MUIR) project. See the [reference application](https://project.marklogic.com/repo/projects/NACW/repos/muir/browse) for an example of using this library in practice.
+This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic Grove project. See the [reference application](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) for an example of using this library in practice.
 
 ## Install
 
-    npm install muir-search-redux --save
+    npm install grove-search-redux --save
 
 ## Use
 
@@ -14,7 +14,7 @@ The provided selectors only know about their slice of state, so your consuming c
 import {
   actions as searchActions,
   selectors as searchSelectors
-} from 'muir-search-redux';
+} from 'grove-search-redux';
 
 const bindSelector = (selector, mountPoint) => {
   return (state, ...args) => {
@@ -34,7 +34,7 @@ const boundSearchSelectors = bindSelectors(searchSelectors, 'search');
 Also, you will need to provide a searchQuery to the `runSearch` action. This is done for you already if you are using the default ML-Treehouse React components. In other cases, this can be done with something like:
 
 ```javascript
-import { searchActions } from 'muir-search-redux';
+import { searchActions } from 'grove-search-redux';
 
 // Using `wrappedSearchSelectors` from the code above
 // `state` imported most likely using the React-Redux Provider

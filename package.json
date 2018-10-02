@@ -1,9 +1,9 @@
 {
-  "name": "muir-search-redux",
-  "version": "0.10.0-alpha.2",
+  "name": "grove-search-redux",
+  "version": "0.10.0-beta",
   "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
-  "repository": "ssh://git@project.marklogic.com:7999/nacw/muir-search-redux.git",
+  "repository": "ssh://git@project.marklogic.com:7999/nacw/grove-search-redux.git",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -47,5 +47,19 @@
   "peerDependencies": {
     "redux": "^2.0.0 || ^3.0.0 || ^4.0.0-0",
     "redux-thunk": "~2"
-  }
+  },
+  "contributors": [
+    {
+      "name": "Patrick McElwee",
+      "url": "https://github.com/patrickmcelwee"
+    },
+    {
+      "name": "Marianne Myers",
+      "url": "https://github.com/mariannemyers"
+    },
+    {
+      "name": "Geert Josten",
+      "url": "https://github.com/grtjn"
+    }
+  ]
 }
