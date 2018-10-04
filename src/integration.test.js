@@ -122,7 +122,7 @@ describe('search', () => {
     expect(selectors.stagedFilters(store.getState())).toEqual([]);
   });
 
-  // TODO: deprecate, see MUIR-276; this is a leaky abstraction
+  // TODO: deprecate, see GROVE-276; this is a leaky abstraction
   it('passes through constraintType', () => {
     store.dispatch(actions.addFilter('gender', 'collection', 'female'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
