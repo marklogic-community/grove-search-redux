@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import * as bareTypes from '../actionTypes';
+import { isEqual } from 'lodash';
 
 export const createReducer = config => {
   let types = bareTypes;
@@ -80,7 +81,7 @@ export const createReducer = config => {
             searchFilter.mode === boolean
           ) {
             const remainingValues = searchFilter.value.filter(
-              v => v !== action.payload.value
+              v => !isEqual(v, action.payload.value)
             );
             if (remainingValues.length === 0) {
               // remove the entry from state altogether

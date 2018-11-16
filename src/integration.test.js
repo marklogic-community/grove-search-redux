@@ -92,6 +92,51 @@ describe('search', () => {
     ]);
   });
 
+  it('manages filters with object values', () => {
+    const box1 = {
+      south: 38,
+      north: 42,
+      east: 10,
+      west: 20
+    };
+    const box2 = {
+      south: -38,
+      north: -42,
+      east: -10,
+      west: -20
+    };
+    store.dispatch(actions.addFilter('location', null, box1));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'location',
+        mode: 'and',
+        value: [box1]
+      }
+    ]);
+    store.dispatch(actions.addFilter('location', null, box2));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'location',
+        mode: 'and',
+        value: [box1, box2]
+      }
+    ]);
+    store.dispatch(actions.removeFilter('location', { ...box1 }));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'location',
+        mode: 'and',
+        value: [box2]
+      }
+    ]);
+  });
+
+  // it('clears filters', () => {
+  // });
+
   it('manages ORed filters', () => {
     store.dispatch(
       actions.addFilter('eyeColor', null, 'blue', { boolean: 'or' })

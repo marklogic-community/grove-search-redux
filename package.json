@@ -42,7 +42,8 @@
     "webpack": "^3.5.5"
   },
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.11"
   },
   "peerDependencies": {
     "redux": "^2.0.0 || ^3.0.0 || ^4.0.0-0",
