@@ -176,6 +176,20 @@ export default config => {
     payload: { constraint, ...optional }
   });
 
+  const replaceFilter = (constraint, constraintType, values, optional = {}) => {
+    // TODO: DRY UP with addFilter?
+    values = values instanceof Array ? values : [values];
+    return {
+      type: types.FILTER_REPLACE,
+      payload: {
+        constraint,
+        constraintType: constraintType || undefined,
+        values,
+        boolean: optional.boolean || 'and'
+      }
+    };
+  };
+
   return {
     runSearch,
     receiveSuccessfulSearch,
@@ -184,6 +198,7 @@ export default config => {
     changePage,
     addFilter,
     removeFilter,
+    replaceFilter,
     clearFilter
   };
 };

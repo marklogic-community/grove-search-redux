@@ -38,6 +38,7 @@ export const createReducer = config => {
     let constraint;
     let boolean;
     switch (action.type) {
+      case types.FILTER_REPLACE:
       case types.FILTER_ADD: {
         constraint = action.payload.constraint;
         let constraintType = action.payload.constraintType;
@@ -53,7 +54,10 @@ export const createReducer = config => {
             if (filter === existingFilter) {
               return {
                 ...filter,
-                value: [...filter.value, ...action.payload.values]
+                value: [
+                  ...(action.type === types.FILTER_REPLACE ? [] : filter.value),
+                  ...action.payload.values
+                ]
               };
             } else {
               return filter;

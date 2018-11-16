@@ -141,6 +141,38 @@ describe('search', () => {
     expect(selectors.stagedFilters(store.getState())).toEqual([]);
   });
 
+  it('replaces filters', () => {
+    store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
+    store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
+    store.dispatch(actions.replaceFilter('eyeColor', null, ['orange']));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['orange']
+      }
+    ]);
+    store.dispatch(
+      actions.addFilter('eyeColor', null, 'or-color', { boolean: 'or' })
+    );
+    store.dispatch(actions.replaceFilter('eyeColor', null, ['green', 'red']));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['green', 'red']
+      },
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'or',
+        value: ['or-color']
+      }
+    ]);
+  });
+
   it('manages ORed filters', () => {
     store.dispatch(
       actions.addFilter('eyeColor', null, 'blue', { boolean: 'or' })
