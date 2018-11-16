@@ -100,6 +100,9 @@ export const createReducer = config => {
           }
         }, []);
       }
+      case types.FILTER_CLEAR: {
+        return state.filter(c => c.constraint !== action.payload.constraint);
+      }
       default:
         return state;
     }

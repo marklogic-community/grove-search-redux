@@ -165,6 +165,11 @@ export default config => {
     payload: { constraint, value, boolean: optional.boolean || 'and' }
   });
 
+  const clearFilter = (constraint, optional = {}) => ({
+    type: types.FILTER_CLEAR,
+    payload: { constraint, ...optional }
+  });
+
   return {
     runSearch,
     receiveSuccessfulSearch,
@@ -172,6 +177,7 @@ export default config => {
     setQueryText,
     changePage,
     addFilter,
-    removeFilter
+    removeFilter,
+    clearFilter
   };
 };

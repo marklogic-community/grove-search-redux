@@ -134,8 +134,12 @@ describe('search', () => {
     ]);
   });
 
-  // it('clears filters', () => {
-  // });
+  it('clears filters', () => {
+    store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
+    store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
+    store.dispatch(actions.clearFilter('eyeColor'));
+    expect(selectors.stagedFilters(store.getState())).toEqual([]);
+  });
 
   it('manages ORed filters', () => {
     store.dispatch(
