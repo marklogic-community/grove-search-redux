@@ -48,22 +48,22 @@ describe('search', () => {
         value: ['blue']
       }
     ]);
-    store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
+    store.dispatch(actions.addFilter('eyeColor', null, ['brown', 'red']));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
         constraint: 'eyeColor',
         mode: 'and',
-        value: ['blue', 'brown']
+        value: ['blue', 'brown', 'red']
       }
     ]);
-    store.dispatch(actions.removeFilter('eyeColor', 'blue'));
+    store.dispatch(actions.removeFilter('eyeColor', 'brown'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
         constraint: 'eyeColor',
         mode: 'and',
-        value: ['brown']
+        value: ['blue', 'red']
       }
     ]);
     store.dispatch(actions.addFilter('gender', null, 'female'));
@@ -72,7 +72,7 @@ describe('search', () => {
         type: 'selection',
         constraint: 'eyeColor',
         mode: 'and',
-        value: ['brown']
+        value: ['blue', 'red']
       },
       {
         type: 'selection',
@@ -81,7 +81,7 @@ describe('search', () => {
         value: ['female']
       }
     ]);
-    store.dispatch(actions.removeFilter('eyeColor', 'brown'));
+    store.dispatch(actions.removeFilter('eyeColor', ['blue', 'red']));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',

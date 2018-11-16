@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import * as bareTypes from '../actionTypes';
-import { isEqual } from 'lodash';
+import { some, isEqual } from 'lodash';
 
 export const createReducer = config => {
   let types = bareTypes;
@@ -53,7 +53,7 @@ export const createReducer = config => {
             if (filter === existingFilter) {
               return {
                 ...filter,
-                value: [...filter.value, action.payload.value]
+                value: [...filter.value, ...action.payload.values]
               };
             } else {
               return filter;
@@ -67,7 +67,7 @@ export const createReducer = config => {
               constraintType,
               mode: boolean,
               type: 'selection',
-              value: [action.payload.value]
+              value: [...action.payload.values]
             }
           ];
         }
@@ -81,7 +81,7 @@ export const createReducer = config => {
             searchFilter.mode === boolean
           ) {
             const remainingValues = searchFilter.value.filter(
-              v => !isEqual(v, action.payload.value)
+              v => !some(action.payload.values, value => isEqual(v, value))
             );
             if (remainingValues.length === 0) {
               // remove the entry from state altogether
