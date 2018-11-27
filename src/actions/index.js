@@ -150,20 +150,45 @@ export default config => {
   //   }
   // }
 
-  const addFilter = (constraint, constraintType, value, optional = {}) => ({
-    type: types.FILTER_ADD,
-    payload: {
-      constraint,
-      constraintType: constraintType || undefined,
-      value,
-      boolean: optional.boolean || 'and'
-    }
+  const addFilter = (constraint, constraintType, values, optional = {}) => {
+    values = values instanceof Array ? values : [values];
+    return {
+      type: types.FILTER_ADD,
+      payload: {
+        constraint,
+        constraintType: constraintType || undefined,
+        values,
+        boolean: optional.boolean || 'and'
+      }
+    };
+  };
+
+  const removeFilter = (constraint, values, optional = {}) => {
+    values = values instanceof Array ? values : [values];
+    return {
+      type: types.FILTER_REMOVE,
+      payload: { constraint, values, boolean: optional.boolean || 'and' }
+    };
+  };
+
+  const clearFilter = (constraint, optional = {}) => ({
+    type: types.FILTER_CLEAR,
+    payload: { constraint, ...optional }
   });
 
-  const removeFilter = (constraint, value, optional = {}) => ({
-    type: types.FILTER_REMOVE,
-    payload: { constraint, value, boolean: optional.boolean || 'and' }
-  });
+  const replaceFilter = (constraint, constraintType, values, optional = {}) => {
+    // TODO: DRY UP with addFilter?
+    values = values instanceof Array ? values : [values];
+    return {
+      type: types.FILTER_REPLACE,
+      payload: {
+        constraint,
+        constraintType: constraintType || undefined,
+        values,
+        boolean: optional.boolean || 'and'
+      }
+    };
+  };
 
   return {
     runSearch,
@@ -172,6 +197,8 @@ export default config => {
     setQueryText,
     changePage,
     addFilter,
-    removeFilter
+    removeFilter,
+    replaceFilter,
+    clearFilter
   };
 };

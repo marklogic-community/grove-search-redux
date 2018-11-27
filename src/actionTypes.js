@@ -5,6 +5,8 @@ export const CHANGE_PAGE_LENGTH = 'search/CHANGE_PAGE_LENGTH';
 
 export const FILTER_ADD = 'search/FILTER_ADD';
 export const FILTER_REMOVE = 'search/FILTER_REMOVE';
+export const FILTER_REPLACE = 'search/FILTER_REPLACE';
+export const FILTER_CLEAR = 'search/FILTER_CLEAR';
 
 export const SUGGEST_REQUESTED = 'search/SUGGEST_REQUESTED';
 export const SUGGEST_SUCCESS = 'search/SUGGEST_SUCCESS';

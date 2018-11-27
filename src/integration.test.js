@@ -48,22 +48,22 @@ describe('search', () => {
         value: ['blue']
       }
     ]);
-    store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
+    store.dispatch(actions.addFilter('eyeColor', null, ['brown', 'red']));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
         constraint: 'eyeColor',
         mode: 'and',
-        value: ['blue', 'brown']
+        value: ['blue', 'brown', 'red']
       }
     ]);
-    store.dispatch(actions.removeFilter('eyeColor', 'blue'));
+    store.dispatch(actions.removeFilter('eyeColor', 'brown'));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
         constraint: 'eyeColor',
         mode: 'and',
-        value: ['brown']
+        value: ['blue', 'red']
       }
     ]);
     store.dispatch(actions.addFilter('gender', null, 'female'));
@@ -72,7 +72,7 @@ describe('search', () => {
         type: 'selection',
         constraint: 'eyeColor',
         mode: 'and',
-        value: ['brown']
+        value: ['blue', 'red']
       },
       {
         type: 'selection',
@@ -81,13 +81,107 @@ describe('search', () => {
         value: ['female']
       }
     ]);
-    store.dispatch(actions.removeFilter('eyeColor', 'brown'));
+    store.dispatch(actions.removeFilter('eyeColor', ['blue', 'red']));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
         constraint: 'gender',
         mode: 'and',
         value: ['female']
+      }
+    ]);
+  });
+
+  it('manages filters with object values', () => {
+    const box1 = {
+      south: 38,
+      north: 42,
+      east: 10,
+      west: 20
+    };
+    const box2 = {
+      south: -38,
+      north: -42,
+      east: -10,
+      west: -20
+    };
+    store.dispatch(actions.addFilter('location', 'geospatial', box1));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'location',
+        constraintType: 'geospatial',
+        mode: 'and',
+        value: [box1]
+      }
+    ]);
+    store.dispatch(actions.addFilter('location', null, box2));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'location',
+        constraintType: 'geospatial',
+        mode: 'and',
+        value: [box1, box2]
+      }
+    ]);
+    store.dispatch(actions.removeFilter('location', { ...box1 }));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'location',
+        constraintType: 'geospatial',
+        mode: 'and',
+        value: [box2]
+      }
+    ]);
+  });
+
+  it('clears filters based on constraint', () => {
+    store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
+    store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
+    store.dispatch(actions.clearFilter('eyeColor'));
+    expect(selectors.stagedFilters(store.getState())).toEqual([]);
+  });
+
+  it('replaces filters based on constraint and mode', () => {
+    store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
+    store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
+    store.dispatch(
+      actions.addFilter('eyeColor', null, 'or-color', { boolean: 'or' })
+    );
+    store.dispatch(actions.replaceFilter('eyeColor', null, ['orange']));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['orange']
+      },
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'or',
+        value: ['or-color']
+      }
+    ]);
+    store.dispatch(
+      actions.replaceFilter('eyeColor', null, ['green', 'red'], {
+        boolean: 'or'
+      })
+    );
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['orange']
+      },
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'or',
+        value: ['green', 'red']
       }
     ]);
   });
