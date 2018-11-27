@@ -1,6 +1,6 @@
 {
   "name": "grove-search-redux",
-  "version": "0.10.0-beta",
+  "version": "0.10.0-beta.1",
   "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
   "repository": "ssh://git@project.marklogic.com:7999/nacw/grove-search-redux.git",
