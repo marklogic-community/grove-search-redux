@@ -39,7 +39,7 @@ deepFreeze(pendingExecutedState);
 
 export const mockResults = [
   {
-    uri: '1.json',
+    id: '1.json',
     label: 'Label',
     matches: []
   }

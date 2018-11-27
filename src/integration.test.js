@@ -105,11 +105,12 @@ describe('search', () => {
       east: -10,
       west: -20
     };
-    store.dispatch(actions.addFilter('location', null, box1));
+    store.dispatch(actions.addFilter('location', 'geospatial', box1));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
         type: 'selection',
         constraint: 'location',
+        constraintType: 'geospatial',
         mode: 'and',
         value: [box1]
       }
@@ -119,6 +120,7 @@ describe('search', () => {
       {
         type: 'selection',
         constraint: 'location',
+        constraintType: 'geospatial',
         mode: 'and',
         value: [box1, box2]
       }
@@ -128,22 +130,26 @@ describe('search', () => {
       {
         type: 'selection',
         constraint: 'location',
+        constraintType: 'geospatial',
         mode: 'and',
         value: [box2]
       }
     ]);
   });
 
-  it('clears filters', () => {
+  it('clears filters based on constraint', () => {
     store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
     store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
     store.dispatch(actions.clearFilter('eyeColor'));
     expect(selectors.stagedFilters(store.getState())).toEqual([]);
   });
 
-  it('replaces filters', () => {
+  it('replaces filters based on constraint and mode', () => {
     store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
     store.dispatch(actions.addFilter('eyeColor', null, 'brown'));
+    store.dispatch(
+      actions.addFilter('eyeColor', null, 'or-color', { boolean: 'or' })
+    );
     store.dispatch(actions.replaceFilter('eyeColor', null, ['orange']));
     expect(selectors.stagedFilters(store.getState())).toEqual([
       {
@@ -151,24 +157,31 @@ describe('search', () => {
         constraint: 'eyeColor',
         mode: 'and',
         value: ['orange']
-      }
-    ]);
-    store.dispatch(
-      actions.addFilter('eyeColor', null, 'or-color', { boolean: 'or' })
-    );
-    store.dispatch(actions.replaceFilter('eyeColor', null, ['green', 'red']));
-    expect(selectors.stagedFilters(store.getState())).toEqual([
-      {
-        type: 'selection',
-        constraint: 'eyeColor',
-        mode: 'and',
-        value: ['green', 'red']
       },
       {
         type: 'selection',
         constraint: 'eyeColor',
         mode: 'or',
         value: ['or-color']
+      }
+    ]);
+    store.dispatch(
+      actions.replaceFilter('eyeColor', null, ['green', 'red'], {
+        boolean: 'or'
+      })
+    );
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['orange']
+      },
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'or',
+        value: ['green', 'red']
       }
     ]);
   });
