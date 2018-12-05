@@ -1,12 +1,43 @@
 # MarkLogic Search Implemented in Redux
 
-This is a Redux implementation of MarkLogic search. It forms part of the MarkLogic Grove project. See the [reference application](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) for an example of using this library in practice.
+This is a Redux implementation of search. It forms part of the MarkLogic Grove project. It works well for search against MarkLogic, but any backend search system could be used, so long as a middle-tier marshalled the response into the shape specified by the [Grove Core API](https://project.marklogic.com/repo/users/gjosten/repos/grove-core-api/browse). See the [Grove React-Redux Template](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) for an example of using this library in practice.
 
 ## Install
 
     npm install grove-search-redux --save
 
 ## Use
+
+### Simple Use
+
+In many cases, you will consume this library as part of a Grove Template, such as the [Grove React-Redux Template](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse). The ui library in those templates, in turn, consume this library via the [grove-core-react-redux-containers library](https://project.marklogic.com/repo/users/pmcelwee/repos/grove-core-react-redux-containers/browse), which connects together React components with Redux modules like this one.
+
+But the actions and selectors exposed by this library should also be passed along via grove-core-react-redux-containers's `<SearchContainer>`.
+
+TODO: link to information in grove-cli about search filters.
+
+#### Actions
+
+- `runSearch(query)`. Runs a search based on the passed query. The query will most often be obtained by calling `selectors.getStagedQuery(state)`.
+- `setQueryText(queryText)`. This sets a queryText filter in the staged search query.
+- `addFilter(constraintName, constraintType, values, optional)`. This will by default append filter values with the given constraintName and a mode of 'and' in the staged search query. You can alternatively append to filter values with a mode of 'or' by passing `{boolean: 'or'}` as part of the `optional` argument. Note that values can be a single value or an array of values.
+- `replaceFilter(constraintName, constraintType, values, optional)`: This will by default add or replace filter values with the given constraintName and a mode of 'and' in the staged search query. You can alternatively replace those with a mode of 'or' by passing `{boolean: 'or'}` as part of the `optional` argument. Note that values can be a single value or an array of values.
+- `removeFilter(constraintName, values, optional)`. This will by default remove filter values with the given constraintName and a mode of 'and' in the staged search query. You can alternatively remove filter values with a mode of 'or' by passing `{boolean: 'or'}` as part of the `optional` argument. Note that values can be a single value or an array of values.
+- `clearFilter(constraintName)`. This clears all filters for a given constraintName in the staged search query.
+- `changePage(pageNumber)`. Changes the page in the staged search query.
+
+#### Selectors
+
+- Selectors getting information about the **staged** search:
+  - `getStagedQuery(state)`. Returns the currently staged query, as serialized in this Redux module and POSTed to a Grove middle-tier.
+  - `stagedFilters(state)`. Returns all currently staged filters, as serialized in this Redux module and POSTed to a Grove middle-tier.
+  - TODO: more, see `src/reducers/stagedSearch.js`
+- Selectors getting information about the **executed** search:
+  - `getPage(state)`. Returns the page of the executed search query.
+  - `getPageLength(state)`. Returns the page length of the executed search query.
+  - TODO: more, see `src/reducers/executedSearch.js`
+
+### Advanced Use Cases
 
 The provided selectors only know about their slice of state, so your consuming code needs to wrap them to provide their particular slice of state. For example:
 
@@ -30,6 +61,8 @@ const bindSelectors = (selectors, mountPoint) => {
 
 const boundSearchSelectors = bindSelectors(searchSelectors, 'search');
 ```
+
+A version of the `bindSelectors()` function is available as an export from the `grove-core-react-redux-containers` library, in case you are already using it.
 
 Also, you will need to provide a searchQuery to the `runSearch` action. This is done for you already if you are using the default ML-Treehouse React components. In other cases, this can be done with something like:
 
