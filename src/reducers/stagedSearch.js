@@ -36,7 +36,7 @@ export const createReducer = config => {
   // For now at least, always 'and' together filters
   const filters = (state = [], action) => {
     let constraint;
-    let boolean;
+    let mode;
     switch (action.type) {
       case types.FILTER_REPLACE:
       case types.FILTER_ADD: {
@@ -45,9 +45,9 @@ export const createReducer = config => {
         if (constraintType && constraintType.substring(0, 3) === 'xs:') {
           constraintType = 'range';
         }
-        boolean = action.payload.boolean;
+        mode = action.payload.mode;
         const existingFilter = state.find(
-          filter => filter.constraint === constraint && filter.mode === boolean
+          filter => filter.constraint === constraint && filter.mode === mode
         );
         if (existingFilter) {
           return state.map(filter => {
@@ -69,7 +69,7 @@ export const createReducer = config => {
             {
               constraint,
               constraintType,
-              mode: boolean,
+              mode: mode,
               type: 'selection',
               value: [...action.payload.values]
             }
@@ -78,11 +78,11 @@ export const createReducer = config => {
       }
       case types.FILTER_REMOVE: {
         constraint = action.payload.constraint;
-        boolean = action.payload.boolean;
+        mode = action.payload.mode;
         return state.reduce((newState, searchFilter) => {
           if (
             searchFilter.constraint === constraint &&
-            searchFilter.mode === boolean
+            searchFilter.mode === mode
           ) {
             const remainingValues = searchFilter.value.filter(
               v => !some(action.payload.values, value => isEqual(v, value))

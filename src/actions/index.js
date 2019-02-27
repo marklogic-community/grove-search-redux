@@ -150,24 +150,30 @@ export default config => {
   //   }
   // }
 
-  const addFilter = (constraint, constraintType, values, optional = {}) => {
+  const addFilter = ({ constraint, values, ...options }) => {
     values = values instanceof Array ? values : [values];
     return {
       type: types.FILTER_ADD,
       payload: {
         constraint,
-        constraintType: constraintType || undefined,
         values,
-        boolean: optional.boolean || 'and'
+        constraintType: options.constraintType,
+        mode: options.mode || 'and'
+        // TODO: check for 'selection', with deprecation warning
       }
     };
   };
 
-  const removeFilter = (constraint, values, optional = {}) => {
+  const removeFilter = ({ constraint, values, ...options }) => {
     values = values instanceof Array ? values : [values];
     return {
       type: types.FILTER_REMOVE,
-      payload: { constraint, values, boolean: optional.boolean || 'and' }
+      payload: {
+        constraint,
+        values,
+        mode: options.mode || 'and'
+      }
+      // TODO: check for 'selection, with deprecation warning
     };
   };
 
@@ -176,16 +182,22 @@ export default config => {
     payload: { constraint, ...optional }
   });
 
-  const replaceFilter = (constraint, constraintType, values, optional = {}) => {
+  const replaceFilter = ({
+    constraint,
+    constraintType,
+    values,
+    ...options
+  }) => {
     // TODO: DRY UP with addFilter?
     values = values instanceof Array ? values : [values];
     return {
       type: types.FILTER_REPLACE,
       payload: {
         constraint,
-        constraintType: constraintType || undefined,
+        constraintType,
         values,
-        boolean: optional.boolean || 'and'
+        mode: options.mode || 'and'
+        // TODO: check for 'selection', with deprecation warning
       }
     };
   };

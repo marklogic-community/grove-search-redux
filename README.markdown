@@ -14,19 +14,52 @@ In many cases, you will consume this library as part of a Grove Template, such a
 
 But the actions and selectors exposed by this library should also be passed along via grove-core-react-redux-containers's `<SearchContainer>`.
 
-TODO: link to information in grove-cli about search filters.
+[See the grove-core-api for more information about Grove search filters.](https://project.marklogic.com/repo/users/gjosten/repos/grove-core-api/browse)
 
-#### Actions
+### Available Actions
 
 - `runSearch(query)`. Runs a search based on the passed query. The query will most often be obtained by calling `selectors.getStagedQuery(state)`.
+- `receiveSuccessfulSearch(response, optionalArgs)`. This action will not often be used, but could be used to provide a search response directly, without invoking `runSearch()`.
 - `setQueryText(queryText)`. This sets a queryText filter in the staged search query.
-- `addFilter(constraintName, constraintType, values, optional)`. This will by default append filter values with the given constraintName and a mode of 'and' in the staged search query. You can alternatively append to filter values with a mode of 'or' by passing `{boolean: 'or'}` as part of the `optional` argument. Note that values can be a single value or an array of values.
-- `replaceFilter(constraintName, constraintType, values, optional)`: This will by default add or replace filter values with the given constraintName and a mode of 'and' in the staged search query. You can alternatively replace those with a mode of 'or' by passing `{boolean: 'or'}` as part of the `optional` argument. Note that values can be a single value or an array of values.
-- `removeFilter(constraintName, values, optional)`. This will by default remove filter values with the given constraintName and a mode of 'and' in the staged search query. You can alternatively remove filter values with a mode of 'or' by passing `{boolean: 'or'}` as part of the `optional` argument. Note that values can be a single value or an array of values.
-- `clearFilter(constraintName)`. This clears all filters for a given constraintName in the staged search query.
 - `changePage(pageNumber)`. Changes the page in the staged search query.
 
-#### Selectors
+#### Filter Actions
+
+#### Lower-Level Actions
+
+These actions are lower-level actions that may allow a custom use of Grove search filters. We recommend using the actions above instead, because they provide validation that the provided options match what is expected by a given filter type.
+
+- `addFilter(filterOptions)`. Adds or appends to a filter with a matching `filterOptions.constraint` and `filterOptions.mode`. The following `filterOptions` are supported, though others could be passed and will attach to the resulting filter [TODO: test that].
+
+  | Option           | Req? | Default                                                          | Accepts                 | Examples                                                      |
+  | ---              | ---  | ---                                                              | ---                     | ---                                                           |
+  | `constraint`     | yes  | `undefined`                                                      | string                  | 'myFacet'                                                     |
+  | `values`         | yes  | `undefined`                                                      | string, object<br>array | 'red'<br>['red', 'blue']<br>{ 'ge': 10, 'lt': 20 }            |
+  | `filterType`     | no   | 'selection'                                                      | string                  | 'range'<br>'querytext'<br>'custom'                            |
+  | `mode`           | no   | 'and' when `filterType === 'selection'`<br>`undefined` otherwise | string                  | 'or'<br>'not'                                                 |
+  | `constraintType` | no   | `undefined`                                                      | string                  | 'collection'<br>'geospatial'<br>'custom'<br>'word'<br>'value' |
+
+- `replaceFilter(filterOptions)`: This will by default add or replace all values for the filter in the staged search query matching the given `filterOptions.constraint` and `filterOptions.mode`. The following `filterOptions` are supported, though others could be passed and will attach to the resulting filter [TODO: test that]. If the filter already exists, this method will only replace the values and any other `filterOptions` that are provided [TODO: test that].
+
+  | Option           | Req? | Default                                                          | Accepts                 | Examples                                                      |
+  | ---              | ---  | ---                                                              | ---                     | ---                                                           |
+  | `constraint`     | yes  | `undefined`                                                      | string                  | 'myFacet'                                                     |
+  | `values`         | yes  | `undefined`                                                      | string, object<br>array | 'red'<br>['red', 'blue']<br>{ 'ge': 10, 'lt': 20 }            |
+  | `filterType`     | no   | 'selection'                                                      | string                  | 'range'<br>'querytext'<br>'custom'                            |
+  | `mode`           | no   | 'and' when `filterType === 'selection'`<br>`undefined` otherwise | string                  | 'or'<br>'not'                                                 |
+  | `constraintType` | no   | `undefined`                                                      | string                  | 'collection'<br>'geospatial'<br>'custom'<br>'word'<br>'value' |
+
+- `removeFilter(filterOptions)`. This will by default remove any filter values matching a value in `filterOptions.values` from the filter in the staged search query matching the given `filterOptions.constraint` and `filterOptions.mode`. The following `filterOptions` are supported:
+
+  | Option       | Req? | Default                                                          | Accepts                 | Examples                                           |
+  | ---          | ---  | ---                                                              | ---                     | ---                                                |
+  | `constraint` | yes  | `undefined`                                                      | string                  | 'myFacet'                                          |
+  | `values`     | yes  | `undefined`                                                      | string, object<br>array | 'red'<br>['red', 'blue']<br>{ 'ge': 10, 'lt': 20 } |
+  | `mode`       | no   | 'and' when `filterType === 'selection'`<br>`undefined` otherwise | string                  | 'or'<br>'not'                                      |
+
+- `clearFilter(constraint)`. This clears all filters for a given constraint in the staged search query.
+
+### Available Selectors
 
 - Selectors getting information about the **staged** search:
   - `getStagedQuery(state)`. Returns the currently staged query, as serialized in this Redux module and POSTed to a Grove middle-tier.
