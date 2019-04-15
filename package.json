@@ -1,9 +1,8 @@
 {
-  "name": "grove-search-redux",
+  "name": "@marklogic-community/grove-search-redux",
   "version": "1.0.0-rc.1",
   "description": "Redux module to power MarkLogic search UIs",
   "main": "dist/index.js",
-  "repository": "ssh://git@project.marklogic.com:7999/nacw/grove-search-redux.git",
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -15,6 +14,10 @@
   "jest": {
     "testURL": "http://localhost"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:marklogic-community/grove-search-redux.git"
+  },
   "keywords": [
     "Redux",
     "MarkLogic",
@@ -22,6 +25,9 @@
   ],
   "author": "Patrick McElwee <patrick.mcelwee@marklogic.com>",
   "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/marklogic-community/grove-search-redux/issues"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",

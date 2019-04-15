@@ -1,16 +1,16 @@
 # MarkLogic Search Implemented in Redux
 
-This is a Redux implementation of search. It forms part of the MarkLogic Grove project. It works well for search against MarkLogic, but any backend search system could be used, so long as a middle-tier marshalled the response into the shape specified by the [Grove Core API](https://project.marklogic.com/repo/users/gjosten/repos/grove-core-api/browse). See the [Grove React-Redux Template](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse) for an example of using this library in practice.
+This is a Redux implementation of search. It forms part of the MarkLogic Grove project. It works well for search against MarkLogic, but any backend search system could be used, so long as a middle-tier marshalled the response into the shape specified by the [Grove Core API](https://github.com/marklogic-community/grove-core-api). See the [Grove React-Redux Template](https://github.com/marklogic-community/grove-react-template) for an example of using this library in practice.
 
 ## Install
 
-    npm install grove-search-redux --save
+    npm install @marklogic-community/grove-search-redux --save
 
 ## Use
 
 ### Simple Use
 
-In many cases, you will consume this library as part of a Grove Template, such as the [Grove React-Redux Template](https://project.marklogic.com/repo/projects/NACW/repos/grove-react-template/browse). The ui library in those templates, in turn, consume this library via the [grove-core-react-redux-containers library](https://project.marklogic.com/repo/users/pmcelwee/repos/grove-core-react-redux-containers/browse), which connects together React components with Redux modules like this one.
+In many cases, you will consume this library as part of a Grove Template, such as the [Grove React-Redux Template](https://github.com/marklogic-community/grove-react-template). The ui library in those templates, in turn, consume this library via the [grove-core-react-redux-containers library](https://github.com/marklogic-community/grove-core-react-redux-containers), which connects together React components with Redux modules like this one.
 
 But the actions and selectors exposed by this library should also be passed along via grove-core-react-redux-containers's `<SearchContainer>`.
 
