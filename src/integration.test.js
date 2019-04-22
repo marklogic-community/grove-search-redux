@@ -92,6 +92,19 @@ describe('search', () => {
     ]);
   });
 
+  it('ignores duplicate filters', () => {
+    store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
+    store.dispatch(actions.addFilter('eyeColor', null, 'blue'));
+    expect(selectors.stagedFilters(store.getState())).toEqual([
+      {
+        type: 'selection',
+        constraint: 'eyeColor',
+        mode: 'and',
+        value: ['blue']
+      }
+    ]);
+  });
+
   it('manages filters with object values', () => {
     const box1 = {
       south: 38,

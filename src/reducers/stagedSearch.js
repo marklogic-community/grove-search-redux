@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import * as bareTypes from '../actionTypes';
-import { some, isEqual } from 'lodash';
+import { some, isEqual, uniq } from 'lodash';
 
 export const createReducer = config => {
   let types = bareTypes;
@@ -54,10 +54,10 @@ export const createReducer = config => {
             if (filter === existingFilter) {
               return {
                 ...filter,
-                value: [
+                value: uniq([
                   ...(action.type === types.FILTER_REPLACE ? [] : filter.value),
                   ...action.payload.values
-                ]
+                ])
               };
             } else {
               return filter;
