@@ -21,3 +21,5 @@ export const CLEAR_SEARCH_RESULTS = 'search/CLEAR_SEARCH_RESULTS';
 export const OPTIONS_REQUESTED = 'search/OPTIONS_REQUESTED';
 export const OPTIONS_SUCCESS = 'search/OPTIONS_SUCCESS';
 export const OPTIONS_FAILURE = 'search/OPTIONS_FAILURE';
+
+export const CHANGE_SORT = 'search/CHANGE_SORT';

@@ -34,6 +34,29 @@ const defaultAPI = {
       }
       return response.json();
     });
+  },
+  options: () => {
+    let type = 'all';
+    return fetch(
+      new URL(
+        '/v1/config/query/' + type + '?format=json',
+        document.baseURI
+      ).toString(),
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+      }
+    ).then(response => {
+      if (!response.ok) {
+        return response.json().then(error => {
+          throw new Error(error.message);
+        });
+      }
+      return response.json();
+    });
   }
 };
 
@@ -65,7 +88,7 @@ export default config => {
 
       // TODO: consider changing shape of state instead of modifying
       // shape of query here
-      const { page, pageLength, ...groveSearchQuery } = searchQuery;
+      const { page, pageLength, sort, ...groveSearchQuery } = searchQuery;
       return searchAPI
         .search(
           {
@@ -73,7 +96,8 @@ export default config => {
             options: {
               start:
                 pageLength && page ? pageLength * (page - 1) + 1 : undefined,
-              pageLength: pageLength
+              pageLength: pageLength,
+              sort
             }
           },
           optionalArgs
@@ -150,6 +174,10 @@ export default config => {
   //   }
   // }
 
+  const changeSort = sort => {
+    return { type: types.CHANGE_SORT, payload: { sort: sort } };
+  };
+
   const addFilter = (constraint, constraintType, values, optional = {}) => {
     values = values instanceof Array ? values : [values];
     return {
@@ -190,6 +218,26 @@ export default config => {
     };
   };
 
+  const loadOptions = () => {
+    return dispatch => {
+      dispatch({ type: types.OPTIONS_REQUESTED });
+
+      return defaultAPI
+        .options()
+        .then(response => {
+          if (!(response && response.options))
+            throw new TypeError('invalid options');
+          return response;
+        })
+        .then(
+          response =>
+            dispatch({ type: types.OPTIONS_SUCCESS, payload: response }),
+          response =>
+            dispatch({ type: types.OPTIONS_FAILURE, payload: response })
+        );
+    };
+  };
+
   return {
     runSearch,
     receiveSuccessfulSearch,
@@ -199,6 +247,8 @@ export default config => {
     addFilter,
     removeFilter,
     replaceFilter,
-    clearFilter
+    clearFilter,
+    loadOptions,
+    changeSort
   };
 };

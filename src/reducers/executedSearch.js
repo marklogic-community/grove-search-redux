@@ -119,5 +119,6 @@ export const selectors = {
   getSearchTotalPages: state =>
     Math.ceil(getSearchTotal(state) / getPageLength(state)),
   // TODO: test
-  isSearchComplete: state => state.response && !isSearchPending(state)
+  isSearchComplete: state => state.response && !isSearchPending(state),
+  getSort: state => getFromExecutedSearch(state, 'sort')
 };

@@ -33,6 +33,15 @@ export const createReducer = config => {
     return state;
   };
 
+  const sort = (state = 'score', action) => {
+    switch (action.type) {
+      case types.CHANGE_SORT:
+        return action.payload.sort;
+      default:
+        return state;
+    }
+  };
+
   // For now at least, always 'and' together filters
   const filters = (state = [], action) => {
     let constraint;
@@ -116,7 +125,8 @@ export const createReducer = config => {
     queryText,
     page,
     pageLength,
-    filters
+    filters,
+    sort
   });
 };
 

@@ -7,11 +7,16 @@ import {
   selectors as executedSelectors,
   createReducer as createExecutedSearch
 } from './executedSearch';
+import {
+  selectors as optionsSelectors,
+  createReducer as createOptionsQuery
+} from './optionsQuery';
 
 export const createReducer = config => {
   return combineReducers({
     stagedSearch: createStagedSearch(config),
-    executedSearch: createExecutedSearch(config)
+    executedSearch: createExecutedSearch(config),
+    options: createOptionsQuery(config)
   });
 };
 
@@ -49,32 +54,6 @@ export default createReducer();
 //     //     optionsPending: true
 //     //   }
 
-//     // case types.OPTIONS_SUCCESS: {
-//     //   let opts = action.payload.options
-//     //   let constraints = {}
-//     //   opts.constraint.forEach(c => constraints[c.name] = c)
-//     //   return {
-//     //     ...state,
-//     //     optionsPending: false,
-//     //     // TODO: merge values?
-//     //     constraints: constraints,
-//     //     options: opts
-//     //   }
-//     // }
-
-//     // case types.OPTIONS_FAILURE:
-//     //   return {
-//     //     ...state,
-//     //     // TODO: put error somewhere
-//     //     optionsPending: false,
-//     //     options: {}
-//     //   }
-
-//     default:
-//       return state
-//   }
-// }
-
 // SELECTORS
 const bindSelector = (selector, mountPoint) => {
   return (state, ...args) => {
@@ -91,5 +70,6 @@ const bindSelectors = (selectors, mountPoint) => {
 
 export const selectors = {
   ...bindSelectors(executedSelectors, 'executedSearch'),
-  ...bindSelectors(stagedSelectors, 'stagedSearch')
+  ...bindSelectors(stagedSelectors, 'stagedSearch'),
+  ...bindSelectors(optionsSelectors, 'options')
 };
